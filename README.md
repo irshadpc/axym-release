@@ -13,18 +13,20 @@ Axym ships as two products that share one runtime:
 |---|---|---|
 | What it is | One standalone executable: a session UI, permission gate and headless mode on top of the AI coding CLI you already use | The whole pipeline (plan → design → code → review → security → QA) with mission control, approval gates and in-app updates |
 | Best for | Driving your own agent CLI (`claude`, `opencode`, `codex`, `gemini`, `cursor-agent`, `copilot`, `agy`) from a fast terminal UI | Running autonomous multi-stage engineering work end-to-end, with diffs to approve and tamper-evident run history |
-| Version | [`0.20.0`](../../releases/tag/tui-v0.20.0) | [`12.16.0`](../../releases/tag/desktop-v12.16.0) |
+| Version | [`0.22.0`](../../releases/tag/tui-v0.22.0) | [`12.17.0`](../../releases/tag/desktop-v12.17.0) |
 | Every feature | [TUI catalog](FEATURES.md#axym-tui--terminal-agent) | [Desktop catalog](FEATURES.md#axym-desktop--full-app) |
 
 ## Downloads
 
-| Platform | Axym TUI 0.20.0 | Axym Desktop 12.16.0 |
+| Platform | Axym TUI 0.22.0 | Axym Desktop 12.17.0 |
 |---|---|---|
-| macOS — Apple Silicon & Intel | [axym-0.20.0-macos.tar.gz](https://github.com/irshadpc/axym-community/releases/download/tui-v0.20.0/axym-0.20.0-macos.tar.gz) | [Axym_12.16.0_universal.dmg](https://github.com/irshadpc/axym-community/releases/download/desktop-v12.16.0/Axym_12.16.0_universal.dmg) |
-| Linux x86_64 | [axym-0.20.0-linux-x86_64.tar.gz](https://github.com/irshadpc/axym-community/releases/download/tui-v0.20.0/axym-0.20.0-linux-x86_64.tar.gz) | [axym-12.16.0-linux-x86_64.tar.gz](https://github.com/irshadpc/axym-community/releases/download/desktop-v12.16.0/axym-12.16.0-linux-x86_64.tar.gz) |
-| Windows x86_64 | [axym-0.20.0-windows-x86_64.zip](https://github.com/irshadpc/axym-community/releases/download/tui-v0.20.0/axym-0.20.0-windows-x86_64.zip) | [axym-12.16.0-windows-x86_64.zip](https://github.com/irshadpc/axym-community/releases/download/desktop-v12.16.0/axym-12.16.0-windows-x86_64.zip) |
+| macOS — Apple Silicon & Intel | [axym-0.22.0-macos.tar.gz](https://github.com/irshadpc/axym-community/releases/download/tui-v0.22.0/axym-0.22.0-macos.tar.gz) | [Axym_12.17.0_universal.dmg](https://github.com/irshadpc/axym-community/releases/download/desktop-v12.17.0/Axym_12.17.0_universal.dmg) |
+| Linux x86_64 | [axym-0.22.0-linux-x86_64.tar.gz](https://github.com/irshadpc/axym-community/releases/download/tui-v0.22.0/axym-0.22.0-linux-x86_64.tar.gz) | [axym-12.16.0-linux-x86_64.tar.gz](https://github.com/irshadpc/axym-community/releases/download/desktop-v12.16.0/axym-12.16.0-linux-x86_64.tar.gz) ¹ |
+| Windows x86_64 | [axym-0.22.0-windows-x86_64.zip](https://github.com/irshadpc/axym-community/releases/download/tui-v0.22.0/axym-0.22.0-windows-x86_64.zip) | [axym-12.16.0-windows-x86_64.zip](https://github.com/irshadpc/axym-community/releases/download/desktop-v12.16.0/axym-12.16.0-windows-x86_64.zip) ¹ |
 
 Every release also carries `SHA256SUMS.txt`; TUI releases add a machine-readable `release-manifest.json` (version, source commit, per-file hashes). See [Verify a download](#verify-a-download).
+
+¹ 12.17.0 ships macOS-only; the newest desktop Linux/Windows builds are the 12.16.0 ones until the next cross-platform build.
 
 ## Install
 
@@ -33,7 +35,7 @@ Every release also carries `SHA256SUMS.txt`; TUI releases add a machine-readable
 The macOS archive contains `axym-macos-arm64` (Apple Silicon) and `axym-macos-x64` (Intel); the Linux archive contains `axym-linux-x86_64`.
 
 ```sh
-tar -xzf axym-0.20.0-macos.tar.gz     # or axym-0.20.0-linux-x86_64.tar.gz
+tar -xzf axym-0.22.0-macos.tar.gz     # or axym-0.22.0-linux-x86_64.tar.gz
 ./axym-macos-arm64 --version          # Intel Mac: ./axym-macos-x64
 ./axym-macos-arm64 --install          # optional: copies to ~/.local/bin + man page
 axym                                  # start a session in the current project
@@ -146,23 +148,22 @@ Everything runs on your hardware: embedded Rust/Tauri runtime, SQLite event stor
 
 ## What's new
 
-**TUI 0.20.0** · [full notes](../../releases/tag/tui-v0.20.0)
+**TUI 0.22.0** · [full notes](../../releases/tag/tui-v0.22.0)
 
-- **Team collaboration:** `/share` shows collaborators everything they need to follow a session or live run — read-only viewer command (`/view <run-id>`), terminal re-attach (`axym attach`) and mobile pairing (`/remote`). Shared viewers connect with isolated read-only event cursors; only authorized operators can steer or approve.
-- **Agent Hub:** press `alt+a` anywhere to toggle the live run roster — select, attach, or kill (`x`) a run without leaving what you're doing.
-- **Agent steering controls** and **provider diversity pairing** for governed runtime runs.
-- **Stage cost waterfall:** per-stage tokens, spend and call counts, so you can see where a run's budget went.
+- **Multi-worker fleet breakdown:** when a run fans out across workers, the TUI now shows the real per-worker fleet breakdown instead of a single opaque aggregate — which worker did what, where it is stuck, and what it costs.
+- **Remote E2EE QR mint:** `/remote` QR pairing now carries a fragment-key end-to-end-encryption offer (`/api/e2ee/offer` is wired on the TUI surface), with the host keypair resolved once — no restore-vs-generate race.
+- **Goldfish card:** the Elephant-Goldfish review card shows the reviewed revision stamp, so you always know which code revision a review verdict belongs to.
+- **Tunnel health:** dead-edge tunnels are never handed out; connector and origin liveness is reported.
 
-**Desktop 12.16.0** · [full notes](../../releases/tag/desktop-v12.16.0)
+**Desktop 12.17.0** · [full notes](../../releases/tag/desktop-v12.17.0)
 
-- **Dynamic graph execution mode:** governed task-grain parallelism — admission control (role-counted node caps, write-set conflict groups, exact cycle traces), verifier-required provider nodes, and economic-governor cost posture.
-- **Parallel runs are truly isolated:** finishing one run no longer stops the agents and builds of runs still going; switching runs can't show you the previous run's data.
-- **Honest scoring:** unmeasured quality dimensions are never scored as 100 anymore; every run's self-score is backed by real test and build results.
-- **Security hardening:** native Electron posture checks for target apps, a fixed reverse-engineering-adapter that now parses real tool output, and injection-defensive reliability fixes.
-- **Council decision records** now preserve full member candidates, anonymized ballots and Borda consensus scores; the architecture self-evaluation harness gained Arms A/B/C comparison.
-- **Mobile connect:** authenticated test submissions, workspace-switcher projection, event-log resync on future cursors.
-- **Priority task steering** with durable fair-share ranking, plus a serialized clock fix in the execution graph.
-- UI: sidebar expands at 640 px instead of 768 px (small laptops), darker rail.
+- **Runtime correctness:** BUG-077 — a submit racing a failing run no longer wedges the writer; BUG-076 — stage-deferring submits are accepted (E19 phone leg certified). Execution evidence is recorded on every terminal cancellation and approval path.
+- **Elephant-Goldfish review:** a real fresh-context reviewer (T-040, BUG-075) with a lens panel, persisted spec revisions, revision-bound approvals, adaptive depth, and AST-grounded findings-only spec-to-code drift detection (T-042/T-044).
+- **v6.5 multi-provider superagent:** orchestration and verification across providers; the ExecutionCenter surfaces a real multi-worker fleet breakdown (honest fleet data replaces the synthetic UI); unknown providers fail closed and workers are dynamically certified.
+- **Remote tunnel:** fragment-key E2EE, a multi-transport manager, and a native-grade PWA for the `/remote` tunnel; `/api/e2ee/offer` wires the QR mint on the desktop surface; two E2EE races (host keypair restore-vs-generate, revoke deadlock) are fixed.
+- **Plugin system (v7 bridge):** schema-2 package contract with a local MCP bridge, lifecycle registry with package-integrity enforcement, macOS seatbelt + Linux Landlock confinement, encrypted vault, per-payload disclosure grants, a developer SDK with a full validator, hostile-plugin adversarial coverage, and hardened MCP gateway protocol interop.
+
+> This cycle's desktop build is macOS-only; Linux and Windows desktop artifacts remain at 12.16.0.
 
 Both products now ship the same built-in skills set, and the release pipeline itself is verified by seeded-fault injection — every release gate must detect 11 deliberately planted defects before it can pass.
 
