@@ -2,7 +2,7 @@
 
 Every user-facing capability in Axym, grouped by the job you are trying to do. The TUI is the fast terminal agent; the Desktop app is the full engineering pipeline. Both share the same provider conventions, project configuration and safety model.
 
-**Last updated:** 2026-11-04 · **Axym TUI:** 0.22.0 · **Axym Desktop:** 12.17.0
+**Last updated:** 2026-11-05 · **Axym TUI:** 0.23.0 · **Axym Desktop:** 12.17.0
 
 > This catalog is generated from one source so the TUI and Desktop always describe the same capabilities.
 

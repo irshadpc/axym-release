@@ -13,16 +13,16 @@ Axym ships as two products that share one runtime:
 |---|---|---|
 | What it is | One standalone executable: a session UI, permission gate and headless mode on top of the AI coding CLI you already use | The whole pipeline (plan → design → code → review → security → QA) with mission control, approval gates and in-app updates |
 | Best for | Driving your own agent CLI (`claude`, `opencode`, `codex`, `gemini`, `cursor-agent`, `copilot`, `agy`) from a fast terminal UI | Running autonomous multi-stage engineering work end-to-end, with diffs to approve and tamper-evident run history |
-| Version | [`0.22.0`](../../releases/tag/tui-v0.22.0) | [`12.17.0`](../../releases/tag/desktop-v12.17.0) |
+| Version | [`0.23.0`](../../releases/tag/tui-v0.23.0) | [`12.17.0`](../../releases/tag/desktop-v12.17.0) |
 | Every feature | [TUI catalog](FEATURES.md#axym-tui--terminal-agent) | [Desktop catalog](FEATURES.md#axym-desktop--full-app) |
 
 ## Downloads
 
-| Platform | Axym TUI 0.22.0 | Axym Desktop 12.17.0 |
+| Platform | Axym TUI 0.23.0 | Axym Desktop 12.17.0 |
 |---|---|---|
-| macOS — Apple Silicon & Intel | [axym-0.22.0-macos.tar.gz](https://github.com/irshadpc/axym-community/releases/download/tui-v0.22.0/axym-0.22.0-macos.tar.gz) | [Axym_12.17.0_universal.dmg](https://github.com/irshadpc/axym-community/releases/download/desktop-v12.17.0/Axym_12.17.0_universal.dmg) |
-| Linux x86_64 | [axym-0.22.0-linux-x86_64.tar.gz](https://github.com/irshadpc/axym-community/releases/download/tui-v0.22.0/axym-0.22.0-linux-x86_64.tar.gz) | [axym-12.16.0-linux-x86_64.tar.gz](https://github.com/irshadpc/axym-community/releases/download/desktop-v12.16.0/axym-12.16.0-linux-x86_64.tar.gz) ¹ |
-| Windows x86_64 | [axym-0.22.0-windows-x86_64.zip](https://github.com/irshadpc/axym-community/releases/download/tui-v0.22.0/axym-0.22.0-windows-x86_64.zip) | [axym-12.16.0-windows-x86_64.zip](https://github.com/irshadpc/axym-community/releases/download/desktop-v12.16.0/axym-12.16.0-windows-x86_64.zip) ¹ |
+| macOS — Apple Silicon & Intel | [axym-0.23.0-macos.tar.gz](https://github.com/irshadpc/axym-community/releases/download/tui-v0.23.0/axym-0.23.0-macos.tar.gz) | [Axym_12.17.0_universal.dmg](https://github.com/irshadpc/axym-community/releases/download/desktop-v12.17.0/Axym_12.17.0_universal.dmg) |
+| Linux x86_64 | [axym-0.23.0-linux-x86_64.tar.gz](https://github.com/irshadpc/axym-community/releases/download/tui-v0.23.0/axym-0.23.0-linux-x86_64.tar.gz) | [axym-12.16.0-linux-x86_64.tar.gz](https://github.com/irshadpc/axym-community/releases/download/desktop-v12.16.0/axym-12.16.0-linux-x86_64.tar.gz) ¹ |
+| Windows x86_64 | [axym-0.23.0-windows-x86_64.zip](https://github.com/irshadpc/axym-community/releases/download/tui-v0.23.0/axym-0.23.0-windows-x86_64.zip) | [axym-12.16.0-windows-x86_64.zip](https://github.com/irshadpc/axym-community/releases/download/desktop-v12.16.0/axym-12.16.0-windows-x86_64.zip) ¹ |
 
 Every release also carries `SHA256SUMS.txt`; TUI releases add a machine-readable `release-manifest.json` (version, source commit, per-file hashes). See [Verify a download](#verify-a-download).
 
@@ -35,7 +35,7 @@ Every release also carries `SHA256SUMS.txt`; TUI releases add a machine-readable
 The macOS archive contains `axym-macos-arm64` (Apple Silicon) and `axym-macos-x64` (Intel); the Linux archive contains `axym-linux-x86_64`.
 
 ```sh
-tar -xzf axym-0.22.0-macos.tar.gz     # or axym-0.22.0-linux-x86_64.tar.gz
+tar -xzf axym-0.23.0-macos.tar.gz     # or axym-0.23.0-linux-x86_64.tar.gz
 ./axym-macos-arm64 --version          # Intel Mac: ./axym-macos-x64
 ./axym-macos-arm64 --install          # optional: copies to ~/.local/bin + man page
 axym                                  # start a session in the current project
@@ -148,12 +148,10 @@ Everything runs on your hardware: embedded Rust/Tauri runtime, SQLite event stor
 
 ## What's new
 
-**TUI 0.22.0** · [full notes](../../releases/tag/tui-v0.22.0)
+**TUI 0.23.0** · [full notes](../../releases/tag/tui-v0.23.0)
 
-- **Multi-worker fleet breakdown:** when a run fans out across workers, the TUI now shows the real per-worker fleet breakdown instead of a single opaque aggregate — which worker did what, where it is stuck, and what it costs.
-- **Remote E2EE QR mint:** `/remote` QR pairing now carries a fragment-key end-to-end-encryption offer (`/api/e2ee/offer` is wired on the TUI surface), with the host keypair resolved once — no restore-vs-generate race.
-- **Goldfish card:** the Elephant-Goldfish review card shows the reviewed revision stamp, so you always know which code revision a review verdict belongs to.
-- **Tunnel health:** dead-edge tunnels are never handed out; connector and origin liveness is reported.
+- **Terminal graphics:** `/termcaps` probes the real terminal (cell size, kitty/iTerm2 graphics support) and `alt+i` opens attached images in a fullscreen inline-image viewer with aspect-correct cell fitting and a full restore on close.
+- **Mouse + focus handling:** the image viewer decodes SGR 1006 mouse reports and focus events, so a click closes it cleanly instead of a lone ESC ambiguity dismissing it; terminal mouse state is restored on exit.
 
 **Desktop 12.17.0** · [full notes](../../releases/tag/desktop-v12.17.0)
 
