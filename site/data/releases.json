@@ -1,14 +1,15 @@
 {
-  "generatedAt": "2026-11-24T07:16:10.522Z",
+  "generatedAt": "2026-11-24T08:20:44.095Z",
   "repo": "irshadpc/axym-release",
   "tui": {
     "version": "v0.23.0",
     "releaseDate": "2026-11-05",
     "status": "active",
     "install": {
-      "macos_arm": "curl -fsSL https://github.com/irshadpc/axym-release/releases/download/latest/download/install.sh | sh",
-      "macos_intel": "curl -fsSL https://github.com/irshadpc/axym-release/releases/download/latest/download/install.sh | ARCH=x86_64 sh",
-      "linux": "curl -fsSL https://github.com/irshadpc/axym-release/releases/download/latest/download/install.sh | sh",
+      "macos_arm": "curl -fLO https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-macos.tar.gz\ntar -xzf axym-0.23.0-macos.tar.gz\n./axym-macos-arm64 --install",
+      "macos_intel": "curl -fLO https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-macos.tar.gz\ntar -xzf axym-0.23.0-macos.tar.gz\n./axym-macos-x64 --install",
+      "linux": "curl -fLO https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-linux-x86_64.tar.gz\ntar -xzf axym-0.23.0-linux-x86_64.tar.gz\n./axym-linux-x86_64 --install",
+      "windows": "Invoke-WebRequest -Uri https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-windows-x86_64.zip -OutFile axym-0.23.0-windows-x86_64.zip\nExpand-Archive axym-0.23.0-windows-x86_64.zip -DestinationPath .\n.\\axym-windows-x86_64.exe --install",
       "source": "git clone https://github.com/irshadpc/axym.git && cd axym/tui && npm install && npm run build"
     }
   },
@@ -17,7 +18,10 @@
     "crossOsVersion": "v12.16.0",
     "releaseDate": "2026-11-04",
     "supportedRange": "12.13.x-12.17.x",
-    "eolRange": "12.12.x and earlier"
+    "eolRange": "12.12.x and earlier",
+    "install": {
+      "macos": "curl -fsSL https://github.com/irshadpc/axym-release/releases/download/desktop-v12.17.0/install-macos.sh | bash"
+    }
   },
   "artifacts": [
     {
@@ -85,6 +89,62 @@
       "url": "https://github.com/irshadpc/axym-release/releases/download/desktop-v12.16.0/axym-12.16.0-windows-x86_64.zip",
       "sha256": "cc3eabdf4a6798997c2d1283df913d044ed41f174947d95f4daa9a59940196e0",
       "sizeBytes": 16546668
+    }
+  ],
+  "history": [
+    {
+      "tag": "tui-v0.23.0",
+      "product": "TUI",
+      "version": "0.23.0",
+      "date": "2026-11-05",
+      "name": "Axym TUI 0.23.0",
+      "note": "Terminal capability probing, a fullscreen inline-image viewer, and mouse/focus handling that restores terminal state on exit.",
+      "url": "https://github.com/irshadpc/axym-release/releases/tag/tui-v0.23.0"
+    },
+    {
+      "tag": "desktop-v12.17.0",
+      "product": "Desktop",
+      "version": "12.17.0",
+      "date": "2026-11-04",
+      "name": "Axym Desktop 12.17.0",
+      "note": "Runtime correctness fixes, fresh-context review, multi-provider orchestration, the remote tunnel and the plugin system. macOS build this cycle.",
+      "url": "https://github.com/irshadpc/axym-release/releases/tag/desktop-v12.17.0"
+    },
+    {
+      "tag": "tui-v0.22.0",
+      "product": "TUI",
+      "version": "0.22.0",
+      "date": "2026-11-04",
+      "name": "Axym TUI 0.22.0",
+      "note": "Standalone TUI binaries for macOS, Linux x86_64 and Windows x86_64.",
+      "url": "https://github.com/irshadpc/axym-release/releases/tag/tui-v0.22.0"
+    },
+    {
+      "tag": "tui-v0.21.1",
+      "product": "TUI",
+      "version": "0.21.1",
+      "date": "2026-10-30",
+      "name": "Axym TUI 0.21.1",
+      "note": "Patch release with standalone TUI binaries for macOS, Linux x86_64 and Windows x86_64.",
+      "url": "https://github.com/irshadpc/axym-release/releases/tag/tui-v0.21.1"
+    },
+    {
+      "tag": "tui-v0.21.0",
+      "product": "TUI",
+      "version": "0.21.0",
+      "date": "2026-10-27",
+      "name": "Axym TUI 0.21.0",
+      "note": "Standalone TUI binaries for macOS, Linux x86_64 and Windows x86_64.",
+      "url": "https://github.com/irshadpc/axym-release/releases/tag/tui-v0.21.0"
+    },
+    {
+      "tag": "desktop-v12.16.0",
+      "product": "Desktop",
+      "version": "12.16.0",
+      "date": "2026-10-26",
+      "name": "Axym Desktop 12.16.0",
+      "note": "Desktop packages for macOS, Linux and Windows. This remains the newest cross-platform desktop build.",
+      "url": "https://github.com/irshadpc/axym-release/releases/tag/desktop-v12.16.0"
     }
   ]
 }

@@ -25,7 +25,41 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const OUTPUT = resolve(HERE, '../site/data/releases.json');
 
 const REPO = 'irshadpc/axym-release';
-const DOWNLOADS = `https://github.com/${REPO}/releases/download`;
+const REPO_URL = `https://github.com/${REPO}`;
+const DOWNLOADS = `${REPO_URL}/releases/download`;
+const TUI_TAG = 'tui-v0.23.0';
+const TUI_VERSION = '0.23.0';
+const DESKTOP_TAG = 'desktop-v12.17.0';
+
+// Verified release history (tags, names and dates read from GitHub).
+// Notes are limited to statements supported by the release body or README.
+const RELEASE_HISTORY = [
+  {
+    tag: 'tui-v0.23.0', product: 'TUI', version: '0.23.0', date: '2026-11-05', name: 'Axym TUI 0.23.0',
+    note: 'Terminal capability probing, a fullscreen inline-image viewer, and mouse/focus handling that restores terminal state on exit.',
+  },
+  {
+    tag: 'desktop-v12.17.0', product: 'Desktop', version: '12.17.0', date: '2026-11-04', name: 'Axym Desktop 12.17.0',
+    note: 'Runtime correctness fixes, fresh-context review, multi-provider orchestration, the remote tunnel and the plugin system. macOS build this cycle.',
+  },
+  {
+    tag: 'tui-v0.22.0', product: 'TUI', version: '0.22.0', date: '2026-11-04', name: 'Axym TUI 0.22.0',
+    note: 'Standalone TUI binaries for macOS, Linux x86_64 and Windows x86_64.',
+  },
+  {
+    tag: 'tui-v0.21.1', product: 'TUI', version: '0.21.1', date: '2026-10-30', name: 'Axym TUI 0.21.1',
+    note: 'Patch release with standalone TUI binaries for macOS, Linux x86_64 and Windows x86_64.',
+  },
+  {
+    tag: 'tui-v0.21.0', product: 'TUI', version: '0.21.0', date: '2026-10-27', name: 'Axym TUI 0.21.0',
+    note: 'Standalone TUI binaries for macOS, Linux x86_64 and Windows x86_64.',
+  },
+  {
+    tag: 'desktop-v12.16.0', product: 'Desktop', version: '12.16.0', date: '2026-10-26', name: 'Axym Desktop 12.16.0',
+    note: 'Desktop packages for macOS, Linux and Windows. This remains the newest cross-platform desktop build.',
+  },
+].map((item) => ({ ...item, url: `${REPO_URL}/releases/tag/${item.tag}` }));
+
 
 // ---------------------------------------------------------------------------
 // Verified baseline — real release metadata (captured from GitHub 2026-11-24)
@@ -119,18 +153,20 @@ function main() {
   const tui = tagOf('tui-v0.23.0');
   const desktop = tagOf('desktop-v12.17.0');
   const desktopCross = tagOf('desktop-v12.16.0');
+  const tuiBase = `${DOWNLOADS}/${TUI_TAG}`;
 
   const manifest = {
     generatedAt: '',
     repo: REPO,
     tui: {
-      version: 'v0.23.0',
+      version: `v${TUI_VERSION}`,
       releaseDate: tui.publishedAt.slice(0, 10),
       status: 'active',
       install: {
-        macos_arm: `curl -fsSL ${DOWNLOADS}/latest/download/install.sh | sh`,
-        macos_intel: `curl -fsSL ${DOWNLOADS}/latest/download/install.sh | ARCH=x86_64 sh`,
-        linux: `curl -fsSL ${DOWNLOADS}/latest/download/install.sh | sh`,
+        macos_arm: `curl -fLO ${tuiBase}/axym-${TUI_VERSION}-macos.tar.gz\ntar -xzf axym-${TUI_VERSION}-macos.tar.gz\n./axym-macos-arm64 --install`,
+        macos_intel: `curl -fLO ${tuiBase}/axym-${TUI_VERSION}-macos.tar.gz\ntar -xzf axym-${TUI_VERSION}-macos.tar.gz\n./axym-macos-x64 --install`,
+        linux: `curl -fLO ${tuiBase}/axym-${TUI_VERSION}-linux-x86_64.tar.gz\ntar -xzf axym-${TUI_VERSION}-linux-x86_64.tar.gz\n./axym-linux-x86_64 --install`,
+        windows: `Invoke-WebRequest -Uri ${tuiBase}/axym-${TUI_VERSION}-windows-x86_64.zip -OutFile axym-${TUI_VERSION}-windows-x86_64.zip\nExpand-Archive axym-${TUI_VERSION}-windows-x86_64.zip -DestinationPath .\n.\\axym-windows-x86_64.exe --install`,
         source: 'git clone https://github.com/irshadpc/axym.git && cd axym/tui && npm install && npm run build',
       },
     },
@@ -140,11 +176,15 @@ function main() {
       releaseDate: desktop.publishedAt.slice(0, 10),
       supportedRange: '12.13.x-12.17.x',
       eolRange: '12.12.x and earlier',
+      install: {
+        macos: `curl -fsSL ${DOWNLOADS}/${DESKTOP_TAG}/install-macos.sh | bash`,
+      },
     },
     artifacts: ARTIFACT_MATRIX.map((row) => {
       const release = row.tag === 'tui-v0.23.0' ? tui : row.tag === 'desktop-v12.17.0' ? desktop : desktopCross;
       return buildArtifact(row, release);
     }),
+    history: RELEASE_HISTORY,
   };
 
   // Reproducible output: if nothing except the timestamp changed, keep the

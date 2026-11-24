@@ -1,31 +1,60 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Page not found — Axym</title>
   <meta name="robots" content="noindex">
-  <link rel="canonical" href="https://irshadpc.github.io/axym-release/">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%235b45e8'/%3E%3Cpath d='M16 20h32L16 44h32' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <meta name="color-scheme" content="dark light">
+  <link rel="canonical" href="https://www.irshadpc.in/axym-release/">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <style>
-    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0b0d12;color:#eef1f6;display:grid;place-items:center;min-height:100vh;margin:0;text-align:center;padding:24px}
-    a{color:#b6a8ff}.card{max-width:480px}h1{font-size:32px;letter-spacing:-.03em}p{color:#aab3c0;line-height:1.6}
+    :root{color-scheme:dark;--canvas:#080F15;--surface:#101E27;--text:#EDF8FA;--secondary:#A0B7C2;--muted:#849CA9;--border:#253641;--brand:#5DE4DF;--on-brand:#080F15}
+    @media (prefers-color-scheme:light){:root{color-scheme:light;--canvas:#F5F8FA;--surface:#FFFFFF;--text:#10232D;--secondary:#48616E;--muted:#586F7C;--border:#D4E0E6;--brand:#006E73;--on-brand:#FFFFFF}}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:var(--canvas);color:var(--text);font-family:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6}
+    main{max-width:520px;width:100%;border:1px solid var(--border);border-radius:16px;background:var(--surface);padding:40px}
+    .brand{display:flex;align-items:center;gap:10px;margin-bottom:32px;font-size:19px;font-weight:650;letter-spacing:-.04em}
+    .mark{width:30px;height:30px;border-radius:7px;background:var(--brand);display:grid;place-items:center}
+    .mark svg{width:20px;height:20px}
+    .code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--brand);letter-spacing:.08em;margin-bottom:10px}
+    h1{font-size:32px;letter-spacing:-.04em;line-height:1.15;margin:0 0 12px}
+    p{margin:0 0 24px;color:var(--secondary);font-size:15px}
+    a{color:var(--brand);text-underline-offset:.18em}
+    .btn{display:inline-flex;align-items:center;min-height:42px;padding:0 16px;border-radius:8px;background:var(--brand);color:var(--on-brand);font-weight:600;text-decoration:none}
+    :focus-visible{outline:2px solid var(--brand);outline-offset:3px}
   </style>
   <script>
-    /* Any unknown path returns cleanly to the portal home. */
     (function () {
-      var target = 'https://irshadpc.github.io/axym-release/#home';
-      var path = location.pathname;
-      if (path.charAt(path.length - 1) !== '/') target = path.replace(/[^/]*$/, '') + '#home';
-      location.replace(target);
+      var mode = 'system';
+      try { var saved = localStorage.getItem('axym-theme'); if (saved === 'light' || saved === 'dark' || saved === 'system') mode = saved; } catch (e) {}
+      var resolved = mode;
+      if (mode === 'system') resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      document.documentElement.dataset.theme = resolved;
+      document.documentElement.style.colorScheme = resolved;
     })();
   </script>
 </head>
 <body>
-  <div class="card">
-    <h1>Page not found</h1>
-    <p>This address is not part of the Axym release portal. Redirecting to the documentation home…</p>
-    <p><a href="https://irshadpc.github.io/axym-release/#home">Go to Axym docs →</a></p>
-  </div>
+  <main>
+    <div class="brand">
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M17 20.5h30L17 43.5h30" fill="none" stroke="currentColor" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      axym
+    </div>
+    <p class="code">404 · NOT FOUND</p>
+    <h1>This address is not part of the Axym portal.</h1>
+    <p>The page may have moved, or the hash route may be mistyped. Return to the product overview or open the documentation.</p>
+    <a class="btn" href="/axym-release/#home">Go to Axym</a>
+    <p style="margin:20px 0 0;font-size:13px">Or read the <a href="/axym-release/#quickstart">Quick Start</a>.</p>
+  </main>
+  <script>
+    /* Keep the URL on the portal base while preserving the hash router. */
+    (function () {
+      var base = location.pathname.indexOf('/axym-release/') === 0 ? '/axym-release/' : '/';
+      if (location.pathname !== base && location.pathname !== base.slice(0, -1)) {
+        location.replace(base + '#home');
+      }
+    })();
+  </script>
 </body>
 </html>

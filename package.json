@@ -1,0 +1,32 @@
+{
+  "name": "axym-release-site",
+  "version": "1.0.0",
+  "description": "Axym release portal and documentation site",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "playwright test",
+    "serve": "node tests/serve.mjs",
+    "verify": "node scripts/sync-releases.mjs && node scripts/verify-site.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/irshadpc/axym-release.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/irshadpc/axym-release/issues"
+  },
+  "homepage": "https://github.com/irshadpc/axym-release#readme",
+  "private": "true",
+  "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
+    "@playwright/test": "^1.65.1"
+  }
+}

@@ -1,0 +1,52 @@
+[
+  {
+    "shot": "home-dark",
+    "violations": [],
+    "consoleErrors": []
+  },
+  {
+    "shot": "home-light",
+    "violations": [],
+    "consoleErrors": []
+  },
+  {
+    "shot": "architecture-dark",
+    "violations": [],
+    "consoleErrors": []
+  },
+  {
+    "shot": "architecture-light",
+    "violations": [],
+    "consoleErrors": []
+  },
+  {
+    "shot": "quickstart-dark",
+    "violations": [],
+    "consoleErrors": []
+  },
+  {
+    "shot": "quickstart-light",
+    "violations": [],
+    "consoleErrors": []
+  },
+  {
+    "shot": "releases-dark",
+    "violations": [],
+    "consoleErrors": []
+  },
+  {
+    "shot": "home-mobile",
+    "violations": [],
+    "consoleErrors": []
+  },
+  {
+    "shot": "home-tablet",
+    "violations": [],
+    "consoleErrors": []
+  },
+  {
+    "shot": "quickstart-mobile",
+    "violations": [],
+    "consoleErrors": []
+  }
+]
