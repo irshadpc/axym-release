@@ -1,0 +1,90 @@
+{
+  "generatedAt": "2026-11-24T07:10:23.466Z",
+  "repo": "irshadpc/axym-release",
+  "tui": {
+    "version": "v0.23.0",
+    "releaseDate": "2026-11-05",
+    "status": "active",
+    "install": {
+      "macos_arm": "curl -fsSL https://github.com/irshadpc/axym-release/releases/download/latest/download/install.sh | sh",
+      "macos_intel": "curl -fsSL https://github.com/irshadpc/axym-release/releases/download/latest/download/install.sh | ARCH=x86_64 sh",
+      "linux": "curl -fsSL https://github.com/irshadpc/axym-release/releases/download/latest/download/install.sh | sh",
+      "source": "git clone https://github.com/irshadpc/axym.git && cd axym/tui && npm install && npm run build"
+    }
+  },
+  "desktop": {
+    "version": "v12.17.0",
+    "crossOsVersion": "v12.16.0",
+    "releaseDate": "2026-11-04",
+    "supportedRange": "12.13.x-12.17.x",
+    "eolRange": "12.12.x and earlier"
+  },
+  "artifacts": [
+    {
+      "product": "tui",
+      "platform": "macos",
+      "version": "0.23.0",
+      "label": "macOS (Apple Silicon + Intel)",
+      "file": "axym-0.23.0-macos.tar.gz",
+      "status": "active",
+      "url": "https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-macos.tar.gz",
+      "sha256": "6f4f24af2bbd0591fedccc6cb26a5b9297bc0626c1cd2a37fe3727f86b1dd2a9",
+      "sizeBytes": 55363441
+    },
+    {
+      "product": "tui",
+      "platform": "linux",
+      "version": "0.23.0",
+      "label": "Linux x86_64",
+      "file": "axym-0.23.0-linux-x86_64.tar.gz",
+      "status": "active",
+      "url": "https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-linux-x86_64.tar.gz",
+      "sha256": "a4b7df9d21fd48671d3d554cbe1aae6a6434d7d7a6508ff162c23e286ca06758",
+      "sizeBytes": 37233856
+    },
+    {
+      "product": "tui",
+      "platform": "windows",
+      "version": "0.23.0",
+      "label": "Windows x86_64",
+      "file": "axym-0.23.0-windows-x86_64.zip",
+      "status": "active",
+      "url": "https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-windows-x86_64.zip",
+      "sha256": "be97174e03f0752d0057ba6bf8b859a5975bd442e1df8a3b520a3501af33c6f9",
+      "sizeBytes": 40398732
+    },
+    {
+      "product": "desktop",
+      "platform": "macos",
+      "version": "12.17.0",
+      "label": "macOS (universal .dmg)",
+      "file": "Axym_12.17.0_universal.dmg",
+      "status": "active",
+      "url": "https://github.com/irshadpc/axym-release/releases/download/desktop-v12.17.0/Axym_12.17.0_universal.dmg",
+      "sha256": "8d6e1fac34700d30202198911b396350709c9b59e2b0b2d2d1d0423d8d418ec9",
+      "sizeBytes": 34853631
+    },
+    {
+      "product": "desktop",
+      "platform": "linux",
+      "version": "12.16.0",
+      "label": "Linux x86_64 (latest cross-OS build)",
+      "file": "axym-12.16.0-linux-x86_64.tar.gz",
+      "status": "active",
+      "url": "https://github.com/irshadpc/axym-release/releases/download/desktop-v12.16.0/axym-12.16.0-linux-x86_64.tar.gz",
+      "sha256": "7a3928be77162f2bf401f0c49c95cab2735d57bd0074acc9f0a37f79a862118f",
+      "sizeBytes": 17542699
+    },
+    {
+      "product": "desktop",
+      "platform": "windows",
+      "version": "12.16.0",
+      "label": "Windows x86_64 (latest cross-OS build)",
+      "file": "axym-12.16.0-windows-x86_64.zip",
+      "status": "active",
+      "url": "https://github.com/irshadpc/axym-release/releases/download/desktop-v12.16.0/axym-12.16.0-windows-x86_64.zip",
+      "sha256": "cc3eabdf4a6798997c2d1283df913d044ed41f174947d95f4daa9a59940196e0",
+      "sizeBytes": 16546668
+    }
+  ]
+}
