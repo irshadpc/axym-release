@@ -43,7 +43,7 @@ window.AXYM_PAGES = {
         <div class="tab-panel active" id="panel-desktop" role="tabpanel" aria-labelledby="tab-desktop" data-panel="desktop">
           <div class="schematic" role="img" aria-label="Schematic of the Axym Desktop mission control: a six-stage run at the approval gate, with a diff awaiting review and local evidence recorded on the right.">
             <div class="schematic-rail" aria-hidden="true">
-              <div class="schematic-brand"><i>Z</i> axym</div>
+              <div class="schematic-brand"><svg class="schematic-brand-icon" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="var(--brand)"/><path d="M17 38L32 15L47 38M17 26L32 49L47 26" fill="none" stroke="var(--on-brand)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg> axym</div>
               <div class="schematic-nav on"><svg class="icon"><use href="#i-layers"/></svg>Mission control</div>
               <div class="schematic-nav"><svg class="icon"><use href="#i-git-branch"/></svg>Runs</div>
               <div class="schematic-nav"><svg class="icon"><use href="#i-file-check"/></svg>Evidence</div>

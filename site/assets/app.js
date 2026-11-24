@@ -180,7 +180,7 @@
         '<div class="footer-grid">' +
           '<div class="footer-brand">' +
             '<a class="brand" href="#home" aria-label="Axym home">' +
-              '<svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="var(--brand)"/><path d="M17 20.5h30L17 43.5h30" fill="none" stroke="var(--on-brand)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+              '<svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="var(--brand)"/><path d="M17 38L32 15L47 38M17 26L32 49L47 26" fill="none" stroke="var(--on-brand)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
               '<span class="wordmark">axym</span></a>' +
             '<p>Local-first autonomous engineering. Governed execution, independent verification, evidence you can inspect.</p>' +
           '</div>' +

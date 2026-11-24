@@ -146,3 +146,18 @@ No state is conveyed by color alone. Every node renders:
   - Feature containers: `16px` (`--radius-xl`)
   - Product showcase frames: `20px` (`--radius-2xl`)
   - Pills: `999px` (`--radius-pill`) — reserved for compact status tags only.
+
+### 4.4 Brand Mark & Geometric Monogram
+The official Axym brand mark replaces the legacy generic "Z" path with a precision-engineered geometric monogram fusing **A** (apex architecture, autonomous build) and **X** (cross-agent verification nexus, execution coordinates).
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="var(--brand)"/>
+  <path d="M17 38L32 15L47 38M17 26L32 49L47 26" fill="none" stroke="var(--on-brand)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+```
+
+- **Dual Interlocking Chevrons:** Upper chevron (`M17 38L32 15L47 38`) creates the A apex pointing upward; lower chevron (`M17 26L32 49L47 26`) intersects the waist forming the X nexus with bilateral and 180° rotational symmetry.
+- **Negative Space Core:** Forms an Arctic Diamond / Hexagon at the center coordinate, symbolizing local-first cryptographic governance and verifiable SQLite event ledgers.
+- **Rendering Disciplines:** Clean vector scaling across 16px favicon, 24px header navigation, 64px component cards, and 180px mobile touch icons.
+

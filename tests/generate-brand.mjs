@@ -30,7 +30,7 @@ p{margin-top:22px;font-size:22px;color:#A0B7C2;max-width:760px;line-height:1.5}
 <div class="grid"></div>
 <div class="wrap">
   <div class="top">
-    <div class="mark"><svg viewBox="0 0 64 64"><path d="M17 20.5h30L17 43.5h30" fill="none" stroke="#5DE4DF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="mark"><svg viewBox="0 0 64 64"><path d="M17 38L32 15L47 38M17 26L32 49L47 26" fill="none" stroke="#5DE4DF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
     <div class="word">axym</div>
     <div class="kicker">ARCTIC GRAPHITE</div>
   </div>
@@ -58,7 +58,7 @@ await page.screenshot({ path: join(root, 'site/assets/brand/og-image.png') });
 for (const [name, size] of [['apple-touch-icon.png', 180], ['favicon-32.png', 32]]) {
   const p = await browser.newPage({ viewport: { width: size, height: size }, deviceScaleFactor: 1 });
   await p.setContent(`<style>html,body{margin:0;background:#101E27}svg{display:block;width:${size}px;height:${size}px}</style>
-    <svg viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#101E27"/><path d="M17 20.5h30L17 43.5h30" fill="none" stroke="#5DE4DF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`);
+    <svg viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#101E27"/><path d="M17 38L32 15L47 38M17 26L32 49L47 26" fill="none" stroke="#5DE4DF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`);
   await p.screenshot({ path: join(root, `site/assets/brand/${name}`) });
   await p.close();
 }

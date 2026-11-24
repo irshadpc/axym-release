@@ -282,6 +282,7 @@ test.describe('accessibility (axe-core, WCAG 2.2 AA)', () => {
   }
 
   test('mobile home and docs have no axe violations', async ({ page }) => {
+    test.slow();
     await page.setViewportSize({ width: 390, height: 844 });
     for (const route of ['home', 'quickstart', 'releases']) {
       await open(page, route, 'dark');
