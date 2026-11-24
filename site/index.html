@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Axym — Autonomous engineering, on your machine</title>
+  <meta name="description" content="Axym is a local-first autonomous engineering system. Download the TUI and Desktop app, set up keyless providers, and run governed Plan → Design → Code → Security → Review → QA pipelines.">
+  <link rel="canonical" href="https://irshadpc.github.io/axym-release/">
+  <meta property="og:title" content="Axym — Autonomous engineering, on your machine">
+  <meta property="og:description" content="A local-first autonomous engineering system with a terminal agent and a full desktop app. No account, no API keys to get started.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://irshadpc.github.io/axym-release/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%235b45e8'/%3E%3Cpath d='M16 20h32L16 44h32' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./assets/styles.css">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('axym-theme');
+        if (saved === 'dark' || saved === 'light') document.documentElement.dataset.theme = saved;
+        else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.dataset.theme = 'dark';
+      } catch (e) { /* private mode / blocked storage — stay on light */ }
+    })();
+  </script>
+</head>
+<body>
+  <div class="scrim" id="scrim" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation" aria-expanded="false">☰</button>
+      <a class="brand" href="#home" aria-label="Axym home">
+        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+          <rect width="64" height="64" rx="14" fill="#5b45e8"></rect>
+          <path d="M16 20h32L16 44h32" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        <span class="wordmark">axym</span>
+      </a>
+      <span class="version-pill" id="version-pill">TUI v0.23.0</span>
+      <nav class="topnav" id="topnav" aria-label="Top navigation">
+        <a href="#home" data-nav="home">Home</a>
+        <a href="#quickstart" data-nav="quickstart">Quick Start</a>
+        <a href="#setup" data-nav="setup">Setup Guide</a>
+        <a href="#configuration" data-nav="configuration">Configuration</a>
+        <a href="#features" data-nav="features">Features</a>
+        <a href="#releases" data-nav="releases">Releases</a>
+        <a href="#operations" data-nav="operations">Operations</a>
+      </nav>
+      <div class="header-actions">
+        <button class="search-trigger" id="search-trigger" aria-label="Search documentation">
+          <span aria-hidden="true">⌕</span><span class="label">Search docs</span><span class="kbd">⌘K</span>
+        </button>
+        <button class="icon-btn" id="theme-toggle" aria-label="Switch to dark theme" title="Toggle theme" aria-hidden="true">◐</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar" aria-label="Documentation navigation">
+      <div class="side-section">
+        <p class="side-title">Getting started</p>
+        <a class="side-link" href="#home" data-nav="home"><span class="ico">⌂</span>Home</a>
+        <a class="side-link" href="#quickstart" data-nav="quickstart"><span class="ico">↗</span>Quick Start</a>
+        <a class="side-link" href="#setup" data-nav="setup"><span class="ico">⚙</span>Setup Guide</a>
+        <a class="side-link" href="#configuration" data-nav="configuration"><span class="ico">☰</span>Configuration</a>
+      </div>
+      <div class="side-divider"></div>
+      <div class="side-section">
+        <p class="side-title">Reference</p>
+        <a class="side-link" href="#features" data-nav="features"><span class="ico">✦</span>Features</a>
+        <a class="side-link" href="#releases" data-nav="releases"><span class="ico">⇩</span>Releases<span class="side-badge" id="side-version">v0.23.0</span></a>
+        <a class="side-link" href="#operations" data-nav="operations"><span class="ico">▤</span>Operations</a>
+      </div>
+      <div class="side-divider"></div>
+      <div class="side-section">
+        <p class="side-title">External</p>
+        <a class="side-link" href="https://github.com/irshadpc/axym" target="_blank" rel="noopener"><span class="ico">⌘</span>Source repo</a>
+        <a class="side-link" href="https://github.com/irshadpc/axym-release/releases" target="_blank" rel="noopener"><span class="ico">◈</span>GitHub Releases</a>
+        <a class="side-link" href="https://github.com/irshadpc/axym/blob/main/FEATURES.md" target="_blank" rel="noopener"><span class="ico">☑</span>Feature catalog</a>
+      </div>
+      <p class="side-note">Everything runs on your hardware. No account, no API keys, no telemetry leaving the machine.</p>
+    </aside>
+
+    <main class="content" id="app" tabindex="-1" aria-live="polite"></main>
+
+    <aside class="toc" aria-label="On this page">
+      <p class="toc-title">On this page</p>
+      <nav id="toc-links"></nav>
+    </aside>
+  </div>
+
+  <div class="search-overlay" id="search-overlay" role="dialog" aria-modal="true" aria-label="Search documentation">
+    <div class="search-modal">
+      <div class="search-input-wrap">
+        <span aria-hidden="true">⌕</span>
+        <input type="text" id="search-input" placeholder="Search pages, commands, setup topics…" autocomplete="off" spellcheck="false">
+        <button class="icon-btn" id="search-close" aria-label="Close search" style="height:26px;padding:0 8px">esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-hint"><span><span class="kbd">↑</span> <span class="kbd">↓</span> navigate</span><span><span class="kbd">↵</span> open</span><span><span class="kbd">esc</span> close</span></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="./assets/content.js"></script>
+  <script src="./assets/app.js"></script>
+</body>
+</html>
