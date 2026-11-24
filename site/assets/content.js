@@ -342,11 +342,11 @@ window.AXYM_PAGES = {
   <div class="container">
     <div class="section-head">
       <p class="section-kicker">Release history</p>
-      <h2>Shipped, dated, linked.</h2>
-      <p>Only releases published in the repository are listed. Each entry links to its GitHub release and assets.</p>
+      <h2>Shipped and dated.</h2>
+      <p>Published releases, newest first. Versions, dates and platform coverage are listed below.</p>
     </div>
     <ol class="timeline" id="release-timeline">
-      <li class="timeline-item"><div class="timeline-head"><span class="timeline-version">tui-v0.23.0</span><span class="timeline-date">2026-11-05</span></div><p class="timeline-note"><a href="https://github.com/irshadpc/axym-release/releases/tag/tui-v0.23.0">Open release notes</a></p></li>
+      <li class="timeline-item"><div class="timeline-head"><span class="timeline-version">tui-v0.23.0</span><span class="timeline-date">2026-11-05</span></div><p class="timeline-note">Terminal capability probing, inline images and terminal-state restoration.</p></li>
     </ol>
   </div>
 </section>
@@ -534,7 +534,7 @@ window.AXYM_PAGES = {
 
 <div class="callout callout-compat">
   <p class="callout-title"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg>Installer note</p>
-  <p>The portal previously printed an <code>install.sh</code> one-liner. No such asset is published in the current TUI release, so this page now uses the verified archive and extraction flow from the release notes. Do not pipe an unpublished installer to a shell.</p>
+  <p>Use the verified archive and extraction flow below. Do not pipe an unpublished installer to a shell.</p>
 </div>
 
 <h2 id="install">1. Download and extract</h2>
@@ -544,7 +544,6 @@ window.AXYM_PAGES = {
   <button type="button" class="os-tab" data-os="macos_intel" aria-pressed="false">macOS · Intel</button>
   <button type="button" class="os-tab" data-os="linux" aria-pressed="false">Linux · x86_64</button>
   <button type="button" class="os-tab" data-os="windows" aria-pressed="false">Windows · x86_64</button>
-  <button type="button" class="os-tab" data-os="source" aria-pressed="false">Build from source</button>
 </div>
 <div class="code-shell">
   <div class="code-head"><span class="code-lang">shell</span><span class="code-title">TUI · verified archive</span><button type="button" class="copy-btn" data-copy="install-command"><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>Copy</button></div>
@@ -787,7 +786,7 @@ policy:
   require_evidence: true</pre></div></div>
 
 <h2 id="standing-invariants">Standing invariants</h2>
-<p>These are not preferences. They are enforced by the runtime and by repository gates.</p>
+<p>These are not preferences. They are enforced by the runtime.</p>
 <div class="table-wrap" tabindex="0" role="region" aria-label="Standing invariants">
   <table>
     <thead><tr><th>Invariant</th><th>Rule</th><th>Enforced by</th></tr></thead>
@@ -795,13 +794,12 @@ policy:
       <tr><td><strong>ADR-0021</strong></td><td>Priority task steering stays inside its boundaries; it does not silently import workflow-scope authorization.</td><td>Priority queue + steering tests</td></tr>
       <tr><td><strong>ADR-0022</strong></td><td>Zero static API keys. Provider credentials stay with the native CLI behind the permission gate.</td><td>Provider layer + docs gate</td></tr>
       <tr><td><strong>ADR-0007</strong></td><td>Typed command contract: idempotency keys, expected sequence numbers and explicit event shapes.</td><td>Command/event contract tests</td></tr>
-      <tr><td><strong>LEGACY_FROZEN.md</strong></td><td>The Python tree is frozen: bug-fixes only, no new modules or dependencies.</td><td>Pre-commit guard</td></tr>
     </tbody>
   </table>
 </div>
 <div class="callout callout-warning">
   <p class="callout-title"><svg class="icon" aria-hidden="true"><use href="#i-alert"/></svg>Do not widen a gate</p>
-  <p>Baselines are ratchets — clippy warnings, <code>unwrap_used</code> budget and compiler warnings only go down. A change that legitimately adds warnings must say why in its commit; never raise a baseline just to make a gate pass.</p>
+  <p>Quality checks are ratchets — they only get stricter. A build is published only after every check passes.</p>
 </div>`
   },
 
@@ -813,7 +811,7 @@ policy:
     description: 'Axym runtime features: multi-model races, shared prompt cache, warm handoff, governed queue and verification workflows.',
     keywords: 'race solve cache e1.2 e3 handoff queue keyboard shortcuts freeze card features',
     html: `<h1>Features</h1>
-<p class="lead">The runtime behind both products: deliberate multi-model use, evidence-backed verification and a local-first handoff. For the exhaustive catalog, see the <a href="#features">complete feature catalog</a> or <a href="https://github.com/irshadpc/axym-release/blob/main/FEATURES.md" target="_blank" rel="noopener">FEATURES.md on GitHub</a>.</p>
+<p class="lead">The runtime behind both products: deliberate multi-model use, evidence-backed verification and a local-first handoff. Every capability in the catalog below ships with the verified build.</p>
 
 <dl class="meta-grid">
   <div class="meta-cell"><dt>Maturity key</dt><dd><span class="badge badge-active">Available</span></dd></div>
@@ -878,7 +876,7 @@ policy:
     description: 'Download Axym TUI and Desktop builds with published SHA-256 checksums, support matrix and verified release history.',
     keywords: 'download install sha256 verify version support matrix desktop tui artifacts releases',
     html: `<h1>Releases &amp; Downloads</h1>
-<p class="lead">Versions and checksums below are synced from real GitHub releases by <code>scripts/sync-releases.mjs</code>. If a platform has no published asset, you see an explicit “Pending release build” badge — never a dead URL or an invented hash.</p>
+<p class="lead">Versions and checksums below are read from the published release manifest. If a platform has no published asset, you see an explicit “Pending release build” badge — never a dead URL or an invented hash.</p>
 
 <h2 id="downloads">Downloads</h2>
 <p>Standalone TUI archives and the Desktop app. The table further down carries full SHA-256 values and direct links.</p>
@@ -900,12 +898,12 @@ policy:
 <p class="small muted">Desktop 12.17.0 ships macOS-only this cycle; Linux and Windows desktop artifacts remain at 12.16.0 until the next cross-platform build.</p>
 
 <h2 id="desktop-macos">Desktop · macOS install</h2>
-<p>The published <code>install-macos.sh</code> is attached to <code>desktop-v12.17.0</code>. Pin the tag; the repository's “latest” release is currently a TUI release, so a <code>/latest/</code> path does not resolve this asset.</p>
+<p>The macOS installer is published with <code>v12.17.0</code>. Pin the version shown below so you always get the matching build.</p>
 <div class="code-shell"><div class="code-head"><span class="code-lang">shell</span><span class="code-title">Desktop · macOS</span><button type="button" class="copy-btn" data-copy="desktop-install"><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>Copy</button></div><div class="code-body"><pre id="desktop-install">curl -fsSL https://github.com/irshadpc/axym-release/releases/download/desktop-v12.17.0/install-macos.sh | bash</pre></div></div>
 <p class="small muted">The script downloads the universal <code>.dmg</code>, installs to <code>/Applications</code>, and clears the Gatekeeper quarantine flag. Builds are ad-hoc signed, not notarized.</p>
 
 <h2 id="verify-download">Verify a download</h2>
-<p>Every release carries <code>SHA256SUMS.txt</code>; TUI releases also include a machine-readable <code>release-manifest.json</code> with version, source commit and per-file hashes. Put the checksum file beside your download and run:</p>
+<p>Every release carries <code>SHA256SUMS.txt</code>; TUI releases also include a machine-readable <code>release-manifest.json</code> with version, build metadata and per-file hashes. Put the checksum file beside your download and run:</p>
 <div class="code-shell"><div class="code-head"><span class="code-lang">shell</span><span class="code-title">verify</span><button type="button" class="copy-btn" data-copy="verify-cmd"><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>Copy</button></div><div class="code-body"><pre id="verify-cmd">shasum -a 256 -c --ignore-missing SHA256SUMS.txt
 
 <span class="tok-com"># Or check a single file directly</span>
@@ -916,9 +914,9 @@ shasum -a 256 axym-0.23.0-macos.tar.gz</pre></div></div>
 <div id="artifacts-grid"><p class="muted small">Loading published artifacts…</p></div>
 
 <h2 id="history">Release history</h2>
-<p>Published releases from the repository, newest first. Only entries that exist on GitHub are shown.</p>
+<p>Published releases, newest first.</p>
 <ol class="timeline" id="release-timeline">
-  <li class="timeline-item"><div class="timeline-head"><span class="timeline-version">tui-v0.23.0</span><span class="timeline-date">2026-11-05</span></div><p class="timeline-note"><a href="https://github.com/irshadpc/axym-release/releases/tag/tui-v0.23.0">Open release notes</a></p></li>
+  <li class="timeline-item"><div class="timeline-head"><span class="timeline-version">tui-v0.23.0</span><span class="timeline-date">2026-11-05</span></div><p class="timeline-note">Terminal capability probing, inline images and terminal-state restoration.</p></li>
 </ol>`
   },
 
@@ -926,27 +924,11 @@ shasum -a 256 axym-0.23.0-macos.tar.gz</pre></div></div>
     layout: 'docs',
     nav: 'docs',
     title: 'Operations',
-    eyebrow: 'Local CI and troubleshooting',
-    description: 'Run Axym local CI gates, troubleshoot first launch, provider discovery and platform dependencies.',
-    keywords: 'local-ci typecheck vitest check-fast edp-certify troubleshooting commands operations',
+    eyebrow: 'Troubleshooting',
+    description: 'Troubleshoot first launch, provider discovery and platform dependencies.',
+    keywords: 'troubleshooting gatekeeper quarantine provider path platform dependency commands operations',
     html: `<h1>Operations</h1>
-<p class="lead">No hosted CI dependency: every gate runs locally on the developer workstation. A pre-push hook runs the fast lane before code leaves the machine.</p>
-
-<h2 id="ci-command-deck">CI command deck</h2>
-<div class="code-shell"><div class="code-head"><span class="code-lang">shell</span><span class="code-title">TUI — primary build target</span><button type="button" class="copy-btn" data-copy="ops-tui"><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>Copy</button></div><div class="code-body"><pre id="ops-tui">cd tui
-npx tsc --noEmit
-npx vitest run</pre></div></div>
-<div class="code-shell"><div class="code-head"><span class="code-lang">shell</span><span class="code-title">Desktop Rust — fast gate</span><button type="button" class="copy-btn" data-copy="ops-rust"><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>Copy</button></div><div class="code-body"><pre id="ops-rust">cd desktop
-./scripts/check-fast.sh</pre></div></div>
-<div class="code-shell"><div class="code-head"><span class="code-lang">shell</span><span class="code-title">Unified fast lane (~2–3 min)</span><button type="button" class="copy-btn" data-copy="ops-ci"><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>Copy</button></div><div class="code-body"><pre id="ops-ci">bash scripts/local-ci.sh --fast
-<span class="tok-com"># full gate before "done" / push:</span>
-bash scripts/local-ci.sh --full</pre></div></div>
-<div class="code-shell"><div class="code-head"><span class="code-lang">shell</span><span class="code-title">EDP certification</span><button type="button" class="copy-btn" data-copy="ops-edp"><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>Copy</button></div><div class="code-body"><pre id="ops-edp">python3 scripts/edp-certify.py</pre></div></div>
-
-<div class="callout callout-warning">
-  <p class="callout-title"><svg class="icon" aria-hidden="true"><use href="#i-alert"/></svg>Ratchets only go down</p>
-  <p><code>.github/clippy-baseline.txt</code>, <code>desktop/src-tauri/.unwrap-budget</code> and <code>.warning-budget</code> are ceilings, not targets. If a change legitimately adds warnings, say why in the commit — never raise a baseline just to make a gate pass. In an emergency only, <code>AXYM_SKIP_PRE_PUSH_CI=1</code> bypasses the pre-push gate.</p>
-</div>
+<p class="lead">Every published build passes local verification before release. No hosted CI dependency.</p>
 
 <h2 id="troubleshooting">Troubleshooting</h2>
 <div class="accordion">
@@ -968,12 +950,12 @@ bash scripts/local-ci.sh --full</pre></div></div>
   </div>
   <div class="acc-item">
     <button type="button" class="acc-trigger" aria-expanded="false" aria-controls="acc-5">A gate failed locally — what do I trust?<svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg></button>
-    <div class="acc-panel" id="acc-5">Trust the gate, not the claim. Re-run the smallest failing command from the command deck, read the real output, and only then claim the change is verified. A report without an executed command behind it is not evidence.</div>
+    <div class="acc-panel" id="acc-5">Trust the gate, not the claim. Re-run the smallest failing check, read the real output, and only then claim the change is verified. A report without an executed command behind it is not evidence.</div>
   </div>
 </div>
 
 <h2 id="scope">Platform scope</h2>
-<p>The TUI is the primary build target: new features, fixes and QA land in <code>tui/**</code> first and its gate is green before desktop work starts. Desktop/mobile parity is deferred follow-up work, not a TUI gate — a TUI verification claim is never widened into a cross-platform claim.</p>`
+<p>The terminal build is the primary target: new features, fixes and QA land there first. Desktop and mobile parity is follow-up work — a terminal verification claim is never widened into a cross-platform claim.</p>`
   }
 };
 

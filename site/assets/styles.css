@@ -1259,7 +1259,7 @@ html[data-theme="dark"] .btn-danger { color: var(--p-graphite-1000); }
 }
 .footer-grid {
   display: grid;
-  grid-template-columns: minmax(14rem, 1.4fr) repeat(4, minmax(7rem, 0.65fr));
+  grid-template-columns: minmax(14rem, 1.4fr) repeat(3, minmax(7rem, 0.65fr));
   gap: var(--space-5);
   padding-bottom: var(--space-6);
 }
@@ -1866,7 +1866,7 @@ tr.filter-hidden { display: none; }
 @media (max-width: 1180px) {
   .docs-shell { grid-template-columns: 14rem minmax(0, 1fr); }
   .docs-toc { display: none; }
-  .footer-grid { grid-template-columns: minmax(14rem, 1.4fr) repeat(2, minmax(7rem, 1fr)); row-gap: var(--space-5); }
+  .footer-grid { grid-template-columns: minmax(14rem, 1.4fr) repeat(3, minmax(7rem, 1fr)); row-gap: var(--space-5); }
   .download-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 1024px) {

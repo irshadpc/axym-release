@@ -81,6 +81,12 @@ check('zero fonts.googleapis.com / fonts.gstatic.com references',
   allSiteText.indexOf('fonts.googleapis.com') === -1 && allSiteText.indexOf('fonts.gstatic.com') === -1);
 check('zero legacy irshadpc/axym-community references', allSiteText.indexOf('irshadpc/axym-community') === -1);
 check('zero private irshadpc/axym links', allSiteText.search(/github\.com\/irshadpc\/axym(?!-release)/) === -1);
+const PUBLIC_REPO_URL = 'https://github.com/irshadpc/axym-release';
+const ghUrls = [...allSiteText.matchAll(/https:\/\/github\.com\/irshadpc\/axym-release[^\s"'<)\\]*/g)].map((m) => m[0]);
+const strayGhUrls = ghUrls.filter((u) => u !== PUBLIC_REPO_URL && !u.startsWith(`${PUBLIC_REPO_URL}/releases/download/`));
+check('only the public repo URL and direct download URLs remain', strayGhUrls.length === 0, strayGhUrls.join(', '));
+check('zero source-repository / build-from-source references',
+  !/build from source|source repositor|source commit|git clone|local ci|command deck|repository|report an issue|report issues|discussions|feature catalog on github|private repo|core engine repo/i.test(allSiteText));
 check('index.html loads self-hosted ./assets/styles.css', index.indexOf('href="./assets/styles.css"') !== -1);
 check('index.html loads self-hosted ./assets/app.js', index.indexOf('src="./assets/app.js"') !== -1);
 check('index.html has zero href="#" dead links', !/href\s*=\s*["']#["']/.test(index));
@@ -114,8 +120,9 @@ if (manifest) {
   check('tui.releaseDate is ISO date', /^\d{4}-\d{2}-\d{2}$/.test(manifest.tui?.releaseDate || ''));
   check('tui.status is active', manifest.tui?.status === 'active');
   const install = manifest.tui?.install || {};
-  check('tui.install has macos_arm, macos_intel, linux, windows, source',
-    ['macos_arm', 'macos_intel', 'linux', 'windows', 'source'].every((k) => typeof install[k] === 'string' && install[k].length > 0));
+  check('tui.install has macos_arm, macos_intel, linux, windows',
+    ['macos_arm', 'macos_intel', 'linux', 'windows'].every((k) => typeof install[k] === 'string' && install[k].length > 0));
+  check('tui.install has no source/build-from-source entry', !('source' in install));
   check('tui.install URLs point at axym-release',
     [install.macos_arm, install.macos_intel, install.linux, install.windows].every((v) => v.includes('github.com/irshadpc/axym-release/releases')));
   check('tui install commands extract archives, never pipe install.sh',
@@ -139,9 +146,8 @@ if (manifest) {
   check('history is a non-empty verified list', Array.isArray(manifest.history) && manifest.history.length >= 5);
   const historyOk = (manifest.history || []).every((h) =>
     typeof h.tag === 'string' && typeof h.name === 'string' &&
-    /^\d{4}-\d{2}-\d{2}$/.test(h.date || '') &&
-    typeof h.url === 'string' && h.url.includes('/releases/tag/' + h.tag));
-  check('history entries have tag, name, ISO date and matching tag URL', historyOk);
+    /^\d{4}-\d{2}-\d{2}$/.test(h.date || '') && !('url' in h));
+  check('history entries carry tag, name and ISO date without external links', historyOk);
 }
 
 /* (e) Contract B — all eight routes wired */

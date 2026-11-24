@@ -58,7 +58,7 @@ const RELEASE_HISTORY = [
     tag: 'desktop-v12.16.0', product: 'Desktop', version: '12.16.0', date: '2026-10-26', name: 'Axym Desktop 12.16.0',
     note: 'Desktop packages for macOS, Linux and Windows. This remains the newest cross-platform desktop build.',
   },
-].map((item) => ({ ...item, url: `${REPO_URL}/releases/tag/${item.tag}` }));
+];
 
 
 // ---------------------------------------------------------------------------
@@ -167,7 +167,6 @@ function main() {
         macos_intel: `curl -fLO ${tuiBase}/axym-${TUI_VERSION}-macos.tar.gz\ntar -xzf axym-${TUI_VERSION}-macos.tar.gz\n./axym-macos-x64 --install`,
         linux: `curl -fLO ${tuiBase}/axym-${TUI_VERSION}-linux-x86_64.tar.gz\ntar -xzf axym-${TUI_VERSION}-linux-x86_64.tar.gz\n./axym-linux-x86_64 --install`,
         windows: `Invoke-WebRequest -Uri ${tuiBase}/axym-${TUI_VERSION}-windows-x86_64.zip -OutFile axym-${TUI_VERSION}-windows-x86_64.zip\nExpand-Archive axym-${TUI_VERSION}-windows-x86_64.zip -DestinationPath .\n.\\axym-windows-x86_64.exe --install`,
-        source: '# Core engine repository is private. Install verified binary releases from:\n# https://github.com/irshadpc/axym-release/releases\n# Report issues & request access at: https://github.com/irshadpc/axym-release/issues',
       },
     },
     desktop: {

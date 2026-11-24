@@ -39,8 +39,7 @@
         macos_arm: 'curl -fLO https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-macos.tar.gz\ntar -xzf axym-0.23.0-macos.tar.gz\n./axym-macos-arm64 --install',
         macos_intel: 'curl -fLO https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-macos.tar.gz\ntar -xzf axym-0.23.0-macos.tar.gz\n./axym-macos-x64 --install',
         linux: 'curl -fLO https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-linux-x86_64.tar.gz\ntar -xzf axym-0.23.0-linux-x86_64.tar.gz\n./axym-linux-x86_64 --install',
-        windows: 'Invoke-WebRequest -Uri https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-windows-x86_64.zip -OutFile axym.zip\nExpand-Archive axym.zip -DestinationPath .\n.\\axym-windows-x86_64.exe --install',
-        source: '# Core engine repository is private. Install verified binary releases from:\n# https://github.com/irshadpc/axym-release/releases\n# Report issues & request access at: https://github.com/irshadpc/axym-release/issues'
+        windows: 'Invoke-WebRequest -Uri https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-windows-x86_64.zip -OutFile axym.zip\nExpand-Archive axym.zip -DestinationPath .\n.\\axym-windows-x86_64.exe --install'
       }
     },
     desktop: { version: 'v12.17.0', crossOsVersion: 'v12.16.0', releaseDate: '2026-11-04', supportedRange: '12.13.x-12.17.x', eolRange: '12.12.x and earlier' },
@@ -192,14 +191,8 @@
             '<li><a href="#configuration">Configuration</a></li><li><a href="#operations">Operations</a></li></ul></div>' +
           '<div class="footer-col"><h2>Releases</h2><ul>' +
             '<li><a href="#releases">Latest releases</a></li>' +
-            '<li><a href="https://github.com/irshadpc/axym-release/releases" target="_blank" rel="noopener">GitHub Releases</a></li>' +
             '<li><a href="#releases/history">Release history</a></li>' +
             '<li><a href="#releases/verify-download">Verify a download</a></li></ul></div>' +
-          '<div class="footer-col"><h2>Community</h2><ul>' +
-            '<li><a href="https://github.com/irshadpc/axym-release" target="_blank" rel="noopener">GitHub repository</a></li>' +
-            '<li><a href="https://github.com/irshadpc/axym-release/releases" target="_blank" rel="noopener">Releases & checksums</a></li>' +
-            '<li><a href="https://github.com/irshadpc/axym-release/issues" target="_blank" rel="noopener">Issues & bug reports</a></li>' +
-            '<li><a href="https://github.com/irshadpc/axym-release/discussions" target="_blank" rel="noopener">Discussions</a></li></ul></div>' +
         '</div>' +
         '<div class="footer-bottom"><span>© 2026 Axym · MIT licensed · no telemetry</span>' +
           '<span class="legal"><a href="#quickstart">Get started</a><a href="#releases">Downloads</a><a href="https://github.com/irshadpc/axym-release" target="_blank" rel="noopener">GitHub</a></span>' +
@@ -221,11 +214,6 @@
       '<div class="docs-side-group"><p class="docs-side-title">Reference</p>' +
         link('features', 'Features', 'activity') + link('releases', 'Releases', 'download') +
         link('operations', 'Operations', 'terminal') + '</div>' +
-      '<div class="docs-side-group"><p class="docs-side-title">Community & Code</p>' +
-        '<a class="docs-side-link" href="https://github.com/irshadpc/axym-release" target="_blank" rel="noopener">' + icon('github') + '<span>GitHub repository</span></a>' +
-        '<a class="docs-side-link" href="https://github.com/irshadpc/axym-release/releases" target="_blank" rel="noopener">' + icon('external') + '<span>Releases & checksums</span></a>' +
-        '<a class="docs-side-link" href="https://github.com/irshadpc/axym-release/issues" target="_blank" rel="noopener">' + icon('shield') + '<span>Report an issue</span></a>' +
-      '</div>' +
       '<p class="docs-side-note">Orchestration, workspace writes and evidence stay on your machine. Inference runs through the provider CLI you install.</p>' +
     '</aside>';
   }
@@ -461,7 +449,7 @@
     if (!host) return;
     var groups = artifactGroups();
     if (!groups.tui.length && !groups.desktop.length) {
-      host.innerHTML = '<div class="empty-state">Release artifacts are published on GitHub. <a href="https://github.com/irshadpc/axym-release/releases" target="_blank" rel="noopener">Open GitHub Releases</a>.</div>';
+      host.innerHTML = '<div class="empty-state">Release artifacts are published with the project. <a href="https://github.com/irshadpc/axym-release" target="_blank" rel="noopener">Visit the Axym project</a>.</div>';
       return;
     }
     function card(a) {
@@ -495,7 +483,7 @@
     if (!host) return;
     var artifacts = (releases && releases.artifacts) || [];
     if (!artifacts.length) {
-      host.innerHTML = '<div class="empty-state">Artifact links are published with each GitHub release. <a href="https://github.com/irshadpc/axym-release/releases" target="_blank" rel="noopener">Open GitHub Releases</a> for the full asset list.</div>';
+      host.innerHTML = '<div class="empty-state">Artifact links are published with each release. <a href="https://github.com/irshadpc/axym-release" target="_blank" rel="noopener">Visit the Axym project</a> for the full asset list.</div>';
       return;
     }
     var html = '<div class="table-wrap" tabindex="0" role="region" aria-label="Published artifacts"><table><thead><tr><th>Product</th><th>Platform</th><th>Version</th><th>Asset</th><th>SHA-256</th><th></th></tr></thead><tbody>';
@@ -519,7 +507,7 @@
     var history = (releases && releases.history) || [];
     if (!history.length) {
       hosts.forEach(function (host) {
-        host.innerHTML = '<li class="timeline-item"><div class="timeline-head"><span class="timeline-version">Release history</span></div><p class="timeline-note"><a href="https://github.com/irshadpc/axym-release/releases" target="_blank" rel="noopener">Open GitHub Releases</a> for the complete list.</p></li>';
+        host.innerHTML = '<li class="timeline-item"><div class="timeline-head"><span class="timeline-version">Release history</span></div><p class="timeline-note"><a href="https://github.com/irshadpc/axym-release" target="_blank" rel="noopener">Visit the Axym project</a> for the complete list.</p></li>';
       });
       return;
     }
