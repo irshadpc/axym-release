@@ -51,6 +51,9 @@
   /* -------------------------------------------------------------- helpers -- */
   function parseHash() {
     var raw = window.location.hash.replace(/^#/, '');
+    if (raw === 'app' || raw === '') {
+      return { route: currentRoute || 'home', anchor: raw === 'app' ? 'app' : null };
+    }
     var parts = raw.split('/');
     var route = parts.shift();
     if (!PAGES[route]) route = 'home';
@@ -387,8 +390,14 @@
         var el = document.getElementById(target);
         if (el) {
           el.scrollIntoView({ block: 'start' });
-          var heading = el.querySelector('h2, h3') || (el.tagName === 'H2' || el.tagName === 'H3' ? el : null);
-          if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus({ preventScroll: true }); }
+          if (target === 'app') {
+            el.setAttribute('tabindex', '-1');
+            el.focus({ preventScroll: true });
+          } else {
+            var heading = el.querySelector('h1, h2, h3') || (el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'H3' ? el : null);
+            if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus({ preventScroll: true }); }
+            else { el.setAttribute('tabindex', '-1'); el.focus({ preventScroll: true }); }
+          }
         } else {
           window.scrollTo(0, 0);
         }
@@ -659,6 +668,16 @@
   /* ---------------------------------------------------------- event wiring -- */
   function wireGlobalEvents() {
     window.addEventListener('hashchange', render);
+
+    var skipLink = document.querySelector('.skip-link');
+    if (skipLink) {
+      skipLink.addEventListener('click', function () {
+        if (app) {
+          app.setAttribute('tabindex', '-1');
+          app.focus();
+        }
+      });
+    }
 
     document.getElementById('search-trigger').addEventListener('click', openSearch);
     document.getElementById('search-close').addEventListener('click', function () { closeSearch(true); });
@@ -935,8 +954,6 @@
     render();
     loadReleases().then(function () {
       applyReleaseData();
-      var state = parseHash();
-      if (state.route === 'releases' || state.route === 'home') render();
     });
   }
 

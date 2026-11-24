@@ -63,6 +63,29 @@ test.describe('routing and content', () => {
     await expect(page.locator('#app h1')).toContainText('Build with autonomy');
   });
 
+  test('#app hash loads home and focuses main region without errors', async ({ page }) => {
+    const errors = [];
+    page.on('pageerror', (err) => errors.push(String(err)));
+    page.on('console', (msg) => { if (msg.type() === 'error') errors.push(msg.text()); });
+    await page.goto('/axym-release/#app', { waitUntil: 'networkidle' });
+    await expect(page.locator('#app h1')).toContainText('Build with autonomy');
+    await expect(page.locator('#app')).toBeFocused();
+    expect(errors).toEqual([]);
+  });
+
+  test('skip link on docs route preserves the current route and focuses app', async ({ page, browserName }) => {
+    await open(page, 'quickstart', 'dark');
+    if (browserName === 'webkit') {
+      await page.keyboard.press('Alt+Tab');
+    } else {
+      await page.keyboard.press('Tab');
+    }
+    await expect(page.locator('.skip-link')).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#app')).toBeFocused();
+    await expect(page.locator('#app h1')).toHaveText('Quick Start');
+  });
+
   test('marketing and docs layouts are distinct', async ({ page }) => {
     await open(page, 'home', 'dark');
     await expect(page.locator('.marketing-page')).toBeVisible();

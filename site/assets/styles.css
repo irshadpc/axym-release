@@ -603,7 +603,7 @@ html[data-theme="dark"] .btn-danger { color: var(--p-graphite-1000); }
 .header-download { margin-left: 0.15rem; }
 
 /* ---------------------------------------------------------------- layout -- */
-#app { display: block; min-height: 60vh; }
+#app { display: block; min-height: 60vh; scroll-margin-top: calc(var(--header-h) + 1.5rem); }
 #app:focus { outline: none; }
 .container {
   width: 100%;
