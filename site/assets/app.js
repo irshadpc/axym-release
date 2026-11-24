@@ -137,6 +137,7 @@
 
     if (typeof window.renderArtifacts === 'function') window.renderArtifacts();
     updateInstallOutputs();
+    if (typeof window.updatePolicy === 'function') window.updatePolicy();
 
     var target = state.anchor || pendingScroll;
     pendingScroll = null;
@@ -332,7 +333,150 @@
     wireComponents();
   }
 
-  function wireComponents() { /* filled in by slice 3 */ }
+  /* ======================================================================
+     INTERACTIVE COMPONENTS — tabs, copy, OS switcher, policy builder,
+     accordions, live filters and the release artifact table.
+     All handlers are delegated on `document`, so they survive route renders.
+     ====================================================================== */
+  function wireComponents() {
+    document.addEventListener('click', function (e) {
+      /* tab groups */
+      var tab = e.target.closest('[data-tab]');
+      if (tab && tab.closest('[data-tabs]')) {
+        var groupEl = tab.closest('[data-tabs]');
+        var group = groupEl.getAttribute('data-tabs');
+        var name = tab.getAttribute('data-tab');
+        var groupTabs = groupEl.querySelectorAll('[data-tab]');
+        for (var i = 0; i < groupTabs.length; i++) {
+          var on = groupTabs[i] === tab;
+          groupTabs[i].classList.toggle('active', on);
+          if (groupTabs[i].hasAttribute('role')) groupTabs[i].setAttribute('aria-selected', String(on));
+        }
+        var panels = document.querySelectorAll('[data-panels="' + group + '"] [data-panel]');
+        for (var j = 0; j < panels.length; j++) {
+          panels[j].classList.toggle('active', panels[j].getAttribute('data-panel') === name);
+        }
+        return;
+      }
+
+      /* copy buttons (element target or literal text) */
+      var copyBtn = e.target.closest('[data-copy]');
+      if (copyBtn) {
+        var target = document.getElementById(copyBtn.getAttribute('data-copy'));
+        if (target) copyText(target.textContent.replace(/\s+$/, ''), 'Copied');
+        else {
+          var literal = copyBtn.getAttribute('data-copy-text');
+          if (literal !== null) copyText(literal, 'Copied');
+        }
+        return;
+      }
+
+      /* OS install switcher */
+      var osBtn = e.target.closest('[data-os]');
+      if (osBtn && releases && releases.tui && releases.tui.install) {
+        var key = osBtn.getAttribute('data-os');
+        var command = releases.tui.install[key];
+        if (command) {
+          var allOs = document.querySelectorAll('[data-os]');
+          for (var k = 0; k < allOs.length; k++) allOs[k].classList.toggle('active', allOs[k] === osBtn);
+          var outputs = document.querySelectorAll('[data-install-output]');
+          for (var m = 0; m < outputs.length; m++) {
+            outputs[m].textContent = command;
+            outputs[m].setAttribute('data-install-output', key);
+          }
+        }
+        return;
+      }
+
+      /* trust-zone chips */
+      var chip = e.target.closest('[data-zone]');
+      if (chip) { chip.classList.toggle('on'); updatePolicy(); return; }
+
+      /* troubleshooting accordion */
+      var acc = e.target.closest('.acc-trigger');
+      if (acc) {
+        var item = acc.closest('.acc-item');
+        if (item) item.classList.toggle('open');
+      }
+    });
+
+    /* policy controls + live config filter */
+    document.addEventListener('change', function (e) {
+      if (e.target && /^pol-/.test(e.target.id)) updatePolicy();
+    });
+    document.addEventListener('input', function (e) {
+      var input = e.target.closest('[data-filter-table]');
+      if (!input) return;
+      var query = input.value.trim().toLowerCase();
+      var table = document.getElementById(input.getAttribute('data-filter-table'));
+      if (!table) return;
+      var rows = table.querySelectorAll('tbody tr');
+      for (var i = 0; i < rows.length; i++) {
+        rows[i].classList.toggle('filter-hidden', !!query && rows[i].textContent.toLowerCase().indexOf(query) === -1);
+      }
+    });
+
+    window.updatePolicy = updatePolicy;
+    window.renderArtifacts = renderArtifacts;
+  }
+
+  function policyValue() {
+    var zones = [];
+    var chips = document.querySelectorAll('[data-zone].on');
+    for (var i = 0; i < chips.length; i++) zones.push(chips[i].getAttribute('data-zone'));
+    var pinned = document.getElementById('pol-pinned');
+    var rotation = document.getElementById('pol-rotation');
+    var spillover = document.getElementById('pol-spillover');
+    var strict2 = document.getElementById('pol-strict2');
+    return {
+      allowedTrustZones: zones,
+      pinnedAccount: pinned && pinned.value ? pinned.value : null,
+      allowCrossZoneSpillover: !!(spillover && spillover.checked),
+      rotationPolicy: (rotation && rotation.value) || 'sticky_drain_first',
+      strictTier2Approval: !!(strict2 && strict2.checked)
+    };
+  }
+
+  function highlightJson(value) {
+    var raw = JSON.stringify(value, null, 2);
+    return escapeHtml(raw)
+      .replace(/("(?:[^"\\]|\\.)*")(?=\s*:)/g, '<span class="jk">$1</span>')
+      .replace(/:\s*("(?:[^"\\]|\\.)*")/g, ': <span class="js">$1</span>')
+      .replace(/\b(true|false|null)\b/g, '<span class="jb">$1</span>');
+  }
+
+  function updatePolicy() {
+    var pre = document.getElementById('policy-json');
+    if (!pre) return;
+    var value = policyValue();
+    pre.innerHTML = highlightJson(value);
+  }
+
+  function renderArtifacts() {
+    var host = document.getElementById('artifacts-grid');
+    if (!host) return;
+    var artifacts = (releases && releases.artifacts) || [];
+    if (!artifacts.length) {
+      host.innerHTML = '<p class="muted">Artifact links are published with each GitHub release. Open ' +
+        '<a href="https://github.com/irshadpc/axym-release/releases" target="_blank" rel="noopener">GitHub Releases</a> for the full asset list.</p>';
+      return;
+    }
+    var html = '<div class="table-wrap"><table><thead><tr><th>Product</th><th>Platform</th><th>Version</th><th>Asset</th><th>SHA-256</th><th></th></tr></thead><tbody>';
+    artifacts.forEach(function (a) {
+      var active = a.status === 'active';
+      var hash = active
+        ? '<code title="' + escapeHtml(a.sha256) + '">' + escapeHtml(String(a.sha256).slice(0, 12)) + '…</code> ' +
+          '<button class="copy-btn" data-copy-text="' + escapeHtml(a.sha256) + '">Copy</button>'
+        : '<span class="badge badge-pending">Pending release build</span>';
+      var download = active
+        ? '<a class="btn btn-ghost" style="height:32px;padding:0 10px" href="' + escapeHtml(a.url) + '" target="_blank" rel="noopener">Download</a>'
+        : '<span class="badge badge-pending">—</span>';
+      html += '<tr><td>' + escapeHtml(a.product) + '</td><td>' + escapeHtml(a.label || a.platform) +
+        '</td><td><code>' + escapeHtml(a.version) + '</code></td><td><code>' + escapeHtml(a.file) +
+        '</code></td><td>' + hash + '</td><td>' + download + '</td></tr>';
+    });
+    host.innerHTML = html + '</tbody></table></div>';
+  }
 
   /* --------------------------------------------------------------- startup -- */
   function init() {
