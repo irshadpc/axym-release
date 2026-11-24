@@ -17,7 +17,7 @@
  */
 
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -121,7 +121,7 @@ function main() {
   const desktopCross = tagOf('desktop-v12.16.0');
 
   const manifest = {
-    generatedAt: new Date().toISOString(),
+    generatedAt: '',
     repo: REPO,
     tui: {
       version: 'v0.23.0',
@@ -146,6 +146,17 @@ function main() {
       return buildArtifact(row, release);
     }),
   };
+
+  // Reproducible output: if nothing except the timestamp changed, keep the
+  // previous generatedAt so re-running the gate does not dirty the worktree.
+  manifest.generatedAt = new Date().toISOString();
+  try {
+    const previous = JSON.parse(readFileSync(OUTPUT, 'utf8'));
+    const stripTime = (obj) => { const copy = { ...obj }; delete copy.generatedAt; return JSON.stringify(copy); };
+    if (stripTime(previous) === stripTime(manifest)) manifest.generatedAt = previous.generatedAt;
+  } catch (err) {
+    /* no previous manifest (or unreadable) — use the current timestamp */
+  }
 
   mkdirSync(dirname(OUTPUT), { recursive: true });
   writeFileSync(OUTPUT, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');

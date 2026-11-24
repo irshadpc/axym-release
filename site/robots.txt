@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://irshadpc.github.io/axym-release/sitemap.xml
