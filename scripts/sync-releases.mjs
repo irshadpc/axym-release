@@ -167,7 +167,7 @@ function main() {
         macos_intel: `curl -fLO ${tuiBase}/axym-${TUI_VERSION}-macos.tar.gz\ntar -xzf axym-${TUI_VERSION}-macos.tar.gz\n./axym-macos-x64 --install`,
         linux: `curl -fLO ${tuiBase}/axym-${TUI_VERSION}-linux-x86_64.tar.gz\ntar -xzf axym-${TUI_VERSION}-linux-x86_64.tar.gz\n./axym-linux-x86_64 --install`,
         windows: `Invoke-WebRequest -Uri ${tuiBase}/axym-${TUI_VERSION}-windows-x86_64.zip -OutFile axym-${TUI_VERSION}-windows-x86_64.zip\nExpand-Archive axym-${TUI_VERSION}-windows-x86_64.zip -DestinationPath .\n.\\axym-windows-x86_64.exe --install`,
-        source: 'git clone https://github.com/irshadpc/axym.git && cd axym/tui && npm install && npm run build',
+        source: '# Core engine repository is private. Install verified binary releases from:\n# https://github.com/irshadpc/axym-release/releases\n# Report issues & request access at: https://github.com/irshadpc/axym-release/issues',
       },
     },
     desktop: {

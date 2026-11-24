@@ -40,7 +40,7 @@
         macos_intel: 'curl -fLO https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-macos.tar.gz\ntar -xzf axym-0.23.0-macos.tar.gz\n./axym-macos-x64 --install',
         linux: 'curl -fLO https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-linux-x86_64.tar.gz\ntar -xzf axym-0.23.0-linux-x86_64.tar.gz\n./axym-linux-x86_64 --install',
         windows: 'Invoke-WebRequest -Uri https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-windows-x86_64.zip -OutFile axym.zip\nExpand-Archive axym.zip -DestinationPath .\n.\\axym-windows-x86_64.exe --install',
-        source: 'git clone https://github.com/irshadpc/axym.git && cd axym/tui && npm install && npm run build'
+        source: '# Core engine repository is private. Install verified binary releases from:\n# https://github.com/irshadpc/axym-release/releases\n# Report issues & request access at: https://github.com/irshadpc/axym-release/issues'
       }
     },
     desktop: { version: 'v12.17.0', crossOsVersion: 'v12.16.0', releaseDate: '2026-11-04', supportedRange: '12.13.x-12.17.x', eolRange: '12.12.x and earlier' },
@@ -195,11 +195,11 @@
             '<li><a href="https://github.com/irshadpc/axym-release/releases" target="_blank" rel="noopener">GitHub Releases</a></li>' +
             '<li><a href="#releases/history">Release history</a></li>' +
             '<li><a href="#releases/verify-download">Verify a download</a></li></ul></div>' +
-          '<div class="footer-col"><h2>Source</h2><ul>' +
-            '<li><a href="https://github.com/irshadpc/axym" target="_blank" rel="noopener">Axym repository</a></li>' +
-            '<li><a href="https://github.com/irshadpc/axym-release" target="_blank" rel="noopener">Release repository</a></li>' +
-            '<li><a href="https://github.com/irshadpc/axym/blob/main/FEATURES.md" target="_blank" rel="noopener">Feature catalog</a></li>' +
-            '<li><a href="https://github.com/irshadpc/axym/issues" target="_blank" rel="noopener">Report an issue</a></li></ul></div>' +
+          '<div class="footer-col"><h2>Community</h2><ul>' +
+            '<li><a href="https://github.com/irshadpc/axym-release" target="_blank" rel="noopener">GitHub repository</a></li>' +
+            '<li><a href="https://github.com/irshadpc/axym-release/releases" target="_blank" rel="noopener">Releases & checksums</a></li>' +
+            '<li><a href="https://github.com/irshadpc/axym-release/issues" target="_blank" rel="noopener">Issues & bug reports</a></li>' +
+            '<li><a href="https://github.com/irshadpc/axym-release/discussions" target="_blank" rel="noopener">Discussions</a></li></ul></div>' +
         '</div>' +
         '<div class="footer-bottom"><span>© 2026 Axym · MIT licensed · no telemetry</span>' +
           '<span class="legal"><a href="#quickstart">Get started</a><a href="#releases">Downloads</a><a href="https://github.com/irshadpc/axym-release" target="_blank" rel="noopener">GitHub</a></span>' +
@@ -221,10 +221,10 @@
       '<div class="docs-side-group"><p class="docs-side-title">Reference</p>' +
         link('features', 'Features', 'activity') + link('releases', 'Releases', 'download') +
         link('operations', 'Operations', 'terminal') + '</div>' +
-      '<div class="docs-side-group"><p class="docs-side-title">External</p>' +
-        '<a class="docs-side-link" href="https://github.com/irshadpc/axym" target="_blank" rel="noopener">' + icon('github') + '<span>Source repository</span></a>' +
-        '<a class="docs-side-link" href="https://github.com/irshadpc/axym-release/releases" target="_blank" rel="noopener">' + icon('external') + '<span>GitHub Releases</span></a>' +
-        '<a class="docs-side-link" href="https://github.com/irshadpc/axym/blob/main/FEATURES.md" target="_blank" rel="noopener">' + icon('book') + '<span>Feature catalog</span></a>' +
+      '<div class="docs-side-group"><p class="docs-side-title">Community & Code</p>' +
+        '<a class="docs-side-link" href="https://github.com/irshadpc/axym-release" target="_blank" rel="noopener">' + icon('github') + '<span>GitHub repository</span></a>' +
+        '<a class="docs-side-link" href="https://github.com/irshadpc/axym-release/releases" target="_blank" rel="noopener">' + icon('external') + '<span>Releases & checksums</span></a>' +
+        '<a class="docs-side-link" href="https://github.com/irshadpc/axym-release/issues" target="_blank" rel="noopener">' + icon('shield') + '<span>Report an issue</span></a>' +
       '</div>' +
       '<p class="docs-side-note">Orchestration, workspace writes and evidence stay on your machine. Inference runs through the provider CLI you install.</p>' +
     '</aside>';

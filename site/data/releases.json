@@ -10,7 +10,7 @@
       "macos_intel": "curl -fLO https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-macos.tar.gz\ntar -xzf axym-0.23.0-macos.tar.gz\n./axym-macos-x64 --install",
       "linux": "curl -fLO https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-linux-x86_64.tar.gz\ntar -xzf axym-0.23.0-linux-x86_64.tar.gz\n./axym-linux-x86_64 --install",
       "windows": "Invoke-WebRequest -Uri https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-windows-x86_64.zip -OutFile axym-0.23.0-windows-x86_64.zip\nExpand-Archive axym-0.23.0-windows-x86_64.zip -DestinationPath .\n.\\axym-windows-x86_64.exe --install",
-      "source": "git clone https://github.com/irshadpc/axym.git && cd axym/tui && npm install && npm run build"
+      "source": "# Core engine repository is private. Install verified binary releases from:\n# https://github.com/irshadpc/axym-release/releases\n# Report issues & request access at: https://github.com/irshadpc/axym-release/issues"
     }
   },
   "desktop": {

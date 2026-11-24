@@ -80,6 +80,7 @@ check('zero cdn.tailwindcss.com references', allSiteText.indexOf('cdn.tailwindcs
 check('zero fonts.googleapis.com / fonts.gstatic.com references',
   allSiteText.indexOf('fonts.googleapis.com') === -1 && allSiteText.indexOf('fonts.gstatic.com') === -1);
 check('zero legacy irshadpc/axym-community references', allSiteText.indexOf('irshadpc/axym-community') === -1);
+check('zero private irshadpc/axym links', allSiteText.search(/github\.com\/irshadpc\/axym(?!-release)/) === -1);
 check('index.html loads self-hosted ./assets/styles.css', index.indexOf('href="./assets/styles.css"') !== -1);
 check('index.html loads self-hosted ./assets/app.js', index.indexOf('src="./assets/app.js"') !== -1);
 check('index.html has zero href="#" dead links', !/href\s*=\s*["']#["']/.test(index));

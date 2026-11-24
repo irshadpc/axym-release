@@ -4,7 +4,7 @@
 
 No account, no API keys to get started, no build tools. Download a build below.
 
-[![Latest release](https://img.shields.io/github/v/release/irshadpc/axym-community?label=latest%20release&color=blue)](../../releases)
+[![Latest release](https://img.shields.io/github/v/release/irshadpc/axym-release?label=latest%20release&color=blue)](https://github.com/irshadpc/axym-release/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](../../blob/main/LICENSE)
 
 Axym ships as two products that share one runtime:
@@ -20,9 +20,9 @@ Axym ships as two products that share one runtime:
 
 | Platform | Axym TUI 0.23.0 | Axym Desktop 12.17.0 |
 |---|---|---|
-| macOS — Apple Silicon & Intel | [axym-0.23.0-macos.tar.gz](https://github.com/irshadpc/axym-community/releases/download/tui-v0.23.0/axym-0.23.0-macos.tar.gz) | [Axym_12.17.0_universal.dmg](https://github.com/irshadpc/axym-community/releases/download/desktop-v12.17.0/Axym_12.17.0_universal.dmg) |
-| Linux x86_64 | [axym-0.23.0-linux-x86_64.tar.gz](https://github.com/irshadpc/axym-community/releases/download/tui-v0.23.0/axym-0.23.0-linux-x86_64.tar.gz) | [axym-12.16.0-linux-x86_64.tar.gz](https://github.com/irshadpc/axym-community/releases/download/desktop-v12.16.0/axym-12.16.0-linux-x86_64.tar.gz) ¹ |
-| Windows x86_64 | [axym-0.23.0-windows-x86_64.zip](https://github.com/irshadpc/axym-community/releases/download/tui-v0.23.0/axym-0.23.0-windows-x86_64.zip) | [axym-12.16.0-windows-x86_64.zip](https://github.com/irshadpc/axym-community/releases/download/desktop-v12.16.0/axym-12.16.0-windows-x86_64.zip) ¹ |
+| macOS — Apple Silicon & Intel | [axym-0.23.0-macos.tar.gz](https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-macos.tar.gz) | [Axym_12.17.0_universal.dmg](https://github.com/irshadpc/axym-release/releases/download/desktop-v12.17.0/Axym_12.17.0_universal.dmg) |
+| Linux x86_64 | [axym-0.23.0-linux-x86_64.tar.gz](https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-linux-x86_64.tar.gz) | [axym-12.16.0-linux-x86_64.tar.gz](https://github.com/irshadpc/axym-release/releases/download/desktop-v12.16.0/axym-12.16.0-linux-x86_64.tar.gz) ¹ |
+| Windows x86_64 | [axym-0.23.0-windows-x86_64.zip](https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-windows-x86_64.zip) | [axym-12.16.0-windows-x86_64.zip](https://github.com/irshadpc/axym-release/releases/download/desktop-v12.16.0/axym-12.16.0-windows-x86_64.zip) ¹ |
 
 Every release also carries `SHA256SUMS.txt`; TUI releases add a machine-readable `release-manifest.json` (version, source commit, per-file hashes). See [Verify a download](#verify-a-download).
 
@@ -51,7 +51,7 @@ Extract the zip and run `axym-windows-x86_64.exe` from PowerShell or `cmd`. `axy
 ### Desktop — macOS (one line)
 
 ```sh
-curl -fsSL https://github.com/irshadpc/axym-community/releases/latest/download/install-macos.sh | bash
+curl -fsSL https://github.com/irshadpc/axym-release/releases/download/desktop-v12.17.0/install-macos.sh | bash
 ```
 
 Downloads the universal `.dmg`, installs to `/Applications`, and clears the Gatekeeper quarantine flag — no Apple developer certificate needed. Prefer manual? Open the `.dmg` and drag Axym to Applications; if macOS then says the app "is damaged", run `sudo xattr -dr com.apple.quarantine /Applications/Axym.app` once (Sequoia/Tahoe: also **System Settings → Privacy & Security → Open Anyway**).
@@ -99,7 +99,7 @@ Inside the TUI, type `/` to browse every command with tab completion. The ones w
 3. Approve or reject at the gates — you inspect file diffs and tool-execution requests before anything touches your working tree.
 4. Every finished run records its own outcome score (accepted? useful? defects prevented?), and QA only passes when real test and build results back it up.
 
-Configure a project by dropping [`.axym.yaml`](https://github.com/irshadpc/axym/blob/main/.axym.yaml.example) at its root (tech stack, style guide, forbidden libs, secret names), and register private agent CLIs in `~/.axym/providers.json`.
+Configure a project by dropping `.axym.yaml` at its root (tech stack, style guide, forbidden libs, secret names; see [Configuration Guide](https://www.irshadpc.in/axym-release/#configuration)), and register private agent CLIs in `~/.axym/providers.json`.
 
 ## Features
 
@@ -190,5 +190,5 @@ TUI releases also include `release-manifest.json` — version, source commit and
 ## Help
 
 - TUI: run `/doctor` and include its output in any bug report.
-- [Open an issue](../../issues) with your OS, the file you downloaded, and what happened.
-- The full engineering documentation portal (74 pages, every engine and invariant) is in the [source repo](https://github.com/irshadpc/axym).
+- [Open an issue](https://github.com/irshadpc/axym-release/issues) with your OS, the file you downloaded, and what happened.
+- The engineering documentation and release portal is available at [axym-release](https://www.irshadpc.in/axym-release/#quickstart) (source distributions and releases managed at [github.com/irshadpc/axym-release](https://github.com/irshadpc/axym-release)).

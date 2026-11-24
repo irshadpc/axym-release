@@ -813,7 +813,7 @@ policy:
     description: 'Axym runtime features: multi-model races, shared prompt cache, warm handoff, governed queue and verification workflows.',
     keywords: 'race solve cache e1.2 e3 handoff queue keyboard shortcuts freeze card features',
     html: `<h1>Features</h1>
-<p class="lead">The runtime behind both products: deliberate multi-model use, evidence-backed verification and a local-first handoff. For the exhaustive catalog, see the <a href="https://github.com/irshadpc/axym/blob/main/FEATURES.md" target="_blank" rel="noopener">complete feature catalog</a>.</p>
+<p class="lead">The runtime behind both products: deliberate multi-model use, evidence-backed verification and a local-first handoff. For the exhaustive catalog, see the <a href="#features">complete feature catalog</a> or <a href="https://github.com/irshadpc/axym-release/blob/main/FEATURES.md" target="_blank" rel="noopener">FEATURES.md on GitHub</a>.</p>
 
 <dl class="meta-grid">
   <div class="meta-cell"><dt>Maturity key</dt><dd><span class="badge badge-active">Available</span></dd></div>
