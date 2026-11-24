@@ -1,107 +1,200 @@
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark" data-theme-mode="system">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Axym — Autonomous engineering, on your machine</title>
-  <meta name="description" content="Axym is a local-first autonomous engineering system. Download the TUI and Desktop app, set up keyless providers, and run governed Plan → Design → Code → Security → Review → QA pipelines.">
-  <link rel="canonical" href="https://irshadpc.github.io/axym-release/">
-  <meta property="og:title" content="Axym — Autonomous engineering, on your machine">
-  <meta property="og:description" content="A local-first autonomous engineering system with a terminal agent and a full desktop app. No account, no API keys to get started.">
+  <title>Axym — Build with autonomy. Ship with confidence.</title>
+  <meta name="description" content="Axym is a local-first autonomous engineering system. Give it a goal in plain English; it plans, implements, reviews, secures and tests the work under governed approval gates, on your machine.">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#080F15" id="theme-color-meta">
+  <link rel="canonical" href="https://www.irshadpc.in/axym-release/">
+  <meta property="og:title" content="Axym — Build with autonomy. Ship with confidence.">
+  <meta property="og:description" content="Local-first intelligence. Governed execution. A new foundation for autonomous software engineering.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://irshadpc.github.io/axym-release/">
+  <meta property="og:url" content="https://www.irshadpc.in/axym-release/">
+  <meta property="og:image" content="https://www.irshadpc.in/axym-release/assets/brand/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Axym Arctic Graphite — Build with autonomy. Ship with confidence.">
+  <meta property="og:site_name" content="Axym">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%235b45e8'/%3E%3Cpath d='M16 20h32L16 44h32' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <meta name="twitter:title" content="Axym — Build with autonomy. Ship with confidence.">
+  <meta name="twitter:description" content="Local-first intelligence. Governed execution. A new foundation for autonomous software engineering.">
+  <meta name="twitter:image" content="https://www.irshadpc.in/axym-release/assets/brand/og-image.png">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="./assets/brand/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="./assets/brand/apple-touch-icon.png">
+  <link rel="preload" href="./assets/fonts/geist-sans-variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="./assets/fonts/jetbrains-mono-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="./assets/styles.css">
   <script>
+    /* Resolve theme before first paint. Existing axym-theme values remain valid. */
     (function () {
+      var root = document.documentElement;
+      var mode = 'system';
       try {
         var saved = localStorage.getItem('axym-theme');
-        if (saved === 'dark' || saved === 'light') document.documentElement.dataset.theme = saved;
-        else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.dataset.theme = 'dark';
-      } catch (e) { /* private mode / blocked storage — stay on light */ }
+        if (saved === 'light' || saved === 'dark' || saved === 'system') mode = saved;
+      } catch (e) { /* storage blocked: follow the OS */ }
+      var resolved = mode;
+      if (mode === 'system') {
+        try { resolved = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'; }
+        catch (e) { resolved = 'dark'; }
+      }
+      root.dataset.theme = resolved;
+      root.dataset.themeMode = mode;
+      root.style.colorScheme = resolved;
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', resolved === 'dark' ? '#080F15' : '#F5F8FA');
     })();
   </script>
 </head>
 <body>
-  <div class="scrim" id="scrim" aria-hidden="true"></div>
+  <a class="skip-link" href="#app">Skip to main content</a>
 
-  <header class="site-header">
+  <svg class="icon-sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></symbol>
+      <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+      <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+      <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M4 12h16M14 6l6 6-6 6"/></symbol>
+      <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M20 12H4M10 6l-6 6 6 6"/></symbol>
+      <symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></symbol>
+      <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></symbol>
+      <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16.5 9"/></symbol>
+      <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l9.5 17h-19L12 3z"/><path d="M12 9v5M12 17.2v.1"/></symbol>
+      <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.8v.1"/></symbol>
+      <symbol id="i-github" viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3.3-.4 6.8-1.6 6.8-7.3A5.7 5.7 0 0 0 19.3 3 5.3 5.3 0 0 0 19.1 0S17.9-.4 15 1.5a13.4 13.4 0 0 0-7 0C5.1-.4 3.9 0 3.9 0a5.3 5.3 0 0 0-.2 3A5.7 5.7 0 0 0 2.2 7.2c0 5.7 3.5 6.9 6.8 7.3A4.8 4.8 0 0 0 8 18v4"/><path d="M8 19c-3 .9-3-1.5-4-2"/></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></symbol>
+      <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v17H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 19.5V4.5M8 7h8M8 11h6"/></symbol>
+      <symbol id="i-terminal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M13 15h4"/></symbol>
+      <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/><path d="M3 17.5l9 5 9-5"/></symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.4 8-8 9-4.6-1-8-4-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></symbol>
+      <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+      <symbol id="i-activity" viewBox="0 0 24 24"><path d="M3 12h4l2.5-7 5 14 2.5-7h4"/></symbol>
+      <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/></symbol>
+      <symbol id="i-git-branch" viewBox="0 0 24 24"><circle cx="6" cy="5" r="2.5"/><circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="8" r="2.5"/><path d="M6 7.5v9M18 10.5c0 4-4 4.5-8 4.5"/></symbol>
+      <symbol id="i-file-check" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8.5 14.5l2.2 2.2 4.3-4.7"/></symbol>
+      <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></symbol>
+      <symbol id="i-command" viewBox="0 0 24 24"><path d="M9 6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3z"/></symbol>
+      <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="2.5"/></symbol>
+      <symbol id="i-branch" viewBox="0 0 24 24"><path d="M6 3v12a3 3 0 0 0 3 3h9"/><circle cx="18" cy="18" r="3"/><circle cx="6" cy="3" r="0"/></symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+      <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h10M18 18h2"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="16" cy="18" r="2"/></symbol>
+    </defs>
+  </svg>
+
+  <header class="site-header" id="site-header">
     <div class="header-inner">
-      <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation" aria-expanded="false">☰</button>
       <a class="brand" href="#home" aria-label="Axym home">
-        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
-          <rect width="64" height="64" rx="14" fill="#5b45e8"></rect>
-          <path d="M16 20h32L16 44h32" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></path>
+        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+          <rect width="64" height="64" rx="14" fill="var(--brand)"/>
+          <path d="M17 20.5h30L17 43.5h30" fill="none" stroke="var(--on-brand)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <span class="wordmark">axym</span>
       </a>
-      <span class="version-pill" id="version-pill">TUI v0.23.0</span>
-      <nav class="topnav" id="topnav" aria-label="Top navigation">
-        <a href="#home" data-nav="home">Home</a>
-        <a href="#quickstart" data-nav="quickstart">Quick Start</a>
-        <a href="#setup" data-nav="setup">Setup Guide</a>
-        <a href="#configuration" data-nav="configuration">Configuration</a>
-        <a href="#features" data-nav="features">Features</a>
+
+      <nav class="primary-nav" aria-label="Primary">
+        <a href="#home" data-nav="home">Product</a>
+        <a href="#architecture" data-nav="architecture">Architecture</a>
+        <a href="#quickstart" data-nav="docs">Documentation</a>
         <a href="#releases" data-nav="releases">Releases</a>
-        <a href="#operations" data-nav="operations">Operations</a>
       </nav>
+
       <div class="header-actions">
-        <button class="search-trigger" id="search-trigger" aria-label="Search documentation">
-          <span aria-hidden="true">⌕</span><span class="label">Search docs</span><span class="kbd">⌘K</span>
+        <a class="version-chip" id="version-pill" href="#releases">TUI v0.23.0</a>
+        <button class="search-trigger" id="search-trigger" type="button" aria-label="Search documentation" aria-keyshortcuts="Meta+K Control+K">
+          <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+          <span class="search-label">Search</span>
+          <kbd class="kbd" aria-hidden="true">⌘K</kbd>
         </button>
-        <button class="icon-btn" id="theme-toggle" aria-label="Switch to dark theme" title="Toggle theme" aria-hidden="true">◐</button>
+
+        <div class="theme-control">
+          <button class="icon-btn" id="theme-toggle" type="button" aria-label="Theme: system" aria-expanded="false" aria-controls="theme-menu" aria-haspopup="true">
+            <svg class="icon icon-theme-system" aria-hidden="true"><use href="#i-monitor"/></svg>
+            <svg class="icon icon-theme-light" aria-hidden="true"><use href="#i-sun"/></svg>
+            <svg class="icon icon-theme-dark" aria-hidden="true"><use href="#i-moon"/></svg>
+          </button>
+          <div class="theme-menu" id="theme-menu" role="menu" aria-label="Colour theme" hidden>
+            <p class="menu-label" id="theme-menu-label">Appearance</p>
+            <button type="button" role="menuitemradio" aria-checked="false" data-theme-choice="light"><svg class="icon" aria-hidden="true"><use href="#i-sun"/></svg>Light<span class="menu-check" aria-hidden="true">✓</span></button>
+            <button type="button" role="menuitemradio" aria-checked="false" data-theme-choice="dark"><svg class="icon" aria-hidden="true"><use href="#i-moon"/></svg>Dark<span class="menu-check" aria-hidden="true">✓</span></button>
+            <button type="button" role="menuitemradio" aria-checked="true" data-theme-choice="system"><svg class="icon" aria-hidden="true"><use href="#i-monitor"/></svg>System<span class="menu-check" aria-hidden="true">✓</span></button>
+          </div>
+        </div>
+
+        <a class="icon-btn github-link" href="https://github.com/irshadpc/axym-release" target="_blank" rel="noopener" aria-label="Axym on GitHub (opens in a new tab)">
+          <svg class="icon" aria-hidden="true"><use href="#i-github"/></svg>
+        </a>
+        <a class="btn btn-primary btn-sm header-download" href="#releases">Download</a>
+        <button class="icon-btn menu-toggle" id="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
+          <svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg>
+        </button>
       </div>
     </div>
   </header>
 
-  <div class="layout">
-    <aside class="sidebar" id="sidebar" aria-label="Documentation navigation">
-      <div class="side-section">
-        <p class="side-title">Getting started</p>
-        <a class="side-link" href="#home" data-nav="home"><span class="ico">⌂</span>Home</a>
-        <a class="side-link" href="#quickstart" data-nav="quickstart"><span class="ico">↗</span>Quick Start</a>
-        <a class="side-link" href="#setup" data-nav="setup"><span class="ico">⚙</span>Setup Guide</a>
-        <a class="side-link" href="#configuration" data-nav="configuration"><span class="ico">☰</span>Configuration</a>
+  <div class="mobile-nav" id="mobile-nav" role="dialog" aria-modal="true" aria-label="Site navigation" hidden>
+    <div class="mobile-nav-panel">
+      <div class="mobile-nav-head">
+        <span class="mobile-nav-title">Navigate</span>
+        <button class="icon-btn" id="mobile-nav-close" type="button" aria-label="Close menu">
+          <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>
+        </button>
       </div>
-      <div class="side-divider"></div>
-      <div class="side-section">
-        <p class="side-title">Reference</p>
-        <a class="side-link" href="#features" data-nav="features"><span class="ico">✦</span>Features</a>
-        <a class="side-link" href="#releases" data-nav="releases"><span class="ico">⇩</span>Releases<span class="side-badge" id="side-version">v0.23.0</span></a>
-        <a class="side-link" href="#operations" data-nav="operations"><span class="ico">▤</span>Operations</a>
+      <nav class="mobile-nav-links" aria-label="Mobile primary">
+        <a href="#home" data-nav="home">Product</a>
+        <a href="#architecture" data-nav="architecture">Architecture</a>
+        <a href="#quickstart" data-nav="docs">Documentation</a>
+        <a href="#releases" data-nav="releases">Releases</a>
+      </nav>
+      <p class="mobile-nav-label">Documentation</p>
+      <nav class="mobile-nav-docs" aria-label="Mobile documentation">
+        <a href="#quickstart" data-nav="quickstart">Quick Start</a>
+        <a href="#setup" data-nav="setup">Setup Guide</a>
+        <a href="#configuration" data-nav="configuration">Configuration</a>
+        <a href="#features" data-nav="features">Features</a>
+        <a href="#operations" data-nav="operations">Operations</a>
+      </nav>
+      <div class="mobile-nav-footer">
+        <a class="btn btn-primary" href="#releases">Download Axym</a>
+        <a class="btn btn-secondary" href="https://github.com/irshadpc/axym-release" target="_blank" rel="noopener">GitHub <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
       </div>
-      <div class="side-divider"></div>
-      <div class="side-section">
-        <p class="side-title">External</p>
-        <a class="side-link" href="https://github.com/irshadpc/axym" target="_blank" rel="noopener"><span class="ico">⌘</span>Source repo</a>
-        <a class="side-link" href="https://github.com/irshadpc/axym-release/releases" target="_blank" rel="noopener"><span class="ico">◈</span>GitHub Releases</a>
-        <a class="side-link" href="https://github.com/irshadpc/axym/blob/main/FEATURES.md" target="_blank" rel="noopener"><span class="ico">☑</span>Feature catalog</a>
-      </div>
-      <p class="side-note">Everything runs on your hardware. No account, no API keys, no telemetry leaving the machine.</p>
-    </aside>
-
-    <main class="content" id="app" tabindex="-1" aria-live="polite"></main>
-
-    <aside class="toc" aria-label="On this page">
-      <p class="toc-title">On this page</p>
-      <nav id="toc-links"></nav>
-    </aside>
+    </div>
   </div>
 
-  <div class="search-overlay" id="search-overlay" role="dialog" aria-modal="true" aria-label="Search documentation">
-    <div class="search-modal">
+  <main id="app" tabindex="-1"></main>
+
+  <div class="search-overlay" id="search-overlay" hidden>
+    <div class="search-modal" role="dialog" aria-modal="true" aria-labelledby="search-title">
+      <h2 class="visually-hidden" id="search-title">Search documentation</h2>
       <div class="search-input-wrap">
-        <span aria-hidden="true">⌕</span>
-        <input type="text" id="search-input" placeholder="Search pages, commands, setup topics…" autocomplete="off" spellcheck="false">
-        <button class="icon-btn" id="search-close" aria-label="Close search" style="height:26px;padding:0 8px">esc</button>
+        <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+        <input type="text" id="search-input" role="combobox" aria-expanded="true" aria-controls="search-results" aria-autocomplete="list" aria-activedescendant="" placeholder="Search pages, commands, settings…" autocomplete="off" spellcheck="false">
+        <button class="kbd-btn" id="search-close" type="button" aria-label="Close search">Esc</button>
       </div>
-      <div class="search-results" id="search-results"></div>
-      <div class="search-hint"><span><span class="kbd">↑</span> <span class="kbd">↓</span> navigate</span><span><span class="kbd">↵</span> open</span><span><span class="kbd">esc</span> close</span></div>
+      <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
+      <div class="search-hint">
+        <span><kbd class="kbd">↑</kbd><kbd class="kbd">↓</kbd> navigate</span>
+        <span><kbd class="kbd">↵</kbd> open</span>
+        <span><kbd class="kbd">esc</kbd> close</span>
+      </div>
     </div>
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <noscript>
+    <div class="noscript">
+      <h1>Axym — Build with autonomy. Ship with confidence.</h1>
+      <p>Axym is a local-first autonomous engineering system. This portal needs JavaScript for documentation navigation. Downloads and release notes are available on <a href="https://github.com/irshadpc/axym-release/releases">GitHub Releases</a>.</p>
+    </div>
+  </noscript>
 
   <script src="./assets/content.js"></script>
   <script src="./assets/app.js"></script>

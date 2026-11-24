@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://irshadpc.github.io/axym-release/sitemap.xml
+Sitemap: https://www.irshadpc.in/axym-release/sitemap.xml
