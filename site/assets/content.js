@@ -175,7 +175,62 @@ window.AXYM_PAGES = {
     title: 'Quick Start',
     eyebrow: 'First session in five steps',
     keywords: 'claude codex antigravity agy gemini opencode provider first session install',
-    html: `<h1>Quick Start</h1><p class="lead">From download to your first governed session.</p><h2 id="five-steps">The five steps</h2><div class="step-line"><div class="step"><div class="step-num">1</div><div class="step-title">Install a build</div></div></div>`
+    html: `<h1>Quick Start</h1>
+<p class="lead">From download to your first governed session in five steps. Both products need at least one agent CLI on your <code>PATH</code> — and no API key.</p>
+<div class="step-line">
+  <div class="step"><div class="step-num">1</div><div class="step-title">Install a build</div><div class="step-body">One-line installer, or a manual archive from <a href="#releases">Releases</a>. The TUI is a single standalone executable.</div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-title">Verify the download</div><div class="step-body">Put <code>SHA256SUMS.txt</code> beside the archive and run <code>shasum -a 256 -c --ignore-missing SHA256SUMS.txt</code>.</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-title">Confirm a provider</div><div class="step-body">Run <code>axym --doctor</code>. Axym reports which CLIs it detected and any setup gaps — <code>claude</code>, <code>opencode</code>, <code>codex</code>, <code>gemini</code>, <code>cursor-agent</code>, <code>copilot</code> or <code>agy</code>.</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-title">Start a session</div><div class="step-body">Run <code>axym</code> in your project. Type <code>/</code> for the command palette with tab completion; <code>/health</code> shows runtime state.</div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-title">Go headless or remote</div><div class="step-body"><code>axym -p "summarize uncommitted changes"</code> for scripts and CI, or <code>axym web --host 0.0.0.0 --pin 4821</code> to scan a QR and drive it from your phone.</div></div>
+</div>
+
+<h2 id="provider-snippets">Provider snippets</h2>
+<p>These are keyless: authentication belongs to the CLI you already installed. Pick the snippet for the provider on your machine and copy it.</p>
+<div class="tabs" data-tabs="providers" role="tablist" aria-label="Provider snippets">
+  <button class="tab active" data-tab="claude" role="tab" aria-selected="true">Claude Code</button>
+  <button class="tab" data-tab="codex" role="tab" aria-selected="false">Codex</button>
+  <button class="tab" data-tab="agy" role="tab" aria-selected="false">Antigravity (agy)</button>
+  <button class="tab" data-tab="gemini" role="tab" aria-selected="false">Gemini / OpenCode</button>
+</div>
+<div data-panels="providers">
+  <div class="tab-panel active" data-panel="claude" role="tabpanel">
+    <div class="code-shell"><div class="code-head"><span class="code-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="code-title">Claude Code</span></div><div class="code-body"><pre id="prov-claude"># Auto-detected from PATH — no key to configure
+axym --doctor
+axym --provider claude --mode plan
+axym -p "summarize uncommitted changes"
+
+# Inside the session
+/review        # automated code review
+/pipeline      # watch the run stage by stage</pre></div><div class="code-head" style="border-top:1px solid #2a3038;border-bottom:0"><button class="copy-btn" data-copy="prov-claude">Copy</button></div></div>
+  </div>
+  <div class="tab-panel" data-panel="codex" role="tabpanel">
+    <div class="code-shell"><div class="code-head"><span class="code-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="code-title">Codex</span></div><div class="code-body"><pre id="prov-codex"># Auto-detected from PATH
+axym --provider codex --mode plan
+/race          # compare Codex with other detected providers
+/health        # runtime health and provider state
+
+# Headless
+axym -p "add rate limiting and tests" --provider codex</pre></div><div class="code-head" style="border-top:1px solid #2a3038;border-bottom:0"><button class="copy-btn" data-copy="prov-codex">Copy</button></div></div>
+  </div>
+  <div class="tab-panel" data-panel="agy" role="tabpanel">
+    <div class="code-shell"><div class="code-head"><span class="code-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="code-title">Antigravity (agy)</span></div><div class="code-body"><pre id="prov-agy"># Auto-detected from PATH
+axym --provider agy --mode plan
+/accounts      # e.g. agy:client-a in the client zone
+/race          # race strategies before committing
+
+# Verify private CLIs in ~/.axym/providers.json if not detected</pre></div><div class="code-head" style="border-top:1px solid #2a3038;border-bottom:0"><button class="copy-btn" data-copy="prov-agy">Copy</button></div></div>
+  </div>
+  <div class="tab-panel" data-panel="gemini" role="tabpanel">
+    <div class="code-shell"><div class="code-head"><span class="code-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="code-title">Gemini / OpenCode</span></div><div class="code-body"><pre id="prov-gemini"># Either CLI works as a drop-in provider
+axym --provider gemini --mode plan
+axym --provider opencode -p "summarize uncommitted changes"
+
+# Switch models mid-session; Axym keeps the shared prefix for cache hits
+/settings</pre></div><div class="code-head" style="border-top:1px solid #2a3038;border-bottom:0"><button class="copy-btn" data-copy="prov-gemini">Copy</button></div></div>
+  </div>
+</div>
+<div class="callout"><strong>First launch on desktop.</strong> Provider discovery walks you through detected CLIs — no keys needed. Then type a goal, watch the pipeline DAG, and approve or reject at each gate after inspecting the diffs.</div>`
   },
   setup: {
     title: 'Setup Guide',
@@ -257,25 +312,167 @@ axym --provider claude --mode plan   # pick a provider, read-only planning
     title: 'Configuration',
     eyebrow: 'Settings and standing invariants',
     keywords: 'settings axym.yaml adr-0021 adr-0022 adr-0007 legacy_frozen invariants',
-    html: `<h1>Configuration</h1><p class="lead">Project settings and the invariants that cannot be bypassed.</p><h2 id="settings-reference">Settings reference</h2><p>Details coming in this build.</p>`
+    html: `<h1>Configuration</h1>
+<p class="lead">Project-level settings plus the standing invariants that no prompt, plugin or mode can override. Type below to filter the reference.</p>
+<input class="filter-input" id="config-filter" data-filter-table="config-table" type="search" placeholder="Filter settings — try “zone”, “cache”, “provider”…" aria-label="Filter settings">
+<div class="table-wrap"><table id="config-table">
+  <thead><tr><th>Setting</th><th>Where</th><th>Values</th><th>What it controls</th></tr></thead>
+  <tbody>
+    <tr><td><code>provider</code></td><td>CLI flag / session</td><td><code>claude</code>, <code>codex</code>, <code>agy</code>, <code>gemini</code>, <code>opencode</code>, …</td><td>Which installed agent CLI drives the current turn.</td></tr>
+    <tr><td><code>mode</code></td><td>CLI flag / session</td><td><code>plan</code>, interactive, headless</td><td>Read-only planning versus editable execution.</td></tr>
+    <tr><td><code>allowedTrustZones</code></td><td><code>.axym/workspace.json</code></td><td><code>personal</code>, <code>work</code>, <code>client</code></td><td>Which account zones may serve this workspace.</td></tr>
+    <tr><td><code>pinnedAccount</code></td><td><code>.axym/workspace.json</code></td><td>account key or <code>null</code></td><td>Locks a session to one key; empty means automatic selection.</td></tr>
+    <tr><td><code>rotationPolicy</code></td><td><code>.axym/workspace.json</code></td><td><code>sticky_drain_first</code>, <code>round_robin</code></td><td>How the next eligible account is chosen.</td></tr>
+    <tr><td><code>allowCrossZoneSpillover</code></td><td><code>.axym/workspace.json</code></td><td><code>true</code> / <code>false</code></td><td>Whether an out-of-zone account may take work.</td></tr>
+    <tr><td><code>strictTier2Approval</code></td><td><code>.axym/workspace.json</code></td><td><code>true</code> / <code>false</code></td><td>Requires explicit approval for Tier 2 actions.</td></tr>
+    <tr><td><code>stack / style / forbidden</code></td><td><code>.axym.yaml</code></td><td>free-form YAML</td><td>Tech stack, style guide, forbidden libs and secret names shared by Desktop and TUI.</td></tr>
+    <tr><td><code>providers</code></td><td><code>~/.axym/providers.json</code></td><td>provider descriptors</td><td>Registers private or non-auto-detected agent CLIs.</td></tr>
+    <tr><td><code>cache layout</code></td><td>runtime</td><td>shared-prefix strategy</td><td>Stable prompt ordering that yields the E1.2 cache hit rate.</td></tr>
+  </tbody>
+</table></div>
+<p class="small muted">Want to try these interactively? The <a href="#setup">Setup Guide</a> has a live <code>.axym/workspace.json</code> policy builder.</p>
+
+<h2 id="project-config">Project config example</h2>
+<div class="code-shell"><div class="code-head"><span class="code-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="code-title">.axym.yaml — project root</span></div><div class="code-body"><pre id="config-yaml">stack:
+  runtime: node
+  test: vitest
+style: "2-space indent, semicolons, explicit return types"
+forbidden_libs:
+  - "lodash"
+secrets:
+  - "AXYM_*"
+policy:
+  max_review_depth: deep
+  require_evidence: true</pre></div><div class="code-head" style="border-top:1px solid #2a3038;border-bottom:0"><button class="copy-btn" data-copy="config-yaml">Copy</button></div></div>
+
+<h2 id="standing-invariants">Standing invariants</h2>
+<p>These are not preferences. They are enforced by the runtime and by repository gates.</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Invariant</th><th>Rule</th><th>Enforced by</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ADR-0021</strong></td><td>Priority task steering stays inside its boundaries; it does not silently import workflow-scope authorization.</td><td>Priority queue + steering tests</td></tr>
+    <tr><td><strong>ADR-0022</strong></td><td>Zero static API keys. Provider credentials stay with the native CLI behind the permission gate.</td><td>Provider layer + docs gate</td></tr>
+    <tr><td><strong>ADR-0007</strong></td><td>Typed command contract: idempotency keys, expected sequence numbers and explicit event shapes.</td><td>Command/event contract tests</td></tr>
+    <tr><td><strong>LEGACY_FROZEN.md</strong></td><td>The Python tree is frozen: bug-fixes only, no new modules or dependencies.</td><td>Pre-commit guard</td></tr>
+  </tbody>
+</table></div>
+<div class="callout callout-warn"><strong>Do not widen a gate.</strong> Baselines are ratchets — clippy warnings, <code>unwrap_used</code> budget and compiler warnings only go down. A change that legitimately adds warnings must say why in its commit; never raise a baseline just to make a gate pass.</div>`
   },
   features: {
     title: 'Features',
     eyebrow: 'What the runtime can do',
     keywords: 'race solve cache e1.2 e3 handoff queue keyboard shortcuts freeze card',
-    html: `<h1>Features</h1><p class="lead">A tour of the capabilities behind both products.</p><h2 id="race-and-solve">/race and axym solve</h2><p>Details coming in this build.</p>`
+    html: `<h1>Features</h1>
+<p class="lead">The runtime behind both products: deliberate multi-model use, evidence-backed verification and a local-first handoff. For the exhaustive catalog, see the <a href="https://github.com/irshadpc/axym/blob/main/FEATURES.md" target="_blank" rel="noopener">complete feature catalog</a>.</p>
+
+<h2 id="race-and-solve">/race and axym solve</h2>
+<p><code>/race</code> runs several strategies against the same goal and scores them before anything is committed — model choice, latency and cost are visible side by side. <code>axym solve</code> is the one-shot form for scripts: give it a goal, get a structured result and an attached evidence trail.</p>
+<div class="code-shell"><div class="code-head"><span class="code-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="code-title">terminal — race</span></div><div class="code-body"><pre id="feat-race"> STRATEGY          MODEL          SCORE   LATENCY   COST
+ prefix-shared     claude-sonnet  0.94    2.1s      $0.008
+ fresh-context     gpt-5          0.91    3.4s      $0.021
+ cheapest-first    gemini-flash   0.87    1.2s      $0.003
+
+ winner: prefix-shared  ·  cache hit 91% (40,268/40,270)</pre></div><div class="code-head" style="border-top:1px solid #2a3038;border-bottom:0"><button class="copy-btn" data-copy="feat-race">Copy</button></div></div>
+
+<h2 id="prompt-cache">E1.2 · 91% prompt cache</h2>
+<p>Providers are stateless CLI calls, so the shared project context is laid out as a stable prefix. A repeated ~40k-token prompt that cost <strong>$0.161 cold</strong> costs <strong>$0.008 warm</strong> — <strong>91% cache hit</strong> (40,268 of 40,270 tokens cached). A repeated prompt is not stripped just because a different provider runs next; doing so would break the prefix the cache exploits.</p>
+<div class="kpi-strip"><div class="kpi"><div class="kpi-value">$0.161 → $0.008</div><div class="kpi-label">cold versus warm repeated prompt</div></div><div class="kpi"><div class="kpi-value">91%</div><div class="kpi-label">cache hit rate (E1.2)</div></div><div class="kpi"><div class="kpi-value">40,268</div><div class="kpi-label">cached tokens of 40,270</div></div><div class="kpi"><div class="kpi-value">0</div><div class="kpi-label">API keys managed by Axym</div></div></div>
+
+<h2 id="warm-handoff">E3 · ≤ 2 KB warm handoff</h2>
+<p>When one provider stops, the next receives a compact delta: why the previous provider stopped and what it produced. The handoff stays at or below <strong>2 KB</strong>, so a multi-provider run neither loses the thread nor pays to re-send the entire transcript.</p>
+
+<h2 id="queue">axym queue</h2>
+<p><code>axym queue</code> submits governed work without blocking your terminal. Priority steering is bounded by ADR-0021, each queued item keeps its own idempotency and expected sequence (ADR-0007), and approvals remain human gates — the queue never auto-approves.</p>
+
+<h2 id="keyboard">Keyboard shortcuts</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>Key</th><th>Action</th><th>Note</th></tr></thead>
+  <tbody>
+    <tr><td><span class="kbd">k</span></td><td>Keys / accounts</td><td rowspan="4">Tier 3 Freeze Card controls — when egress is blocked, the turn is interrupted and the reason is recorded on every terminal path.</td></tr>
+    <tr><td><span class="kbd">r</span></td><td>Rotate account</td></tr>
+    <tr><td><span class="kbd">u</span></td><td>Usage / quota</td></tr>
+    <tr><td><span class="kbd">a</span></td><td>Audit</td></tr>
+    <tr><td><span class="kbd">/</span></td><td>Command palette</td><td>Tab-complete every command.</td></tr>
+    <tr><td><span class="kbd">ctrl</span> + <span class="kbd">g</span></td><td>External editor</td><td>Opens the composer in <code>$EDITOR</code>.</td></tr>
+    <tr><td><span class="kbd">alt</span> + <span class="kbd">i</span></td><td>Inline image viewer</td><td>Aspect-correct cell fitting; full restore on close (TUI 0.23.0).</td></tr>
+  </tbody>
+</table></div>`
   },
   releases: {
     title: 'Releases',
     eyebrow: 'Verified downloads',
     keywords: 'download install sha256 verify version support matrix desktop tui artifacts',
-    html: `<h1>Releases</h1><p class="lead">Download and verify a published build.</p><h2 id="downloads">Downloads</h2><div id="artifacts-grid"></div>`
+    html: `<h1>Releases</h1>
+<p class="lead">Versions and checksums below are synced from real GitHub releases by <code>scripts/sync-releases.mjs</code>. If a platform has no published asset, you will see an explicit “Pending release build” badge — never a dead URL or an invented hash.</p>
+
+<h2 id="downloads">Downloads</h2>
+<p>Choose your OS for the one-line TUI installer. Manual archives, full SHA-256 values and direct download links are in the published-artifacts table further down.</p>
+<div class="os-bar" role="group" aria-label="Choose your operating system">
+  <button class="os-tab active" data-os="macos_arm">macOS · Apple Silicon</button>
+  <button class="os-tab" data-os="macos_intel">macOS · Intel</button>
+  <button class="os-tab" data-os="linux">Linux · x64 / arm64</button>
+  <button class="os-tab" data-os="source">Build from source</button>
+</div>
+<div class="install-line">
+  <code id="releases-install" data-install-output="macos_arm">curl -fsSL https://github.com/irshadpc/axym-release/releases/latest/download/install.sh | sh</code>
+  <button class="copy-btn" data-copy="releases-install">Copy</button>
+</div>
+
+<h2 id="support-matrix">Version &amp; support matrix</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>Product</th><th>Latest</th><th>Platforms</th><th>Status</th></tr></thead>
+  <tbody>
+    <tr><td>Axym TUI</td><td><code>v0.23.0</code></td><td>macOS (arm64 + x64), Linux x86_64, Windows x86_64</td><td><span class="badge badge-active">active · 2026-11-05</span></td></tr>
+    <tr><td>Axym Desktop</td><td><code>v12.17.0</code></td><td>macOS universal (.dmg)</td><td><span class="badge badge-active">active · 2026-11-04</span></td></tr>
+    <tr><td>Axym Desktop · cross-OS</td><td><code>v12.16.0</code></td><td>Linux x86_64, Windows x86_64</td><td><span class="badge badge-keyless">latest cross-platform build</span></td></tr>
+    <tr><td>Supported range</td><td><code>12.13.x – 12.17.x</code></td><td>—</td><td><span class="badge badge-active">supported</span></td></tr>
+    <tr><td>End of life</td><td><code>12.12.x and earlier</code></td><td>—</td><td><span class="badge badge-pending">EOL</span></td></tr>
+  </tbody>
+</table></div>
+<p class="small muted">Desktop 12.17.0 ships macOS-only this cycle; Linux and Windows desktop artifacts remain at 12.16.0 until the next cross-platform build.</p>
+
+<h2 id="verify-download">Verify a download</h2>
+<p>Every release carries <code>SHA256SUMS.txt</code>; TUI releases also include a machine-readable <code>release-manifest.json</code> with version, source commit and per-file hashes. Put the checksum file beside your download and run:</p>
+<div class="code-shell"><div class="code-head"><span class="code-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="code-title">terminal — verify</span></div><div class="code-body"><pre id="verify-cmd">shasum -a 256 -c --ignore-missing SHA256SUMS.txt
+
+# Or check a single file directly
+shasum -a 256 axym-0.23.0-macos.tar.gz</pre></div><div class="code-head" style="border-top:1px solid #2a3038;border-bottom:0"><button class="copy-btn" data-copy="verify-cmd">Copy</button></div></div>
+
+<h2 id="published-artifacts">Published artifacts</h2>
+<p>Hashes and links below come straight from the release manifests. Copy a full SHA-256 value with the button in each row.</p>
+<div id="artifacts-grid"></div>`
   },
   operations: {
     title: 'Operations',
     eyebrow: 'Local-first CI and troubleshooting',
     keywords: 'local-ci typecheck vitest check-fast edp-certify troubleshooting commands',
-    html: `<h1>Operations</h1><p class="lead">Every gate runs on your workstation.</p><h2 id="ci-command-deck">CI command deck</h2><p>Details coming in this build.</p>`
+    html: `<h1>Operations</h1>
+<p class="lead">No hosted CI dependency: every gate runs locally on the developer workstation. A pre-push hook runs the fast lane before code leaves the machine.</p>
+
+<h2 id="ci-command-deck">CI command deck</h2>
+<div class="code-shell"><div class="code-head"><span class="code-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="code-title">TUI — primary build target</span></div><div class="code-body"><pre id="ops-tui">cd tui
+npx tsc --noEmit
+npx vitest run</pre></div><div class="code-head" style="border-top:1px solid #2a3038;border-bottom:0"><button class="copy-btn" data-copy="ops-tui">Copy</button></div></div>
+<div class="code-shell"><div class="code-head"><span class="code-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="code-title">Desktop Rust — fast gate</span></div><div class="code-body"><pre id="ops-rust">cd desktop
+./scripts/check-fast.sh</pre></div><div class="code-head" style="border-top:1px solid #2a3038;border-bottom:0"><button class="copy-btn" data-copy="ops-rust">Copy</button></div></div>
+<div class="code-shell"><div class="code-head"><span class="code-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="code-title">Unified fast lane (~2–3 min)</span></div><div class="code-body"><pre id="ops-ci">bash scripts/local-ci.sh --fast
+# full gate before "done" / push:
+bash scripts/local-ci.sh --full</pre></div><div class="code-head" style="border-top:1px solid #2a3038;border-bottom:0"><button class="copy-btn" data-copy="ops-ci">Copy</button></div></div>
+<div class="code-shell"><div class="code-head"><span class="code-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="code-title">EDP certification</span></div><div class="code-body"><pre id="ops-edp">python3 scripts/edp-certify.py</pre></div><div class="code-head" style="border-top:1px solid #2a3038;border-bottom:0"><button class="copy-btn" data-copy="ops-edp">Copy</button></div></div>
+
+<div class="callout callout-warn"><strong>Ratchets only go down.</strong> <code>.github/clippy-baseline.txt</code>, <code>desktop/src-tauri/.unwrap-budget</code> and <code>.warning-budget</code> are ceilings, not targets. If a change legitimately adds warnings, say why in the commit — never raise a baseline just to make a gate pass. In an emergency only, <code>AXYM_SKIP_PRE_PUSH_CI=1</code> bypasses the pre-push gate.</div>
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+<div class="accordion">
+  <div class="acc-item"><button class="acc-trigger">macOS says the app “is damaged” or “unknown publisher”</button><div class="acc-panel">Builds are ad-hoc signed, not notarized. Clear quarantine once with <code>sudo xattr -dr com.apple.quarantine /Applications/Axym.app</code>, then on Sequoia/Tahoe open <strong>System Settings → Privacy &amp; Security → Open Anyway</strong>. For the TUI binary, use <code>xattr -d com.apple.quarantine axym-macos-arm64</code>.</div></div>
+  <div class="acc-item"><button class="acc-trigger">No provider detected by axym --doctor</button><div class="acc-panel">The TUI needs at least one agent CLI on your <code>PATH</code>. Install one of <code>claude</code>, <code>opencode</code>, <code>codex</code>, <code>gemini</code>, <code>cursor-agent</code>, <code>copilot</code> or <code>agy</code>. Private CLIs can be registered in <code>~/.axym/providers.json</code>. No API key is required by Axym itself.</div></div>
+  <div class="acc-item"><button class="acc-trigger">Desktop Linux fails to launch</button><div class="acc-panel">Minimal and server images need a system-tray library: <code>sudo apt install libayatana-appindicator3-1</code> (Fedora: <code>sudo dnf install libayatana-appindicator-gtk3</code>). Ubuntu Desktop already includes it. For older AppImage builds, <code>sudo apt install libfuse2</code>.</div></div>
+  <div class="acc-item"><button class="acc-trigger">Desktop Windows shows a WebView2 error</button><div class="acc-panel">Install the WebView2 runtime. It ships with Windows 10 (1803+) and Windows 11, but stripped or enterprise images may need the standalone installer.</div></div>
+  <div class="acc-item"><button class="acc-trigger">A gate failed locally — what do I trust?</button><div class="acc-panel">Trust the gate, not the claim. Re-run the smallest failing command from the command deck, read the real output, and only then claim the change is verified. A report without an executed command behind it is not evidence.</div></div>
+</div>
+
+<h2 id="scope">Platform scope</h2>
+<p>The TUI is the primary build target: new features, fixes and QA land in <code>tui/**</code> first and its gate is green before desktop work starts. Desktop/mobile parity is deferred follow-up work, not a TUI gate — a TUI verification claim is never widened into a cross-platform claim.</p>`
   }
 };
 
