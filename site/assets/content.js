@@ -807,26 +807,201 @@ policy:
     layout: 'docs',
     nav: 'docs',
     title: 'Features',
-    eyebrow: 'What the runtime can do',
-    description: 'Axym runtime features: multi-model races, shared prompt cache, warm handoff, governed queue and verification workflows.',
-    keywords: 'race solve cache e1.2 e3 handoff queue keyboard shortcuts freeze card features',
+    eyebrow: 'Complete TUI feature catalog',
+    description: 'Every feature in Axym TUI v0.23.0: sessions, providers and models, chat and results, editor, modes and permissions, workspaces, verification, skills, council and fleet, parallel isolated runs and worktrees, phone control, race, prompt cache, queue and keyboard shortcuts — with what each does and where to use it.',
+    keywords: 'features TUI catalog commands slash commands sessions providers models failover modes permissions workspaces pipeline evidence review security skills product-thinking engineering-intelligence break-it-qa sca-fix council race solve queue cache handoff verification remote web phone keyboard shortcuts runs parallel isolated worktrees integration',
     html: `<h1>Features</h1>
-<p class="lead">The runtime behind both products: deliberate multi-model use, evidence-backed verification and a local-first handoff. Every capability in the catalog below ships with the verified build.</p>
+<p class="lead">Everything in the shipped Axym TUI <code>v0.23.0</code>, in one place. Each capability says what it does and exactly where to use it, so you can decide whether it solves your problem before you try it. The same catalog is built into the app — type <code>/features</code> or run <code>axym --features</code> — and every command is discoverable with <code>/</code>, <code>/help</code> and <code>/man</code>.</p>
 
 <dl class="meta-grid">
-  <div class="meta-cell"><dt>Maturity key</dt><dd><span class="badge badge-active">Available</span></dd></div>
-  <div class="meta-cell"><dt>Preview</dt><dd><span class="badge badge-pending">Experimental</span></dd></div>
+  <div class="meta-cell"><dt>Catalog</dt><dd>61 TUI features · 10 groups · updated 2026-11-06</dd></div>
+  <div class="meta-cell"><dt>Command surface</dt><dd>120 slash commands · tab-completed</dd></div>
+  <div class="meta-cell"><dt>Maturity key</dt><dd><span class="badge badge-active">Available</span> ships in v0.23.0</dd></div>
+  <div class="meta-cell"><dt>Preview</dt><dd><span class="badge badge-pending">Experimental</span> tracked separately</dd></div>
   <div class="meta-cell"><dt>Not shipped</dt><dd><span class="badge badge-neutral">Roadmap</span></dd></div>
 </dl>
 
-<h2 id="race-and-solve">/race and axym solve</h2>
-<p><code>/race</code> runs several strategies against the same goal and scores them before anything is committed — model choice, latency and cost are visible side by side. <code>axym solve</code> is the one-shot form for scripts: give it a goal, get a structured result and an attached evidence trail.</p>
-<div class="code-shell"><div class="code-head"><span class="code-lang">output</span><span class="code-title">terminal — race</span><button type="button" class="copy-btn" data-copy="feat-race"><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>Copy</button></div><div class="code-body"><pre id="feat-race"> STRATEGY          MODEL          SCORE   LATENCY   COST
- prefix-shared     claude-sonnet  0.94    2.1s      $0.008
- fresh-context     gpt-5          0.91    3.4s      $0.021
- cheapest-first    gemini-flash   0.87    1.2s      $0.003
+<h2 id="tui-catalog">Axym TUI — complete catalog</h2>
+<p>The terminal build is the primary target: new features, fixes and QA land there first. The groups below mirror the catalog shipped inside the binary, so everything listed is in the verified release. Each entry keeps the exact command or file where you use it; nothing is described only as an idea.</p>
 
- winner: prefix-shared  ·  cache hit 91% (40,268/40,270)</pre></div></div>
+<h3 id="tui-sessions-providers-models">Sessions, providers &amp; models</h3>
+<p class="muted">Bring any installed agent CLI, switch models mid-session, and recover when a provider fails.</p>
+<ul class="boundary-list">
+<li><strong>One session, any agent CLI</strong> — Drive Claude Code, OpenCode, Codex, Gemini CLI, Cursor Agent, GitHub Copilot CLI, Command Code and Antigravity through one consistent terminal interface. <span class="small muted">Use: <code>axym --provider claude</code> · <code>/provider</code> · <code>/model</code></span></li>
+<li><strong>Provider discovery and defaults</strong> — Finds installed CLIs on PATH and in common install directories, accepts ids, aliases and display names, and suggests the closest match on a typo. <span class="small muted">Use: <code>~/.axym/config.yaml (default-coder)</code> · <code>~/.axym/provider_paths.json</code></span></li>
+<li><strong>Mid-session provider, model and effort switching</strong> — Change the agent, model or reasoning effort without losing the conversation or restarting the session. <span class="small muted">Use: <code>/provider</code> · <code>/model</code> · <code>/models</code> · <code>/effort</code></span></li>
+<li><strong>Automatic failover and provider cooldowns</strong> — Classifies failures as immediate, after-reset or never; benches quota walls until their reset time and policy walls for 24h; a circuit breaker stops repeated sub-minute failures. <span class="small muted">Use: <code>Automatic on a failed turn; /priority shows the resolution order</code></span></li>
+<li><strong>Persistent Claude connection</strong> — Claude runs as a long-lived stream-JSON process, so repeat turns skip CLI re-initialisation and permission requests flow over live stdin. <span class="small muted">Use: <code>Automatic for the Claude provider</code></span></li>
+<li><strong>Sessions, resume and git reconciliation</strong> — Saves every finished turn as JSONL, restores the provider's own session id, and tells you what changed in the workspace since the session was last active. <span class="small muted">Use: <code>/sessions</code> · <code>/resume</code> · <code>/continue</code> · <code>axym -c</code></span></li>
+</ul>
+
+<h3 id="tui-chat-transcript-results">Chat, transcript &amp; results</h3>
+<p class="muted">Read the agent's work as it happens and see a structured result when the turn ends.</p>
+<ul class="boundary-list">
+<li><strong>Streaming chat and tool activity</strong> — Token-level deltas, lightweight markdown and animated tool calls with real commands, paths and outputs instead of raw protocol dumps. <span class="small muted">Use: <code>Automatic in every interactive session</code></span></li>
+<li><strong>Result Ledger</strong> — Each turn ends with an outcome banner (OK, FAIL, VER, UNV), modified files, verification checks, blockers or risks, a concise summary and contextual next actions. <span class="small muted">Use: <code>Automatic at turn completion; Ctrl+O expands detail</code></span></li>
+<li><strong>Markdown and syntax highlighting</strong> — Fenced code is highlighted for JavaScript/TypeScript, Python, Rust, Go, shell, YAML/TOML and C-family languages with no external dependency. <span class="small muted">Use: <code>Automatic in responses</code></span></li>
+<li><strong>Message queueing</strong> — Text submitted while a turn is running is queued and drains automatically when the turn ends, with a visible queued count. <span class="small muted">Use: <code>Type while the agent is working</code></span></li>
+<li><strong>Transcript search and turn jump</strong> — Search the current session, open a scrollable hit preview, or jump directly to an earlier conversational turn. <span class="small muted">Use: <code>Ctrl+F</code> · <code>/find</code> · <code>/turns</code></span></li>
+<li><strong>Copy and export</strong> — Copy the latest or an earlier response to the system clipboard, or save the full transcript as markdown. <span class="small muted">Use: <code>/copy</code> · <code>/export</code></span></li>
+</ul>
+
+<h3 id="tui-input-editor">Input &amp; editor</h3>
+<p class="muted">A terminal composer that behaves like a real editor, with fast paths for files, history and images.</p>
+<ul class="boundary-list">
+<li><strong>Multi-line composer with readline keys</strong> — Cursor motion, word jump, kill/yank, undo, history navigation and a hinted footer work across single-line and multi-line input. <span class="small muted">Use: <code>Shift+Enter or Ctrl+J for a newline; Ctrl+A/E/U/K/W for editing</code></span></li>
+<li><strong>Vim mode and external editor</strong> — Persistent Vim keybindings for the prompt, or open the current prompt in your own $VISUAL/$EDITOR. <span class="small muted">Use: <code>/vim</code> · <code>Ctrl+G</code></span></li>
+<li><strong>@file completion</strong> — Fuzzy-complete project files from git ls-files, or a bounded directory walk outside git, ranked by filename, path and subsequence match. <span class="small muted">Use: <code>Type @ followed by part of a path</code></span></li>
+<li><strong>Prompt history and reverse search</strong> — Keeps the last 500 prompts and offers bash-style reverse search over them. <span class="small muted">Use: <code>Up/Down</code> · <code>Ctrl+R</code></span></li>
+<li><strong>Paste formatting and image attachments</strong> — Formats large pasted text into a collapsible prompt, and attaches screenshots or image files as [Image #n] inputs. <span class="small muted">Use: <code>Ctrl+Shift+F</code> · <code>Ctrl+V</code> · <code>Ctrl+I</code> · <code>Ctrl+Shift+S</code></span></li>
+</ul>
+
+<h3 id="tui-modes-permissions-safety">Modes, permissions &amp; safety</h3>
+<p class="muted">Decide how much the agent may do, and keep the terminal recoverable when something goes wrong.</p>
+<ul class="boundary-list">
+<li><strong>Plan, Ask, Edit and Auto modes</strong> — Plan is read-only, Ask never edits, Edit auto-accepts file edits, and Auto bypasses permission prompts; each maps to the provider's native permission mode. <span class="small muted">Use: <code>Shift+Tab</code> · <code>/mode plan|ask|edit|auto</code></span></li>
+<li><strong>Inline permission gate</strong> — Permission-requiring tool calls are relayed to the TUI and answered there: allow or deny with the real command or path shown. Gate errors and interrupts deny by default. <span class="small muted">Use: <code>Answer y or n when a gate appears; AXYM_TUI_NO_RELAY=1 opts out</code></span></li>
+<li><strong>Always-allow command list</strong> — Review or clear exact commands you have chosen to always allow, so repeated safe commands stop asking. <span class="small muted">Use: <code>/permissions</code> · <code>/permissions clear</code></span></li>
+<li><strong>Explicit YOLO mode</strong> — Skips every approval prompt and implies Auto mode, with the risk stated up front. Governed runtime approval gates are never bypassed. <span class="small muted">Use: <code>axym --yolo</code></span></li>
+<li><strong>Crash-safe terminal handling</strong> — A render error or external signal unmounts cleanly, restores raw-mode terminal state, and releases the wake-lock child instead of leaving a garbled screen. <span class="small muted">Use: <code>Automatic</code></span></li>
+</ul>
+
+<h3 id="tui-workspaces-engineering-views">Workspaces &amp; engineering views</h3>
+<p class="muted">Move from a conversation to the evidence, graph, health and handoff views behind it.</p>
+<ul class="boundary-list">
+<li><strong>Adaptive workspaces</strong> — Switch the session between explore, execute, investigate, review and approval modes so the header, hints and available actions match the job. <span class="small muted">Use: <code>/workspace explore|execute|investigate|review|approval</code></span></li>
+<li><strong>Pipeline view</strong> — Lists recent runtime runs, then shows a run's recorded stages, files and verification events stage by stage. <span class="small muted">Use: <code>/pipeline [run-id]</code></span></li>
+<li><strong>Execution graph</strong> — Interactive stage, gate, agent and task dependency tree for a runtime run. <span class="small muted">Use: <code>/graph [run-id]</code></span></li>
+<li><strong>Evidence browser</strong> — Inspect the evidence primitive behind a claim: inspected, inferred, verified and failed proof. <span class="small muted">Use: <code>/evidence [id]</code></span></li>
+<li><strong>Health, intelligence and observatory</strong> — Read the daemon self-report and provider cooldowns, the AEI decision ledger with estimates and measured outcomes, and active skills with evaluation candidates. <span class="small muted">Use: <code>/health</code> · <code>/intel</code> · <code>/observatory</code></span></li>
+<li><strong>Handover and Work Passport</strong> — See session state, unresolved tasks and uncommitted work, or show and export the durable passport (product brief, acceptance criteria, execution truth, recovery context). <span class="small muted">Use: <code>/handover</code> · <code>/passport</code></span></li>
+<li><strong>Settings, themes and density</strong> — Toggle Vim editing, verbose tool output and a compact header, or switch between graphite, classic and high-contrast themes. <span class="small muted">Use: <code>/settings</code> · <code>/theme graphite|classic|contrast</code></span></li>
+</ul>
+
+<h3 id="tui-verification-review-delivery">Verification, review &amp; delivery</h3>
+<p class="muted">Turn a change into evidence: review it, test it, scan it, and keep a reversible history.</p>
+<ul class="boundary-list">
+<li><strong>Code review and QA</strong> — Runs a code-quality pass for hidden assumptions, simplicity, surgical diffs, edge cases and test completeness, with file and line references. <span class="small muted">Use: <code>/review [goal]</code> · <code>/qa [goal]</code></span></li>
+<li><strong>Security review</strong> — Threat-models the target, reviews code and configuration with captured evidence, and returns a prioritized remediation plan. <span class="small muted">Use: <code>/security [goal]</code> · <code>/audit</code> · <code>/security-audit</code></span></li>
+<li><strong>Background test runner</strong> — Runs the project's tests without blocking the conversation and reports the result back into the session. <span class="small muted">Use: <code>/test [command]</code></span></li>
+<li><strong>Diff, pull, undo and bisect</strong> — Inspect uncommitted changes, pull the remote tracking branch, shelve work into a reversible stash, or binary-search checkpoints for the turn that introduced a regression. <span class="small muted">Use: <code>/diff</code> · <code>/pull</code> · <code>/undo</code> · <code>/bisect</code></span></li>
+<li><strong>Reusable workflows</strong> — Define a named sequence of prompts once, then replay it on any provider. Four starter workflows cover engineering, product discovery, security review and QA. <span class="small muted">Use: <code>/workflow new|run|save|list</code> · <code>/workflows</code></span></li>
+<li><strong>Project setup</strong> — Writes a starter .axym.yaml shared with the desktop app, without ever overwriting an existing file. <span class="small muted">Use: <code>/init</code></span></li>
+</ul>
+
+<h3 id="tui-skills-customization">Skills &amp; customization</h3>
+<p class="muted">Extend the agent with the same skills and project configuration the desktop app uses.</p>
+<ul class="boundary-list">
+<li><strong>Bundled skills</strong> — Product-Owner Intelligence, Axym Engineering Intelligence, reverse engineering, break-it QA and sca-fix ship inside the binary and work in any project. <span class="small muted">Use: <code>/skills</code> · <code>/skill &lt;name&gt; [task]</code> · <code>/po</code> · <code>/aei</code></span></li>
+<li><strong>Project and user skills</strong> — Discovers SKILL.md definitions from .agents, .claude, .codex and compatible project or user folders, with mode support. <span class="small muted">Use: <code>/skills</code> · <code>/skill &lt;name&gt; [task]</code></span></li>
+<li><strong>Bundled SCA remediation</strong> — Runs the sca-fix skill to upgrade a Java/Maven pom.xml and write a plain-language justification spreadsheet for a Sonatype/SCA report. <span class="small muted">Use: <code>/sca-fix [report-pdf]</code></span></li>
+<li><strong>Slash-command plugins</strong> — External modules can register narrow slash commands; built-in commands always win. <span class="small muted">Use: <code>See the plugin API in the TUI docs</code></span></li>
+<li><strong>Project configuration</strong> — Reads .axym.yaml for tech stack, language, style guide, forbidden libraries, custom instructions, secrets, capabilities and budgets. <span class="small muted">Use: <code>.axym.yaml at the project root</code></span></li>
+</ul>
+
+<h3 id="tui-multi-model-fleet-automation">Multi-model, fleet &amp; automation</h3>
+<p class="muted">Use more than one model deliberately, watch many runs, and automate the TUI from scripts.</p>
+<ul class="boundary-list">
+<li><strong>Council mode</strong> — Runs the same prompt across two or more providers in parallel and merges their answers into one synthesized response. <span class="small muted">Use: <code>/council &lt;prompt&gt;</code></span></li>
+<li><strong>Cross-provider verification</strong> — Run review or security on a different provider than the coder; the run labels whether the verifier was independent of the code author or shared its provider and model. <span class="small muted">Use: <code>Desktop → Expert options → AI system per stage</code></span></li>
+<li><strong>Agent Hub and fleet overview</strong> — Toggle a live roster of runtime runs, select and attach to one, or read configured capacity, active runs, oldest in-flight work and recent failures. <span class="small muted">Use: <code>Alt+A</code> · <code>/agents</code> · <code>/fleet</code></span></li>
+<li><strong>Run comparison and stage costs</strong> — Compare what two runtime runs actually ran against (commit, dependencies, config), and read per-stage token, spend and call-count evidence. <span class="small muted">Use: <code>/compare [run-a run-b]</code> · <code>/pipeline</code> · <code>/cost [run-id]</code></span></li>
+<li><strong>Headless mode</strong> — Run one prompt from the shell or stdin with text or JSONL output and stable exit codes for scripts and CI. <span class="small muted">Use: <code>axym -p "prompt"</code> · <code>--format json</code> · <code>exit 0/1/2/130</code></span></li>
+<li><strong>Live run steering and queueing</strong> — Change course mid-turn at the next safe boundary on the governed runtime, or queue guidance for later without interrupting the run. <span class="small muted">Use: <code>/steer &lt;instruction&gt;</code> · <code>/queue &lt;instruction&gt;</code></span></li>
+<li><strong>Follow, fork and compare runtime runs</strong> — Attach to a Desktop or Mobile run with durable replay and live updates, fork it into a child lineage, or open a second read-only viewer. <span class="small muted">Use: <code>/attach</code> · <code>/view</code> · <code>/fork</code></span></li>
+<li><strong>Parallel isolated runs</strong> — Start several governed pipeline runs in isolated linked worktrees, switch the visible run without mixing events or staged files, and preview or explicitly apply a finished run's worktree integration. The daemon gates structural worktree creation behind <code>AXYM_PERSISTENT_RUNTIME=1</code>. <span class="small muted">Use: <code>/runs list</code> · <code>/runs start "&lt;goal&gt;" --worktree</code> · <code>/runs switch &lt;id&gt;</code> · <code>/runs integrate [id] [--apply]</code></span></li>
+</ul>
+
+<h3 id="tui-collaboration-remote-handoff">Collaboration, remote &amp; handoff</h3>
+<p class="muted">Keep working when you leave the terminal, and let other people follow or take over safely.</p>
+<ul class="boundary-list">
+<li><strong>Share and read-only viewing</strong> — Share a session or live run with collaborators; viewers follow an isolated read-only event stream and cannot steer, approve or write. <span class="small muted">Use: <code>/share [run-id]</code> · <code>/view &lt;run-id&gt;</code></span></li>
+<li><strong>Phone pairing</strong> — Continue the live session from a phone over the same Wi-Fi, Tailscale or a Cloudflare tunnel, with a QR pairing card, PIN or scoped access and a revocable link. <span class="small muted">Use: <code>/remote</code> · <code>/remote tunnel</code> · <code>/remote status</code> · <code>/remote stop</code></span></li>
+<li><strong>Browser bridge</strong> — Serve a phone-friendly page over the governed runtime with live transcript, submit, steer, cancel and approval actions, protected by a PIN or token. <span class="small muted">Use: <code>axym web --host 0.0.0.0 --pin 4821</code></span></li>
+<li><strong>Detach and attach</strong> — Free the terminal while the session keeps running, then return from any terminal or SSH login with the transcript redrawn at the new size. <span class="small muted">Use: <code>/detach</code> · <code>axym attach</code> · <code>axym -c</code></span></li>
+<li><strong>Push notifications</strong> — Send a push when a turn finishes, fails, or every provider is cooling, through ntfy.sh or a self-hosted topic. <span class="small muted">Use: <code>/notify</code> · <code>~/.axym/tui/notify.json</code></span></li>
+<li><strong>Session and run handoff</strong> — Export or import a session, or move a multi-machine run checkpoint with offer, export, accept, status and retract actions. <span class="small muted">Use: <code>/handoff</code> · <code>/run-handoff</code></span></li>
+</ul>
+
+<h3 id="tui-runtime-recovery-operations">Runtime, recovery &amp; operations</h3>
+<p class="muted">Connect to the governed runtime, keep long work alive, and update safely.</p>
+<ul class="boundary-list">
+<li><strong>Governed runtime connection</strong> — Use axym-runtime for durable runs, evidence, approvals, fleet views and run replay while keeping the same terminal interface. <span class="small muted">Use: <code>axym --provider axym-runtime</code> · <code>/attach</code> · <code>/pipeline</code></span></li>
+<li><strong>Laya decisions and vibe mode</strong> — Classify low-risk decisions, announce and record them, or ask the runtime for the smallest honest pipeline it can justify. <span class="small muted">Use: <code>/laya on|off|status</code> · <code>/vibe on|off|status</code></span></li>
+<li><strong>Provider priority</strong> — Show how the default provider was resolved across environment variables, config and provider manifests. <span class="small muted">Use: <code>/priority</code></span></li>
+<li><strong>Self-update with checksum verification</strong> — Checks the release channel, downloads the platform asset, verifies its SHA-256 against SHA256SUMS.txt and installs atomically. <span class="small muted">Use: <code>/update</code> · <code>axym --update</code> · <code>--update-force</code></span></li>
+<li><strong>Keep-awake during long runs</strong> — Holds a power assertion while a turn runs so idle sleep cannot suspend the work; opt out with a marker file. <span class="small muted">Use: <code>Automatic; ~/.axym/tui/no-keep-awake to disable</code></span></li>
+<li><strong>Atomic local state</strong> — Sessions, history and allow-lists are written with a temp-file, fsync and rename sequence, so a crash cannot leave half-written state. <span class="small muted">Use: <code>Automatic</code></span></li>
+<li><strong>AIDE run diagnosis and event inspection</strong> — On a connected runtime run, inspect failure evidence, event integrity, bounded pipeline replay and run-scoped effect counts. Pause, investigate or resume diagnosis while retaining the original run and its permissions. Observations do not certify a repair. <span class="small muted">Use: <code>/debug [run-id]</code> · <code>/debug [run-id] inspect</code></span></li>
+</ul>
+
+<h2 id="command-surface">Command surface at a glance</h2>
+<p>Type <code>/</code> for the tab-completed command list, <code>/help</code> to filter by name, <code>/man</code> for the full built-in manual, and <code>/features</code> for this catalog. All 120 commands ship in the executable — none are hidden behind another app.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="TUI command surface">
+  <table>
+    <thead><tr><th>Area</th><th>Commands / keys</th><th>What it gives you</th></tr></thead>
+    <tbody>
+      <tr><td>Find and learn</td><td><code>/</code> · <code>/help</code> · <code>/man</code> · <code>/features</code></td><td>Every command with hints and tab completion, a filterable manual and the built-in catalog.</td></tr>
+      <tr><td>Session control</td><td><code>/new</code> · <code>/sessions</code> · <code>/resume</code> · <code>/continue</code> · <code>/detach</code> · <code>/exit</code></td><td>Save, find, resume and leave sessions without losing the thread.</td></tr>
+      <tr><td>Providers and models</td><td><code>/provider</code> · <code>/model</code> · <code>/models</code> · <code>/effort</code> · <code>/priority</code> · <code>/accounts</code></td><td>Pick the CLI, model, reasoning effort and account, and see how defaults resolve.</td></tr>
+      <tr><td>Modes and workspace</td><td><kbd class="kbd">Shift+Tab</kbd> · <code>/mode</code> · <code>/workspace</code> · <code>/settings</code> · <code>/theme</code></td><td>Plan / Ask / Edit / Auto permissions and five task-shaped workspaces.</td></tr>
+      <tr><td>Verify and review</td><td><code>/review</code> · <code>/qa</code> · <code>/security</code> · <code>/test</code> · <code>/diff</code> · <code>/checkpoint</code> · <code>/undo</code> · <code>/bisect</code></td><td>Independent checks, real test output and reversible file changes.</td></tr>
+      <tr><td>Governed runtime</td><td><code>/ship</code> · <code>/runs</code> · <code>/approve</code> · <code>/reject</code> · <code>/pipeline</code> · <code>/graph</code> · <code>/evidence</code> · <code>/fleet</code> · <code>/attach</code></td><td>Durable runs with human gates, stage evidence, isolated worktrees and a live roster.</td></tr>
+      <tr><td>Skills and workflows</td><td><code>/skills</code> · <code>/skill &lt;name&gt;</code> · <code>/po</code> · <code>/aei</code> · <code>/workflow</code> · <code>/flow</code></td><td>Reusable prompts, bundled experts and saved multi-step procedures.</td></tr>
+      <tr><td>Remote and continuity</td><td><code>/remote</code> · <code>/share</code> · <code>/view</code> · <code>/notify</code> · <code>/handoff</code></td><td>Phone control, read-only viewers, notifications and work across machines.</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="small muted">Runtime-backed commands (for example <code>/ship</code>, <code>/pipeline</code>, <code>/fleet</code> and <code>/attach</code>) need a connected <code>axym-runtime</code> daemon. The core chat, edit and session loop works with any installed agent CLI.</p>
+
+<h2 id="parallel-runs">Parallel isolated runs</h2>
+<p><span class="badge badge-active">Available</span> Run several governed pipeline jobs at once, each in its own linked worktree. The daemon's local event log stays the authority; the TUI keeps a run-keyed view, so switching runs cannot show another run's events, status or staged files. Finishing one run does not stop the agents or builds of the others.</p>
+<dl class="meta-grid">
+  <div class="meta-cell"><dt>List watched runs</dt><dd><code>/runs</code> or <code>/runs list</code> — id, status, goal and worktree path, with the visible run marked.</dd></div>
+  <div class="meta-cell"><dt>Start isolated</dt><dd><code>/runs start "&lt;goal&gt;" --worktree</code> — create the linked worktree first, then submit the governed six-stage run into it.</dd></div>
+  <div class="meta-cell"><dt>Switch</dt><dd><code>/runs switch &lt;id | id-prefix | list-index&gt;</code> — unknown or ambiguous targets are refused without changing the visible run.</dd></div>
+  <div class="meta-cell"><dt>Integrate</dt><dd><code>/runs integrate [id]</code> previews; <code>/runs integrate [id] --apply</code> merges a finished run's worktree. Nothing merges without the explicit flag, and conflicts or a dirty target are refused.</dd></div>
+  <div class="meta-cell"><dt>Stop watching</dt><dd><code>/runs close &lt;id&gt;</code> — stops this terminal's watcher; the daemon run itself is unaffected.</dd></div>
+</dl>
+<p>Every watcher uses its own client id and identity guard, so a background run's live lines never appear in the visible run's transcript. <code>/pipeline</code>, <code>/cost</code> and the gate decisions <code>/approve</code>, <code>/reject</code>, <code>/revise</code> and <code>/cancel</code> follow the run you switched to. Staged files are read from that run's own worktree or project path, never another run's.</p>
+<div class="callout callout-note">
+  <p class="callout-title"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg>Structural worktree gate</p>
+  <p>Creating a new linked worktree is a daemon structural op gated by <code>AXYM_PERSISTENT_RUNTIME=1</code>. If the gate refuses, the error is shown verbatim and no run is submitted into the main project tree. Forking an already-started run into a worktree (<code>/fork --worktree</code>) remains available without that gate.</p>
+</div>
+
+<h2 id="modes">Four ways to shape the work</h2>
+<dl class="meta-grid">
+  <div class="meta-cell"><dt>Permission modes</dt><dd>Plan is read-only, Ask never edits, Edit auto-accepts file edits, Auto bypasses permission prompts. <kbd class="kbd">Shift+Tab</kbd> or <code>/mode plan|ask|edit|auto</code>. Explicit <code>--yolo</code> implies Auto; governed runtime gates are never bypassed.</dd></div>
+  <div class="meta-cell"><dt>Adaptive workspaces</dt><dd>Explore, execute, investigate, review and approval change the header, hints and available actions to match the job. <code>/workspace explore|execute|investigate|review|approval</code>.</dd></div>
+  <div class="meta-cell"><dt>Skill modes</dt><dd>Prefix a task with <code>mode:&lt;id&gt;</code> to select a declared mode of a skill. An undeclared mode is an error listing the valid modes, never a silent fallback.</dd></div>
+  <div class="meta-cell"><dt>Outcome profiles</dt><dd>Recommended, fast, quality, free, local and assurance profiles shape reasoning previews and governed council defaults. <code>/profile</code>.</dd></div>
+</dl>
+<p><code>/vibe</code> asks the runtime for the smallest honest pipeline it can justify (and it may decline with a reason). <code>/laya</code> classifies, announces and records low-risk decisions. <code>/settings</code> toggles Vim editing, verbose output and a compact header; <code>/theme graphite|classic|contrast</code> persists the appearance.</p>
+
+<h2 id="bundled-skills">Bundled skills</h2>
+<p>Five skills ship inside the binary, work in any project and on any provider, and rank last in discovery so an installed same-name skill takes precedence. They are also composable into saved workflows with <code>@skill:&lt;name&gt;</code> steps.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Bundled TUI skills">
+  <table>
+    <thead><tr><th>Skill</th><th>Modes</th><th>What it does for you</th><th>Start with</th></tr></thead>
+    <tbody>
+      <tr><td>Product-Owner Intelligence</td><td>quick, discovery, strategy, validation, ai-review, shaping, prd, launch, full</td><td>Turns an ambiguous request into an evidence-backed decision, shaped scope, implementation-ready requirements and measurable outcomes. Strict evidence labels and a never-fabricate rule.</td><td><code>/po</code></td></tr>
+      <tr><td>Axym Engineering Intelligence</td><td>quick, standard, deep</td><td>Understand the real outcome, make the smallest complete change, verify it and improve from observed results; capability classes and bounded retries.</td><td><code>/aei</code></td></tr>
+      <tr><td>Axym Break-It QA</td><td>—</td><td>Adversarial QA of existing features: five grounded personas, invariants before execution, seeded-fault detection, replayable repro capsules and governed fix → independent retest.</td><td><code>/skill axym-break-it-qa</code></td></tr>
+      <tr><td>Reverse engineering</td><td>—</td><td>Reverse engineer shipped software with plain local tools — JS bundles, native binaries, APKs, SQLite, packet captures, firmware and websites — with evidence-marked answers.</td><td><code>/skill reverse-engineering</code></td></tr>
+      <tr><td>sca-fix</td><td>—</td><td>Remediate a Sonatype/SCA report for Java/Maven: upgrade <code>pom.xml</code> where a real fix exists, never remove what the app uses, and write a plain-language justification spreadsheet.</td><td><code>/sca-fix [report-pdf]</code></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="race-and-solve">/race and axym solve</h2>
+<p><code>/race "&lt;goal&gt;" [--oracle "&lt;cmd&gt;"]</code> locks a failing invariant first — it must be proven RED on HEAD with the oracle files hashed — then races isolated worktrees to satisfy it. The winner is proven against a real failure instead of an unverified green claim. <code>axym solve</code> is the one-shot shell form with the same invariant-lock gate, for scripts and CI, and returns a structured result with an attached evidence trail.</p>
+<div class="callout callout-note">
+  <p class="callout-title"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg>Comparing strategies, not fixing a failure?</p>
+  <p>Use Council mode below: it runs one prompt across several providers in parallel and merges their answers, with latency, model and cost visible side by side.</p>
+</div>
+
+<h2 id="council">Council mode</h2>
+<p><code>/council &lt;prompt&gt;</code> runs the same prompt across two or more providers in parallel and merges their answers into one synthesized response — useful when you want a second opinion without babysitting two sessions. On a governed run, <code>/council --governed "&lt;goal&gt;"</code> uses Borda-ranked consensus with anonymous ballots and a decision record, so you can inspect the full candidate set and the winning rationale.</p>
 
 <h2 id="prompt-cache">E1.2 · 91% prompt cache</h2>
 <p>Providers are stateless CLI calls, so the shared project context is laid out as a stable prefix. A repeated ~40k-token prompt that cost <strong>$0.161 cold</strong> costs <strong>$0.008 warm</strong> — <strong>91% cache hit</strong> (40,268 of 40,270 tokens cached). A repeated prompt is not stripped just because a different provider runs next; doing so would break the prefix the cache exploits.</p>
@@ -844,28 +1019,44 @@ policy:
 <p><code>axym queue</code> submits governed work without blocking your terminal. Priority steering is bounded by ADR-0021, each queued item keeps its own idempotency and expected sequence (ADR-0007), and approvals remain human gates — the queue never auto-approves.</p>
 
 <h2 id="verification">Independent verification</h2>
-<p>Review and security can run on a different provider than the coder. The run records whether the verifier was independent of the code author or shared its provider and model, so the result is not presented as more independent than it is.</p>
+<p>Review and security can run on a different provider than the coder. The run records whether the verifier was independent of the code author or shared its provider and model, so the result is not presented as more independent than it is. Claims are checked against real command output and exit codes, and unverified work is marked <code>UNV</code> rather than scored as perfect.</p>
 <p><span class="badge badge-active">Available</span> Cross-provider verification · <span class="badge badge-active">Available</span> Evidence-grounded findings</p>
 
-<h2 id="mobile">Remote bridge · T-050</h2>
-<p>The TUI can serve its running session over TLS with a PIN gate and QR handoff, so a phone can act as a view and approval surface. The session stays on your workstation.</p>
-<p><span class="badge badge-pending">Experimental</span> Mobile connectivity and TLS preview remain tracked under T-050. Do not present them as generally available.</p>
+<h2 id="remote">Phone control and browser bridge</h2>
+<p><span class="badge badge-active">Available</span> <code>/remote</code> (alias <code>/rc</code>) serves this live TUI session to a phone. Pair with a QR code over the same Wi-Fi or Tailscale, or use <code>/remote tunnel</code> for Cloudflare from any network. The phone sees the same transcript, sends messages and files, answers the same approval gates, and can steer or stop a turn while the terminal keeps working. <code>/remote status</code> lists connected devices; <code>/remote stop</code> revokes the link.</p>
+<p><code>axym web --host 0.0.0.0 --pin 4821</code> serves a phone-friendly page over the governed runtime with live transcript, submit, steer, cancel and approval actions, protected by a PIN or per-start token. A separate read-only watch link lets observers follow without write authority. <code>/detach</code> and <code>axym attach</code> free the terminal while the session keeps running.</p>
+<p><span class="badge badge-pending">Experimental</span> Wider mobile connectivity and TLS preview work is tracked separately (T-050) and is not claimed as generally available here.</p>
 
 <h2 id="keyboard">Keyboard shortcuts</h2>
-<div class="table-wrap" tabindex="0" role="region" aria-label="Keyboard shortcuts">
+<div class="table-wrap" tabindex="0" role="region" aria-label="TUI keyboard shortcuts">
   <table>
     <thead><tr><th>Key</th><th>Action</th><th>Note</th></tr></thead>
     <tbody>
-      <tr><td><kbd class="kbd">k</kbd></td><td>Keys / accounts</td><td rowspan="4">Tier 3 Freeze Card controls — when egress is blocked, the turn is interrupted and the reason is recorded on every terminal path.</td></tr>
-      <tr><td><kbd class="kbd">r</kbd></td><td>Rotate account</td></tr>
-      <tr><td><kbd class="kbd">u</kbd></td><td>Usage / quota</td></tr>
-      <tr><td><kbd class="kbd">a</kbd></td><td>Audit</td></tr>
-      <tr><td><kbd class="kbd">/</kbd></td><td>Command palette</td><td>Tab-complete every command.</td></tr>
-      <tr><td><kbd class="kbd">ctrl</kbd> + <kbd class="kbd">g</kbd></td><td>External editor</td><td>Opens the composer in <code>$EDITOR</code>.</td></tr>
-      <tr><td><kbd class="kbd">alt</kbd> + <kbd class="kbd">i</kbd></td><td>Inline image viewer</td><td>Aspect-correct cell fitting; full restore on close (TUI 0.23.0).</td></tr>
+      <tr><td><kbd class="kbd">Enter</kbd></td><td>Send; accept and run a completed command</td><td>File mentions insert only.</td></tr>
+      <tr><td><kbd class="kbd">Shift+Enter</kbd> / <kbd class="kbd">Ctrl+J</kbd></td><td>Newline</td><td>Also Alt+Enter.</td></tr>
+      <tr><td><kbd class="kbd">Esc</kbd></td><td>Interrupt turn · close popup · deny permission gate</td><td>Gate errors and interrupts deny by default.</td></tr>
+      <tr><td><kbd class="kbd">Shift+Tab</kbd></td><td>Cycle permission mode</td><td>Plan → Ask → Edit → Auto.</td></tr>
+      <tr><td><kbd class="kbd">/</kbd> / <kbd class="kbd">Ctrl+P</kbd></td><td>Command palette</td><td>Tab-complete every command; type to filter.</td></tr>
+      <tr><td><kbd class="kbd">Ctrl+F</kbd></td><td>Find in transcript</td><td>n/N for next hit; <code>export:</code> searches saved exports.</td></tr>
+      <tr><td><kbd class="kbd">Ctrl+R</kbd></td><td>Reverse prompt-history search</td><td>Last 500 prompts; toggles regex inside find.</td></tr>
+      <tr><td><kbd class="kbd">Ctrl+O</kbd></td><td>Toggle verbose tool output</td><td>Full command output and complete diffs.</td></tr>
+      <tr><td><kbd class="kbd">Ctrl+G</kbd> / <kbd class="kbd">Ctrl+X Ctrl+E</kbd></td><td>External editor</td><td>Opens the composer in <code>$VISUAL</code> / <code>$EDITOR</code>.</td></tr>
+      <tr><td><kbd class="kbd">Ctrl+Shift+F</kbd></td><td>Format pasted prompt</td><td>Large pastes become a collapsible prompt.</td></tr>
+      <tr><td><kbd class="kbd">Ctrl+I</kbd> / <kbd class="kbd">Ctrl+Shift+S</kbd></td><td>Attach images or a screenshot</td><td>Added as <code>[Image #n]</code> inputs.</td></tr>
+      <tr><td><kbd class="kbd">Ctrl+V</kbd> / <kbd class="kbd">Alt+V</kbd></td><td>Paste clipboard image</td><td>Falls back to previewing text input.</td></tr>
+      <tr><td><kbd class="kbd">Alt+I</kbd></td><td>Inline image viewer</td><td>Aspect-correct cell fitting; full restore on close (TUI 0.23.0).</td></tr>
+      <tr><td><kbd class="kbd">Ctrl+T</kbd></td><td>Task checklist overlay</td><td>Reflects the agent's real todo state.</td></tr>
+      <tr><td><kbd class="kbd">Alt+A</kbd> / <kbd class="kbd">Ctrl+K</kbd></td><td>Toggle / focus the agent sidebar</td><td>Live roster of runtime runs.</td></tr>
+      <tr><td><kbd class="kbd">PgUp</kbd> / <kbd class="kbd">PgDn</kbd></td><td>Pause / resume following output; scroll overlays</td><td><kbd class="kbd">End</kbd> resumes following.</td></tr>
+      <tr><td><kbd class="kbd">Ctrl+A/E/U/K/W</kbd>, <kbd class="kbd">Alt+F/B/D</kbd></td><td>Composer editing and word motion</td><td>Undo with <kbd class="kbd">Ctrl+Z</kbd>; yank with <kbd class="kbd">Ctrl+Y</kbd>.</td></tr>
+      <tr><td><kbd class="kbd">Ctrl+C</kbd> / <kbd class="kbd">Ctrl+D</kbd></td><td>Interrupt or quit</td><td>Interrupt clears input; a second Ctrl+C quits. Ctrl+D quits on empty input.</td></tr>
     </tbody>
   </table>
-</div>`
+</div>
+<p class="small muted">When a Tier 3 freeze card blocks an action, the turn is interrupted: <kbd class="kbd">k</kbd> kills the action, <kbd class="kbd">r</kbd> continues with redaction, <kbd class="kbd">u</kbd> undoes the pending change when available, and <kbd class="kbd">a</kbd> allows once after you type a reason. <kbd class="kbd">Esc</kbd> also kills it. The reason is recorded on every terminal path.</p>
+
+<h2 id="shared-foundation">Shared foundation</h2>
+<p>All surfaces read the same local event and run model, the same <code>.axym.yaml</code> project configuration and the same provider registry. Approval before mutation, evidence-backed outcomes and replayable history apply everywhere: a success claim must be backed by real command output, exit codes and verification records, and unverified work is marked as such. Hash-chained events keep a run reproducible and its history tamper-evident.</p>`
   },
 
   releases: {
