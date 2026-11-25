@@ -160,7 +160,8 @@ for (const route of ROUTES) {
   check(`route #${route} wired in pages, nav and router order`, inPages && inNav && inOrder,
     `pages:${inPages} nav:${inNav} router:${inOrder}`);
 }
-check('architecture route uses the marketing layout', /architecture:\s*\{[\s\S]{0,120}layout:\s*'marketing'/.test(content));
+check('architecture route uses the docs layout so its side navigation and TOC are visible', /architecture:\s*\{[\s\S]{0,120}layout:\s*'docs'/.test(content));
+check('architecture headings carry ids for the on-this-page TOC', ['execution-model', 'stage-contract', 'lifecycle-states', 'verification-loop'].every((id) => content.includes(`id="${id}"`)));
 check('docs routes declare layout: docs', /quickstart:\s*\{[\s\S]{0,120}layout:\s*'docs'/.test(content));
 check('app.js supports direct hash navigation', app.includes('window.location.hash') && app.includes("'hashchange'"));
 check('app.js builds a dynamic right TOC', app.includes('buildToc') && app.includes('h2[id], h3[id]'));

@@ -534,7 +534,10 @@
       holder.innerHTML = page.html;
       var heads = holder.querySelectorAll('h1[id], h2[id], h3[id]');
       for (var i = 0; i < heads.length; i++) {
-        items.push({ title: heads[i].textContent.trim(), sub: 'Section in ' + page.title, route: route, anchor: heads[i].id, keys: page.keywords || '' });
+        // A section inherits only its own heading text. Inheriting the page
+        // keywords would make every heading on a page match any page keyword
+        // and push the genuinely relevant section out of the first results.
+        items.push({ title: heads[i].textContent.trim(), sub: 'Section in ' + page.title, route: route, anchor: heads[i].id, keys: '' });
       }
     });
     [

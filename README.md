@@ -78,7 +78,7 @@ axym                                      # interactive session in this project
 axym --provider claude --mode plan        # pick a provider; read-only planning mode
 axym -p "summarize uncommitted changes"   # headless — for scripts and CI
 axym web --host 0.0.0.0 --pin 4821        # drive it from your phone: scan the QR code
-axym --doctor                             # check detected providers and setup
+axym doctor                             # check detected providers and setup
 axym --man                                # the full manual, in your pager
 ```
 

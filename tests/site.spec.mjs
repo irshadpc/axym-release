@@ -96,6 +96,15 @@ test.describe('routing and content', () => {
     await expect(page.locator('.docs-sidebar')).toBeVisible();
     await expect(page.locator('.docs-toc')).toBeVisible();
   });
+
+  test('architecture shows the docs side navigation and on-this-page TOC', async ({ page }) => {
+    await open(page, 'architecture', 'dark');
+    await expect(page.locator('.docs-shell')).toBeVisible();
+    await expect(page.locator('.docs-sidebar a[href="#architecture"]')).toBeVisible();
+    await expect(page.locator('.docs-sidebar a[href="#architecture"]')).toHaveAttribute('aria-current', 'page');
+    await expect(page.locator('.docs-toc')).toBeVisible();
+    await expect(page.locator('#toc-links a[href="#architecture/execution-model"]')).toBeVisible();
+  });
 });
 
 test.describe('theme', () => {
