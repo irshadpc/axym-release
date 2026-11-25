@@ -1,6 +1,6 @@
 # Axym feature catalog
 
-Every user-facing capability in Axym, grouped by the job you are trying to do. The TUI is the fast terminal agent; the Desktop app is the full engineering pipeline. Both share the same provider conventions, project configuration and safety model.
+The curated capability catalog for Axym, grouped by the job you are trying to do, plus the additional shipped command surfaces listed with each product. The TUI is the fast terminal agent; the Desktop app is the full engineering pipeline. Both share the same provider conventions, project configuration and safety model.
 
 **Last updated:** 2026-11-05 · **Axym TUI:** 0.23.0 · **Axym Desktop:** 12.17.0
 
@@ -149,7 +149,7 @@ Use more than one model deliberately, watch many runs, and automate the TUI from
 Keep working when you leave the terminal, and let other people follow or take over safely.
 
 - **Share and read-only viewing** — Share a session or live run with collaborators; viewers follow an isolated read-only event stream and cannot steer, approve or write.
-  _Where:_ /share [run-id] · /view <run-id>
+  _Where:_ /share [viewer|contributor|approver|admin|stop] · /view <run-id>
 - **Phone pairing** — Continue the live session from a phone over the same Wi-Fi, Tailscale or a Cloudflare tunnel, with a QR pairing card, PIN or scoped access and a revocable link.
   _Where:_ /remote · /remote tunnel · /remote status · /remote stop
 - **Browser bridge** — Serve a phone-friendly page over the governed runtime with live transcript, submit, steer, cancel and approval actions, protected by a PIN or token.
@@ -177,6 +177,20 @@ Connect to the governed runtime, keep long work alive, and update safely.
   _Where:_ Automatic; ~/.axym/tui/no-keep-awake to disable
 - **Atomic local state** — Sessions, history and allow-lists are written with a temp-file, fsync and rename sequence, so a crash cannot leave half-written state.
   _Where:_ Automatic
+- **AIDE run diagnosis and event inspection** — Inspect failure evidence, event integrity, bounded replay and run-scoped effect counts without destroying the original run.
+  _Where:_ /debug [run-id] · /debug [run-id] inspect
+
+### Additional shipped TUI surfaces
+
+The catalog above is curated; these command families also ship in TUI 0.23.0 and are documented in full on the [feature portal](https://www.irshadpc.in/axym-release/#features):
+
+- **Declarative Flow OS** — `/flow [list|run|resume|status|inspect|capture]` compiles workflows under `.axym/workflows` into least-privilege lockfiles with DAG order, limits and durable resume; five role starter packs ship with it.
+- **Governed run controls** — `/inbox`, `/mission`, `/preview`, `/goldfish`, `/revise`, `/cancel`: one decision inbox, plan preview, drift review and explicit run revision or cancellation.
+- **Code intelligence and safety** — `/investigate`, `/blast`, `/proof`, `/scars`, `/mcp`, `/memory`, `/activity`, `/footprint`: failure analysis, blast radius, offline proof, tool scopes and repo-brain freshness.
+- **Self-improvement proposals** — `/evolve [list|accept|dismiss|rollback <id>]` reviews evidence-gated proposals with a pinned before-state.
+- **Device bridge and visual QA** — `/mobile`, `/mobile-passport`, `/mobile-proof`, `/devices`, `/device`, `/bg`, `/sim`, `/pair`, `/termcaps`: device inventory, multi-turn journeys, screenshots, design diff and terminal capability probing.
+- **Team collaboration** — `/team`, `/peers`, `/relay`: signing keys, peer discovery, shared templates and encrypted relay messages.
+- **Shell entry points** — `axym aei`, `queue`, `flow`, `solve`, `accounts`, `files`, `plugin`, `memory`, `export-session`, `passport`, `relay`, `scars`, `pr`, `verify-proof`, `ship`: the same engine for scripts and CI.
 
 ## Axym Desktop — full app
 

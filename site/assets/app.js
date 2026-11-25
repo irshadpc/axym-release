@@ -260,6 +260,17 @@
       body.setAttribute('role', 'group');
       body.setAttribute('aria-label', label + ' — code sample');
     }
+    var terminals = app.querySelectorAll('.terminal-body');
+    for (var j = 0; j < terminals.length; j++) {
+      var terminal = terminals[j];
+      if (terminal.hasAttribute('tabindex')) continue;
+      var term = terminal.closest ? terminal.closest('.terminal') : null;
+      var bar = term ? term.querySelector('.terminal-bar') : null;
+      var termLabel = bar && bar.textContent.trim() ? bar.textContent.trim() : 'Terminal output';
+      terminal.setAttribute('tabindex', '0');
+      terminal.setAttribute('role', 'group');
+      terminal.setAttribute('aria-label', termLabel + ' — terminal output');
+    }
   }
 
   function buildToc(route) {
@@ -878,6 +889,7 @@
       var query = input.value.trim().toLowerCase();
       var table = document.getElementById(input.getAttribute('data-filter-table'));
       if (!table) return;
+      var noun = input.getAttribute('data-filter-noun') || 'settings';
       var rows = table.querySelectorAll('tbody tr');
       var visible = 0;
       for (var i = 0; i < rows.length; i++) {
@@ -893,7 +905,7 @@
         status.setAttribute('role', 'status');
         input.parentNode.insertBefore(status, input.nextSibling);
       }
-      status.textContent = query ? visible + ' of ' + rows.length + ' settings match “' + input.value + '”.' : '';
+      status.textContent = query ? visible + ' of ' + rows.length + ' ' + noun + ' match “' + input.value + '”.' : '';
     });
 
     window.updatePolicy = updatePolicy;

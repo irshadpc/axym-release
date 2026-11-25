@@ -97,6 +97,16 @@ test.describe('routing and content', () => {
     await expect(page.locator('.docs-toc')).toBeVisible();
   });
 
+  test('features capability tour switches chapters accessibly', async ({ page }) => {
+    await open(page, 'features', 'dark');
+    const tab = page.locator('#ft-tab-parallel');
+    await expect(tab).toBeVisible();
+    await tab.click();
+    await expect(tab).toHaveAttribute('aria-selected', 'true');
+    await expect(page.locator('#ft-panel-parallel')).toBeVisible();
+    await expect(page.locator('#ft-panel-turn')).toBeHidden();
+  });
+
   test('architecture shows the docs side navigation and on-this-page TOC', async ({ page }) => {
     await open(page, 'architecture', 'dark');
     await expect(page.locator('.docs-shell')).toBeVisible();
@@ -257,7 +267,7 @@ test.describe('responsive layout', () => {
   for (const width of widths) {
     test(`no page-level horizontal overflow at ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
-      for (const route of ['home', 'architecture', 'quickstart', 'releases']) {
+      for (const route of ['home', 'architecture', 'quickstart', 'features', 'releases']) {
         await page.goto(`/axym-release/#${route}`, { waitUntil: 'networkidle' });
         const overflow = await page.evaluate(() =>
           Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - window.innerWidth);
