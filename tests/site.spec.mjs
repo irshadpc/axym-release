@@ -333,6 +333,21 @@ test.describe('capability drawer and catalog filters', () => {
     await expect(page.locator('#app h1')).toContainText('Build with autonomy');
   });
 
+  test('drawer links to the story chapter and the jump activates it', async ({ page }) => {
+    await open(page, 'features/catalog', 'dark');
+    await page.locator('#fx-catalog .fx-row').first().waitFor();
+    await page.locator('#fx-tabs [data-fx-tab="all"]').click();
+    await page.locator('[data-fx-id="feat-parallel-isolated-runs"] .fx-row-open').click();
+    await expect(page.locator('#fx-drawer')).toBeVisible();
+    const link = page.locator('#fx-drawer [data-fx-storyjump="chapter-02"]');
+    await expect(link).toBeVisible();
+    await expect(link).toContainText('Run agents in parallel without collisions');
+    await link.click();
+    await expect(page.locator('#fx-drawer')).toBeHidden();
+    await expect(page.locator('.story-rail .story-chapter[data-story-tab="chapter-02"]')).toHaveAttribute('aria-current', 'true');
+    await expect(page.locator('.story-stage-body')).toContainText('Two linked worktrees');
+  });
+
   test('a deep link straight into a capability opens the drawer', async ({ page }) => {
     await page.goto('/axym-release/#features/feat-zero-trust-mcp-tool-access', { waitUntil: 'networkidle' });
     await expect(page.locator('#fx-drawer')).toBeVisible();

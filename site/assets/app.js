@@ -1175,6 +1175,25 @@
       body.appendChild(lim);
     }
 
+    if (cap.story_chapter) {
+      var foot = document.createElement('div');
+      foot.className = 'fx-drawer-foot';
+      var jump = document.createElement('a');
+      jump.href = '#features/how-it-works';
+      jump.setAttribute('data-fx-storyjump', 'chapter-0' + cap.story_chapter);
+      var chTitle = '';
+      if (STORY_MANIFEST && Array.isArray(STORY_MANIFEST.chapters)) {
+        STORY_MANIFEST.chapters.forEach(function (c) {
+          if (c.id === 'chapter-0' + cap.story_chapter) chTitle = c.title;
+        });
+      }
+      jump.innerHTML = 'See it in the story — Chapter 0' + cap.story_chapter +
+        (chTitle ? ' · ' + escapeHtml(chTitle) : '') +
+        ' <svg class="icon icon-sm" aria-hidden="true"><use href="#i-arrow-right"/></svg>';
+      foot.appendChild(jump);
+      body.appendChild(foot);
+    }
+
     drawerBackdrop.hidden = false;
     drawerEl.hidden = false;
     document.body.style.overflow = 'hidden';
@@ -1818,6 +1837,22 @@
     });
     mobileNav.addEventListener('keydown', function (e) {
       if (e.key === 'Tab') trapFocus(mobileNav.querySelector('.mobile-nav-panel'), e);
+    });
+
+    // "See it in the story" inside the drawer: close it, activate the
+    // chapter (click-locked so the scroll-spy cannot override it) and
+    // scroll the walkthrough into view.
+    document.addEventListener('click', function (e) {
+      var jump = e.target.closest('[data-fx-storyjump]');
+      if (!jump) return;
+      e.preventDefault();
+      var chId = jump.getAttribute('data-fx-storyjump');
+      closeDrawer(false, true);
+      navigate('features', 'how-it-works');
+      storyLockUntil = Date.now() + 900;
+      setStoryChapter(chId);
+      var section = document.getElementById('how-it-works');
+      if (section) section.scrollIntoView({ block: 'start' });
     });
 
     document.addEventListener('click', function (e) {

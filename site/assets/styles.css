@@ -2981,6 +2981,7 @@ tr.filter-hidden { display: none; }
 .code-shell-slim .code-body pre { font-size: 0.78rem; line-height: 1.55; text-align: left; }
 .fx-hero-install .code-body { overflow-x: auto; }
 .fx-hero-install .code-shell { text-align: left; }
+.fx-hero-install .code-body pre { white-space: pre-wrap; word-break: break-word; }
 
 .fx-meta-line {
   display: flex;
