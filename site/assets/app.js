@@ -30,6 +30,12 @@
   var systemQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
   var tocObserver = null;
 
+  /* Canonical capability data (Contract A) — the single source of truth for
+     the catalog grid, filter pills, stat strip and ⌘K search. */
+  var CAP_MANIFEST = null;
+  var CAPABILITIES = [];
+  var CAPABILITY_INDEX = {};
+
   var FALLBACK_RELEASES = {
     repo: 'irshadpc/axym-release',
     tui: {
@@ -426,6 +432,126 @@
   var fxTheaterTimer = null;
   var fxTheaterStopped = false;
 
+  /* --------------------------------------------- capability catalog (A) -- */
+  /* The catalog grid, filter pills and counts are generated from the
+     canonical manifest — never from a parallel static copy. Text is set
+     through DOM text nodes; nothing from the data files is innerHTML'd. */
+  function fxPillEl(value, label, count, pressed) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'fx-pill';
+    b.setAttribute('data-fx-pill', value);
+    b.setAttribute('aria-pressed', String(pressed));
+    b.appendChild(document.createTextNode(label + ' '));
+    var n = document.createElement('span');
+    n.className = 'fx-pill-n';
+    n.textContent = String(count);
+    b.appendChild(n);
+    return b;
+  }
+
+  function fxCardEl(cap, currentVersion) {
+    var a = document.createElement('a');
+    a.className = 'fx-card';
+    a.href = '#features/' + cap.id;
+    a.setAttribute('data-fx-group', cap.group);
+    a.setAttribute('data-fx-id', cap.id);
+    a.setAttribute('data-fx-search', (cap.search || '') + ' ' + cap.name);
+    if (cap.featured_top12) a.setAttribute('data-fx-featured', 'true');
+
+    if (cap.maturity && cap.maturity !== 'stable') {
+      var mat = document.createElement('span');
+      mat.className = 'fx-mat';
+      mat.setAttribute('data-mat', cap.maturity);
+      mat.textContent = (CAP_MANIFEST.maturity && CAP_MANIFEST.maturity[cap.maturity]) || cap.maturity;
+      a.appendChild(mat);
+    }
+    if (currentVersion && cap.introduced_in === currentVersion) {
+      var isNew = document.createElement('span');
+      isNew.className = 'fx-new';
+      isNew.textContent = 'new · ' + cap.introduced_in;
+      a.appendChild(isNew);
+    }
+
+    var iconWrap = document.createElement('span');
+    iconWrap.className = 'fx-card-icon';
+    iconWrap.setAttribute('aria-hidden', 'true');
+    iconWrap.innerHTML = icon(cap.icon || 'cpu');
+    a.appendChild(iconWrap);
+
+    var name = document.createElement('span');
+    name.className = 'fx-card-name';
+    name.textContent = cap.name;
+    a.appendChild(name);
+
+    var copy = document.createElement('span');
+    copy.className = 'fx-card-copy';
+    copy.textContent = cap.summary || '';
+    a.appendChild(copy);
+
+    var cmd = document.createElement('code');
+    cmd.className = 'fx-card-cmd';
+    var cmdText = document.createElement('span');
+    cmdText.className = 'fx-card-cmd-text';
+    cmdText.textContent = (cap.commands && cap.commands[0]) || '';
+    cmd.appendChild(cmdText);
+    var copyBtn = document.createElement('button');
+    copyBtn.type = 'button';
+    copyBtn.className = 'fx-cmd-copy';
+    copyBtn.setAttribute('data-copy-text', (cap.commands && cap.commands[0]) || '');
+    copyBtn.setAttribute('aria-label', 'Copy command: ' + ((cap.commands && cap.commands[0]) || ''));
+    copyBtn.innerHTML = icon('copy', 'icon-sm');
+    cmd.appendChild(copyBtn);
+    a.appendChild(cmd);
+    return a;
+  }
+
+  function renderCapabilityCatalog() {
+    var grid = document.getElementById('fx-catalog');
+    if (!grid) return;
+    var pillsHost = document.getElementById('fx-pills');
+    var count = document.getElementById('fx-count');
+    if (!CAP_MANIFEST || !CAPABILITIES.length) {
+      grid.innerHTML = '';
+      var err = document.createElement('p');
+      err.className = 'muted small';
+      err.textContent = 'The capability catalog could not be loaded. Refresh the page — if this persists, the manifest is missing from this deployment.';
+      grid.appendChild(err);
+      if (pillsHost) pillsHost.innerHTML = '';
+      if (count) count.textContent = 'Catalog unavailable';
+      return;
+    }
+    if (pillsHost) {
+      pillsHost.innerHTML = '';
+      var groups = CAP_MANIFEST.groups || {};
+      var counts = {};
+      CAPABILITIES.forEach(function (c) { counts[c.group] = (counts[c.group] || 0) + 1; });
+      pillsHost.appendChild(fxPillEl('all', 'All', CAPABILITIES.length, true));
+      Object.keys(groups).forEach(function (g) {
+        pillsHost.appendChild(fxPillEl(g, groups[g], counts[g] || 0, false));
+      });
+    }
+    var currentVersion = ((releases && releases.tui && releases.tui.version) || CAP_MANIFEST.release || '').replace(/^v/, '');
+    grid.innerHTML = '';
+    CAPABILITIES.forEach(function (cap) { grid.appendChild(fxCardEl(cap, currentVersion)); });
+    applyFxFilter();
+  }
+
+  function fillCapabilityCounts() {
+    if (!CAPABILITIES.length) return;
+    var total = String(CAPABILITIES.length);
+    var spots = document.querySelectorAll('[data-capability-count]');
+    for (var i = 0; i < spots.length; i++) spots[i].textContent = total;
+    var stats = document.querySelectorAll('[data-stat]');
+    for (var j = 0; j < stats.length; j++) {
+      var el = stats[j];
+      var kind = el.getAttribute('data-stat');
+      var value = kind === 'groups' ? String(Object.keys((CAP_MANIFEST && CAP_MANIFEST.groups) || {}).length) : total;
+      el.setAttribute('data-count', value);
+      el.textContent = value;
+    }
+  }
+
   /* Grounded in the v0.24.0 release notes and documented command output. */
   var FX_BOOT_SCENES = [
     {
@@ -560,6 +686,9 @@
     fxFilter.group = 'all';
     if (!page) return;
 
+    renderCapabilityCatalog();
+    fillCapabilityCounts();
+
     var reduced = false;
     try { reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (err) { reduced = true; }
 
@@ -640,6 +769,16 @@
     var side = document.getElementById('side-version');
     if (pill) pill.textContent = 'TUI ' + releases.tui.version;
     if (side) side.textContent = releases.tui.version;
+    var versionSpots = {
+      tui: releases.tui && releases.tui.version,
+      desktop: releases.desktop && releases.desktop.version,
+      'desktop-cross': releases.desktop && releases.desktop.crossOsVersion
+    };
+    var spots = document.querySelectorAll('[data-release-version]');
+    for (var i = 0; i < spots.length; i++) {
+      var key = spots[i].getAttribute('data-release-version');
+      if (versionSpots[key]) spots[i].textContent = versionSpots[key];
+    }
     updateInstallOutputs();
     if (typeof window.renderDownloads === 'function') window.renderDownloads();
     if (typeof window.renderArtifacts === 'function') window.renderArtifacts();
@@ -665,6 +804,23 @@
         if (!releases.history) releases.history = [];
       })
       .catch(function () { releases = FALLBACK_RELEASES; });
+  }
+
+  function loadCapabilities() {
+    return fetch('./data/capabilities.manifest.json')
+      .then(function (r) { if (!r.ok) throw new Error('manifest HTTP ' + r.status); return r.json(); })
+      .then(function (data) {
+        CAP_MANIFEST = data;
+        CAPABILITIES = Array.isArray(data.capabilities) ? data.capabilities : [];
+        CAPABILITY_INDEX = {};
+        CAPABILITIES.forEach(function (c) { CAPABILITY_INDEX[c.id] = c; });
+      })
+      .catch(function () {
+        /* No fabricated fallback: the catalog renders an explicit error state. */
+        CAP_MANIFEST = null;
+        CAPABILITIES = [];
+        CAPABILITY_INDEX = {};
+      });
   }
 
   function artifactGroups() {
@@ -772,6 +928,18 @@
         items.push({ title: heads[i].textContent.trim(), sub: 'Section in ' + page.title, route: route, anchor: heads[i].id, keys: '' });
       }
     });
+    if (CAPABILITIES.length) {
+      var groupLabels = (CAP_MANIFEST && CAP_MANIFEST.groups) || {};
+      CAPABILITIES.forEach(function (c) {
+        items.push({
+          title: c.name,
+          sub: 'Capability · ' + (groupLabels[c.group] || c.group),
+          route: 'features',
+          anchor: c.id,
+          keys: (c.search || '') + ' ' + (c.commands || []).join(' ')
+        });
+      });
+    }
     [
       ['/review', 'Automated code review', 'features', 'review qa'],
       ['/qa', 'Test-coverage pass', 'features', 'qa tests'],
@@ -1008,6 +1176,17 @@
       }, { passive: true });
     }
 
+    // Command-copy affordance on catalog cards: copy the command without
+    // navigating the card. Registered before the generic copy handler and
+    // stopped immediately so both cannot fire on one click.
+    document.addEventListener('click', function (e) {
+      var cmdCopy = e.target.closest('.fx-cmd-copy');
+      if (!cmdCopy) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      copyText(cmdCopy.getAttribute('data-copy-text') || '', 'Command copied', cmdCopy);
+    });
+
     // Any pointer or keyboard interaction inside the capability theater
     // permanently stops its auto-advance; the visitor takes over.
     function fxStopTheater(e) {
@@ -1229,9 +1408,12 @@
       themeMode = saved === 'light' || saved === 'dark' || saved === 'system' ? saved : 'system';
     } catch (e) { themeMode = 'system'; }
     applyThemeMode(themeMode, false);
-    searchItems = buildSearchIndex();
     wireGlobalEvents();
-    render();
+    loadCapabilities().then(function () {
+      searchItems = buildSearchIndex();
+      render();
+      fillCapabilityCounts();
+    });
     loadReleases().then(function () {
       applyReleaseData();
     });

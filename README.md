@@ -13,16 +13,16 @@ Axym ships as two products that share one runtime:
 |---|---|---|
 | What it is | One standalone executable: a session UI, permission gate and headless mode on top of the AI coding CLI you already use | The whole pipeline (plan → design → code → review → security → QA) with mission control, approval gates and in-app updates |
 | Best for | Driving your own agent CLI (`claude`, `opencode`, `codex`, `gemini`, `cursor-agent`, `copilot`, `agy`) from a fast terminal UI | Running autonomous multi-stage engineering work end-to-end, with diffs to approve and tamper-evident run history |
-| Version | [`0.23.0`](../../releases/tag/tui-v0.23.0) | [`12.17.0`](../../releases/tag/desktop-v12.17.0) |
+| Version | [`0.24.0`](../../releases/tag/tui-v0.24.0) | [`12.17.0`](../../releases/tag/desktop-v12.17.0) |
 | Every feature | [TUI catalog](FEATURES.md#axym-tui--terminal-agent) | [Desktop catalog](FEATURES.md#axym-desktop--full-app) |
 
 ## Downloads
 
-| Platform | Axym TUI 0.23.0 | Axym Desktop 12.17.0 |
+| Platform | Axym TUI 0.24.0 | Axym Desktop 12.17.0 |
 |---|---|---|
-| macOS — Apple Silicon & Intel | [axym-0.23.0-macos.tar.gz](https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-macos.tar.gz) | [Axym_12.17.0_universal.dmg](https://github.com/irshadpc/axym-release/releases/download/desktop-v12.17.0/Axym_12.17.0_universal.dmg) |
-| Linux x86_64 | [axym-0.23.0-linux-x86_64.tar.gz](https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-linux-x86_64.tar.gz) | [axym-12.16.0-linux-x86_64.tar.gz](https://github.com/irshadpc/axym-release/releases/download/desktop-v12.16.0/axym-12.16.0-linux-x86_64.tar.gz) ¹ |
-| Windows x86_64 | [axym-0.23.0-windows-x86_64.zip](https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-windows-x86_64.zip) | [axym-12.16.0-windows-x86_64.zip](https://github.com/irshadpc/axym-release/releases/download/desktop-v12.16.0/axym-12.16.0-windows-x86_64.zip) ¹ |
+| macOS — Apple Silicon & Intel | [axym-0.24.0-macos.tar.gz](https://github.com/irshadpc/axym-release/releases/download/tui-v0.24.0/axym-0.24.0-macos.tar.gz) | [Axym_12.17.0_universal.dmg](https://github.com/irshadpc/axym-release/releases/download/desktop-v12.17.0/Axym_12.17.0_universal.dmg) |
+| Linux x86_64 | [axym-0.24.0-linux-x86_64.tar.gz](https://github.com/irshadpc/axym-release/releases/download/tui-v0.24.0/axym-0.24.0-linux-x86_64.tar.gz) | [axym-12.16.0-linux-x86_64.tar.gz](https://github.com/irshadpc/axym-release/releases/download/desktop-v12.16.0/axym-12.16.0-linux-x86_64.tar.gz) ¹ |
+| Windows x86_64 | [axym-0.24.0-windows-x86_64.zip](https://github.com/irshadpc/axym-release/releases/download/tui-v0.24.0/axym-0.24.0-windows-x86_64.zip) | [axym-12.16.0-windows-x86_64.zip](https://github.com/irshadpc/axym-release/releases/download/desktop-v12.16.0/axym-12.16.0-windows-x86_64.zip) ¹ |
 
 Every release also carries `SHA256SUMS.txt`; TUI releases add a machine-readable `release-manifest.json` (version, source commit, per-file hashes). See [Verify a download](#verify-a-download).
 
@@ -35,7 +35,7 @@ Every release also carries `SHA256SUMS.txt`; TUI releases add a machine-readable
 The macOS archive contains `axym-macos-arm64` (Apple Silicon) and `axym-macos-x64` (Intel); the Linux archive contains `axym-linux-x86_64`.
 
 ```sh
-tar -xzf axym-0.23.0-macos.tar.gz     # or axym-0.23.0-linux-x86_64.tar.gz
+tar -xzf axym-0.24.0-macos.tar.gz     # or axym-0.24.0-linux-x86_64.tar.gz
 ./axym-macos-arm64 --version          # Intel Mac: ./axym-macos-x64
 ./axym-macos-arm64 --install          # optional: copies to ~/.local/bin + man page
 axym                                  # start a session in the current project
@@ -147,6 +147,14 @@ The full engineering app: governed plan, design, code, security, review and QA r
 Everything runs on your hardware: embedded Rust/Tauri runtime, SQLite event store, crash-journaled side effects and no telemetry leaving the machine.
 
 ## What's new
+
+**TUI 0.24.0** · [full notes](../../releases/tag/tui-v0.24.0)
+
+- **Parallel isolated runs with real mux pane adapters:** `/runs start --worktree` linked worktrees plus live panes in tmux, zellij and wezterm (`psmux` via the tmux adapter), argv-safe launchers and kill-before-close semantics (ADR-0018).
+- **/ship governed pipeline:** plan → design → code → security → review → qa in one command; changes stage in `.axym/edit-staging/run-<id>` and reach the repo only through an explicit, reversible `/ship apply`.
+- **Declarative Flow OS:** `/flow` workflows compile to least-privilege lockfiles with DAG order, turn/cost/wall-clock limits and durable resume.
+- **Zero-trust MCP firewall:** local stdio/HTTP MCP admission with a capability lattice and untrusted-output taint tracking.
+- **Calm, anti-hang terminal resilience:** one in-place status row, collapsed retries, a hung-tool guard (prompt killer, lock classifier, orphan drain) and an identical-failure circuit breaker.
 
 **TUI 0.23.0** · [full notes](../../releases/tag/tui-v0.23.0)
 

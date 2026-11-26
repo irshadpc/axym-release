@@ -10,7 +10,7 @@
   "scripts": {
     "test": "playwright test",
     "serve": "node tests/serve.mjs",
-    "verify": "node scripts/sync-releases.mjs && node scripts/verify-site.mjs"
+    "verify": "node scripts/sync-releases.mjs && node scripts/verify-manifest-sync.mjs && node scripts/verify-site.mjs"
   },
   "repository": {
     "type": "git",

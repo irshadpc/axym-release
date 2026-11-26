@@ -208,8 +208,8 @@ check('mobile navigation is a modal dialog', index.includes('id="mobile-nav"') &
 check('search is a modal dialog', index.includes('id="search-overlay"') && index.includes('role="dialog"'));
 check('theme menu uses menuitemradio semantics', index.includes('role="menuitemradio"'));
 check('every page defines an h1', (content.match(/<h1[\s>]/g) || []).length >= ROUTES.length);
-check('maturity labels distinguish Available / Experimental / Roadmap',
-  content.includes('Available') && content.includes('Experimental') && content.includes('Roadmap'));
+check('maturity labels distinguish Stable / Experimental / Roadmap',
+  content.includes('Stable') && content.includes('Experimental') && content.includes('Roadmap'));
 
 /* workflow structure */
 process.stdout.write('\n[i] Deploy workflow\n');

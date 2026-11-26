@@ -1,0 +1,175 @@
+{
+  "version": 1,
+  "adr": "ADR-0016",
+  "captured_with": "scripts/capture-proof.sh",
+  "notes": "Proof Artifact Registry (Contract D). captured:true entries MUST reference non-empty files on disk (scripts/verify-manifest-sync.mjs enforces this) and then render as 'Verified Recording · <captured_version>'. Everything else renders an explicit 'Illustrative Schematic' badge. No entry on this page may imply a verified recording that was never captured.",
+  "verify_commands": [
+    "axym doctor",
+    "axym fitness --json",
+    "axym bench --reproduce"
+  ],
+  "sequences": [
+    {
+      "id": "idea-to-verified-code",
+      "title": "Idea → verified code",
+      "capability": "feat-ship-governed-pipeline",
+      "captured": false,
+      "captured_version": null,
+      "captured_at": null,
+      "recording_path": null,
+      "diff_path": null,
+      "receipt_path": null,
+      "caption": "Illustrative schematic assembled from documented v0.24.0 behaviour. No recording has been captured yet — run scripts/capture-proof.sh and commit the artifact to earn the Verified Recording badge.",
+      "summary": "/po problem framing → governed edit with speculative shadow evidence while gates hold → Result Ledger, git diff and a passing test receipt.",
+      "session": [
+        "$ /po \"add rate limiting to the public API\"",
+        "  scope: 3 files · acceptance criteria set · 2 providers eligible",
+        "",
+        "$ axym ship \"add rate limiting to the public API\"",
+        "  ● plan      scope + acceptance criteria",
+        "  ● design    token bucket · per-route limits",
+        "  ● code      src/app.ts +18 −2 · tests +6   (shadow evidence while gates hold)",
+        "  ● security  threat model attached · 0 blockers",
+        "  ◆ review    gate · awaiting human decision",
+        "  ✓ qa        18 tests passed · build exit 0",
+        "  ledger: OK · VER · 2 files · 0 blockers · receipt hash-chained"
+      ],
+      "diff": {
+        "kind": "text",
+        "meta": "git diff — 3 files changed, 18 insertions(+), 2 deletions(-)",
+        "lines": [
+          { "t": "hunk", "s": "src/app.ts" },
+          { "t": "add", "ln": 41, "s": "+ const limiter = createLimiter({ windowMs: 60_000, max: 120 });" },
+          { "t": "add", "ln": 42, "s": "+ app.use(\"/api\", limiter.middleware);" },
+          { "t": "add", "ln": 43, "s": "+ export const _limiterTestHooks = limiter;" },
+          { "t": "del", "ln": 18, "s": "- app.use(\"/api\", legacyThrottle);" },
+          { "t": "hunk", "s": "src/rate.test.ts" },
+          { "t": "add", "ln": 7, "s": "+ it(\"returns 429 past the window budget\", async () => {" },
+          { "t": "add", "ln": 8, "s": "+   await expect(flood(api, 121)).rejects.toMatchObject({ status: 429 });" },
+          { "t": "add", "ln": 9, "s": "+ });" }
+        ]
+      },
+      "receipt": {
+        "outcome": "OK · VER",
+        "files_changed": 2,
+        "checks": [
+          { "name": "typecheck", "result": "pass", "exit": 0 },
+          { "name": "tests", "result": "pass", "exit": 0, "detail": "18 passed · 2 new" },
+          { "name": "build", "result": "pass", "exit": 0 },
+          { "name": "review", "result": "awaiting-approval", "independence": "labelled — different provider from the coder" }
+        ],
+        "blockers": 0,
+        "unverified": ["performance under sustained load marked UNV — not measured this turn"],
+        "evidence": "hash-chained event trail · staged in .axym/edit-staging/run-<id> · reaches the repo only through /ship apply"
+      }
+    },
+    {
+      "id": "parallel-worktrees-mux",
+      "title": "Parallel worktrees & live mux panes",
+      "capability": "feat-parallel-isolated-runs",
+      "captured": false,
+      "captured_version": null,
+      "captured_at": null,
+      "recording_path": null,
+      "diff_path": null,
+      "receipt_path": null,
+      "caption": "Illustrative schematic assembled from documented v0.24.0 behaviour. No recording has been captured yet — run scripts/capture-proof.sh and commit the artifact to earn the Verified Recording badge.",
+      "summary": "/runs start linked worktrees with live tmux/zellij/wezterm panes; Calm-UX classifies a hang and failover recovers the run.",
+      "session": [
+        "$ /runs start \"add rate limiting\" --worktree --mux tmux",
+        "  run 4f2a · worktree wt-parallel-1 · pane %0 live",
+        "$ /runs start \"migrate cache keys\" --worktree --mux tmux",
+        "  run 9c11 · worktree wt-parallel-2 · pane %1 live",
+        "$ /runs switch 4f2a",
+        "  visible: 4f2a · 9c11's events and staged files hidden",
+        "",
+        "  ⚠ tool stall on 9c11 — lock classifier: provider read timeout",
+        "  → orphan drained · verified-idle process group · ToolStallError (typed)",
+        "  → circuit breaker armed · provider benched until quota reset",
+        "  → warm handoff ≤2 KB → next provider · conversation preserved",
+        "  ✓ run recovered · events intact"
+      ],
+      "diff": {
+        "kind": "text",
+        "meta": "per-run isolation — staged files never mix across worktrees",
+        "lines": [
+          { "t": "hunk", "s": "run 4f2a → wt-parallel-1 (staged)" },
+          { "t": "add", "s": "src/rate.ts            | 18 +++" },
+          { "t": "add", "s": "src/rate.test.ts       |  9 ++" },
+          { "t": "hunk", "s": "run 9c11 → wt-parallel-2 (staged)" },
+          { "t": "add", "s": "src/cache/keys.ts      | 42 +++" },
+          { "t": "del", "s": "src/cache/legacy.ts    | 30 ---" },
+          { "t": "hunk", "s": "integration" },
+          { "t": "note", "s": "/runs integrate 9c11        # preview only" },
+          { "t": "note", "s": "/runs integrate 9c11 --apply # explicit, checkpointed merge" }
+        ]
+      },
+      "receipt": {
+        "outcome": "RECOVERED · VER",
+        "runs": 2,
+        "isolation": "per-run worktrees · events and staged files scoped per run",
+        "mux": "tmux panes %0 %1 · argv-safe launcher · kill-before-close (ADR-0018)",
+        "resilience": [
+          "stall classified by the lock classifier, drained, escalated as a typed ToolStallError",
+          "identical-failure circuit breaker armed — no retry loop",
+          "provider benched to quota reset · warm handoff ≤2 KB"
+        ],
+        "blockers": 0,
+        "evidence": "hash-chained event trail per run · merge is a separate human decision"
+      }
+    },
+    {
+      "id": "mobile-developer-platform",
+      "title": "Mobile developer platform (iOS & Android)",
+      "capability": "tui-device-bridge",
+      "captured": false,
+      "captured_version": null,
+      "captured_at": null,
+      "recording_path": null,
+      "diff_path": null,
+      "receipt_path": null,
+      "caption": "Illustrative schematic assembled from documented v0.24.0 behaviour. Simulator journeys are the certified surface; the real-phone hardware journey (T-050) is partial and labelled experimental. No recording has been captured yet — run scripts/capture-proof.sh and commit the artifact to earn the Verified Recording badge.",
+      "summary": ".axym/mobile.json target → /sim session → /mobile journey → /mobile-proof schema-v2 visual diff → /qa --maestro and /security --masvs store passes.",
+      "session": [
+        "$ axym doctor --mobile",
+        "  ios      iPhone 16 Pro simulator   booted",
+        "  android  Pixel 8 emulator          booted",
+        "  real devices: none attached (T-050 hardware journey partial)",
+        "",
+        "$ /device list",
+        "  1 ios simulator · 1 android emulator · lease cleanup on",
+        "$ /sim boot ios --target .axym/mobile.json#checkout",
+        "  app installed · session live · /bg keeps it running",
+        "$ /mobile \"sign in, add item to cart, screenshot the receipt\"",
+        "  journey 3 turns · crash/ANR harvest clean · self-healing bounded",
+        "$ /mobile-proof capture",
+        "  screenshot + hierarchy + visual diff · schema v2 · verified",
+        "$ /qa --maestro",
+        "  12 flows executed · 0 failures",
+        "$ /security --masvs",
+        "  MASVS pass · 0 blockers · store preflight gate: ready"
+      ],
+      "diff": {
+        "kind": "visual",
+        "meta": "schema v2 visual proof — capture, hierarchy and design diff",
+        "items": [
+          { "label": "Receipt screen · before", "detail": "cart badge missing after checkout" },
+          { "label": "Receipt screen · after", "detail": "cart badge resets · button state settled" },
+          { "label": "Visual diff", "detail": "1 region changed · hierarchy delta: CartBadge.count 1 → 0" }
+        ],
+        "boundary": "Captures shown here come from simulators. Real-device visual-diff fidelity, cert-pinned Wi-Fi and closed-app Web Push are part of the T-050 hardware journey, which is partial — the badge stays illustrative until a real capture is committed."
+      },
+      "receipt": {
+        "outcome": "OK · VER (simulator surface)",
+        "surface": "iOS simulator + Android emulator · real devices: none attached",
+        "journey": "3 turns · crash/ANR harvest clean",
+        "visual_proof": "schema v2 · screenshot + hierarchy + design diff",
+        "qa": "maestro — 12 flows · 0 failures",
+        "security": "MASVS pass · 0 blockers · store preflight ready",
+        "blockers": 0,
+        "unverified": ["real-device (hardware) certification — T-050, not GA"],
+        "evidence": "captures and diffs stored locally · nothing uploaded"
+      }
+    }
+  ]
+}

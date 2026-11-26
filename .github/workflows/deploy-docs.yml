@@ -6,6 +6,7 @@ on:
     paths:
       - 'site/**'
       - 'scripts/sync-releases.mjs'
+      - 'scripts/verify-manifest-sync.mjs'
       - 'scripts/verify-site.mjs'
       - '.github/workflows/deploy-docs.yml'
   release:
@@ -37,6 +38,9 @@ jobs:
 
       - name: Sync real release metadata
         run: node scripts/sync-releases.mjs
+
+      - name: Manifest sync & drift prevention
+        run: node scripts/verify-manifest-sync.mjs
 
       - name: Pre-deploy audit
         run: node scripts/verify-site.mjs
