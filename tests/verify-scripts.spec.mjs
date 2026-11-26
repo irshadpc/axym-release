@@ -7,6 +7,12 @@ import { fileURLToPath } from 'node:url';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PROOFS = join(ROOT, 'site/data/proofs.manifest.json');
 
+// The ADR-0016 RED-path test mutates proofs.manifest.json on disk, and the
+// badge-render test below fetches that same file through the live site
+// (app.js does a runtime fetch). The two must never overlap, so this file
+// runs its tests serially even though the suite is fullyParallel.
+test.describe.configure({ mode: 'serial' });
+
 function runVerifier(script) {
   return spawnSync('node', [join(ROOT, 'scripts', script)], { encoding: 'utf8', cwd: ROOT });
 }
