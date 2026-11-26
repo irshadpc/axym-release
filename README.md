@@ -141,7 +141,7 @@ The full engineering app: governed plan, design, code, security, review and QA r
 - **Safety and evidence** — The same fail-closed rules apply whichever surface you use.
 - **Extensibility** — Skills, plugins and project context work across both products.
 
-**[Open the feature catalog →](FEATURES.md)** — the curated capabilities and additional command surfaces, grouped by what you are trying to do.
+**[Open the complete feature catalog →](FEATURES.md)** — every command, screen and capability, grouped by what you are trying to do.
 <!-- features:end -->
 
 Everything runs on your hardware: embedded Rust/Tauri runtime, SQLite event store, crash-journaled side effects and no telemetry leaving the machine.

@@ -1,8 +1,8 @@
 # Axym feature catalog
 
-The curated capability catalog for Axym, grouped by the job you are trying to do, plus the additional shipped command surfaces listed with each product. The TUI is the fast terminal agent; the Desktop app is the full engineering pipeline. Both share the same provider conventions, project configuration and safety model.
+Every user-facing capability in Axym, grouped by the job you are trying to do. The TUI is the fast terminal agent; the Desktop app is the full engineering pipeline. Both share the same provider conventions, project configuration and safety model.
 
-**Last updated:** 2026-11-05 · **Axym TUI:** 0.23.0 · **Axym Desktop:** 12.17.0
+**Last updated:** 2026-11-26 · **Axym TUI:** 0.24.0 · **Axym Desktop:** 12.17.0
 
 > This catalog is generated from one source so the TUI and Desktop always describe the same capabilities.
 
@@ -26,6 +26,12 @@ Bring any installed agent CLI, switch models mid-session, and recover when a pro
   _Where:_ Automatic for the Claude provider
 - **Sessions, resume and git reconciliation** — Saves every finished turn as JSONL, restores the provider's own session id, and tells you what changed in the workspace since the session was last active.
   _Where:_ /sessions · /resume · /continue · axym -c
+- **Multi-account provider slots and isolation** — Configure and switch between multiple accounts per provider (personal, work, sandbox) with trust-zone policies, pinned-account enforcement, per-account health and cooldown tracking, and kernel-isolated credential directories (macOS Seatbelt / Linux Landlock) with egress-proxy canary protection.
+  _Where:_ /accounts · axym accounts [list|add|test] · ~/.axym/providers.json
+- **OpenAI-compatible local inference** — Connect local or self-hosted OpenAI-compatible inference servers (Ollama, LM Studio, vLLM, llama.cpp) through the same TUI session, tool loop and Result Ledger with no cloud CLI required.
+  _Where:_ axym --provider local · AXYM_LOCAL_BASE_URL · AXYM_LOCAL_MODEL
+- **Session outcome profiles** — Select a session-scoped outcome profile (such as strict verification, rapid prototype or security audit) that shapes how turns are evaluated.
+  _Where:_ /profile
 
 ### Chat, transcript & results
 
@@ -43,6 +49,8 @@ Read the agent's work as it happens and see a structured result when the turn en
   _Where:_ Ctrl+F · /find · /turns
 - **Copy and export** — Copy the latest or an earlier response to the system clipboard, or save the full transcript as markdown.
   _Where:_ /copy · /export
+- **Session lifecycle and built-in reference** — Start a fresh conversation, inspect live status, metrics and version, or read the built-in manual, feature catalog and command help inline.
+  _Where:_ /new · /clear · /status · /metrics · /version · /man · /features · /help
 
 ### Input & editor
 
@@ -92,6 +100,14 @@ Move from a conversation to the evidence, graph, health and handoff views behind
   _Where:_ /handover · /passport
 - **Settings, themes and density** — Toggle Vim editing, verbose tool output and a compact header, or switch between graphite, classic and high-contrast themes.
   _Where:_ /settings · /theme graphite|classic|contrast
+- **Tiled mux viewer adapters** — Run governed runs in real tmux, psmux, zellij or wezterm panes with argv-safe launchers, strict pane-ID sanitisation and a tiled wave layout; closing a pane kills the process group before the view disappears.
+  _Where:_ /runs with a mux viewer · axym pane-exec
+- **Blast radius and root-cause investigation** — Inspect changed symbols, their callers and compiler diagnostics before approving edits, or run structured failure investigations over execution traces and logs.
+  _Where:_ /blast · /investigate
+- **Agent Activity Inspector and receipts** — Inspect live tool and file transparency (NOW, FILES, SAFETY, OUTCOME, WHY), per-turn file audit records, and harness-authored evidence receipts with verification checksums.
+  _Where:_ /activity · /footprint · /receipt · /files · axym files
+- **Cross-workspace ECS join and companion bridge** — Join a companion workspace's read-only ECS topology or attach an accepted companion run's contract and diff evidence.
+  _Where:_ /join <path> · /bridge <run-id>
 
 ### Verification, review & delivery
 
@@ -109,6 +125,16 @@ Turn a change into evidence: review it, test it, scan it, and keep a reversible 
   _Where:_ /workflow new|run|save|list · /workflows
 - **Project setup** — Writes a starter .axym.yaml shared with the desktop app, without ever overwriting an existing file.
   _Where:_ /init
+- **Declarative Flow OS** — Compile markdown workflows under .axym/workflows into least-privilege lockfiles with DAG order, bounded outputs, turn/cost/wall-clock limits and durable resume; five role starter packs and signed org workflow packs ship with it.
+  _Where:_ /flow list|run|resume|status|inspect|capture · axym flow init|publish|add
+- **Governed run controls** — One decision inbox with an unread badge, mission preview with provider badges, drift review and explicit run revision or cancellation, backed by a typed control-plane client.
+  _Where:_ /inbox · /mission · /preview · /goldfish · /revise · /cancel
+- **Governed pipeline and declarative flow** — The /ship pipeline runs a gated plan → design → code → security → review → qa job on the axym serve daemon and applies staged changes only on approval; /flow compiles declarative workflows into least-privilege lockfiles with durable resume.
+  _Where:_ /ship · /approve · /revise · /flow
+- **Proof-carrying races and offline verification** — Lock a failing test invariant on HEAD, race candidate implementations in isolated worktrees, verify non-vacuous RED→GREEN proofs with Ed25519 signatures, and enforce organization scar rules that block recurring mistakes.
+  _Where:_ /race · /proof · /scars · axym solve · axym verify-proof
+- **Checkpoints, retry and rejection** — Snapshot the working tree on demand, re-run the last prompt, or explicitly reject a staged proposal before anything lands.
+  _Where:_ /checkpoint · /retry · /reject
 
 ### Skills & customization
 
@@ -118,12 +144,16 @@ Extend the agent with the same skills and project configuration the desktop app 
   _Where:_ /skills · /skill <name> [task] · /po · /aei
 - **Project and user skills** — Discovers SKILL.md definitions from .agents, .claude, .codex and compatible project or user folders, with mode support.
   _Where:_ /skills · /skill <name> [task]
-- **Bundled SCA remediation** — Runs the sca-fix skill to upgrade a Java/Maven pom.xml and write a plain-language justification spreadsheet for a Sonatype/SCA report.
-  _Where:_ /sca-fix [report-pdf]
 - **Slash-command plugins** — External modules can register narrow slash commands; built-in commands always win.
   _Where:_ See the plugin API in the TUI docs
 - **Project configuration** — Reads .axym.yaml for tech stack, language, style guide, forbidden libraries, custom instructions, secrets, capabilities and budgets.
   _Where:_ .axym.yaml at the project root
+- **Plugin trust and lifecycle** — Scaffold, validate, trust and list repo-local verifier and command plugins with fail-closed treeSha256 tamper revocation.
+  _Where:_ /plugins · axym plugin init|validate|trust|list
+- **Living Repo Brain and memory** — Zero-rescan three-layer context pyramid (ECS fingerprints, depth-2 import cone, co-change slice) with causal lessons closed-loop from /race.
+  _Where:_ /memory · axym memory status|explain|refresh
+- **SPRT-gated self-improvement** — Review statistically gated, reversible proposals for skills and instructions pinned to a before-state; nothing changes without explicit acceptance.
+  _Where:_ /evolve [list|accept|dismiss|rollback <id>]
 
 ### Multi-model, fleet & automation
 
@@ -143,13 +173,17 @@ Use more than one model deliberately, watch many runs, and automate the TUI from
   _Where:_ /steer <instruction> · /queue <instruction>
 - **Follow, fork and compare runtime runs** — Attach to a Desktop or Mobile run with durable replay and live updates, fork it into a child lineage, or open a second read-only viewer.
   _Where:_ /attach · /view · /fork
+- **Parallel isolated runs** — Start several governed pipeline runs in isolated linked worktrees, switch the visible run without mixing events or staged files, and preview or explicitly apply a finished run's worktree integration. The daemon gates structural worktree creation behind AXYM_PERSISTENT_RUNTIME=1.
+  _Where:_ /runs list · /runs start "<goal>" --worktree · /runs switch <id> · /runs integrate [id] [--apply]
+- **Controlled delegation and worker control** — Delegate tasks to isolated workers, inspect fencing tokens and progress, wait for acceptance, land verified work or recover stalled sessions.
+  _Where:_ /delegate · /workers
 
 ### Collaboration, remote & handoff
 
 Keep working when you leave the terminal, and let other people follow or take over safely.
 
 - **Share and read-only viewing** — Share a session or live run with collaborators; viewers follow an isolated read-only event stream and cannot steer, approve or write.
-  _Where:_ /share [viewer|contributor|approver|admin|stop] · /view <run-id>
+  _Where:_ /share [run-id] · /view <run-id>
 - **Phone pairing** — Continue the live session from a phone over the same Wi-Fi, Tailscale or a Cloudflare tunnel, with a QR pairing card, PIN or scoped access and a revocable link.
   _Where:_ /remote · /remote tunnel · /remote status · /remote stop
 - **Browser bridge** — Serve a phone-friendly page over the governed runtime with live transcript, submit, steer, cancel and approval actions, protected by a PIN or token.
@@ -160,6 +194,12 @@ Keep working when you leave the terminal, and let other people follow or take ov
   _Where:_ /notify · ~/.axym/tui/notify.json
 - **Session and run handoff** — Export or import a session, or move a multi-machine run checkpoint with offer, export, accept, status and retract actions.
   _Where:_ /handoff · /run-handoff
+- **Device bridge and visual QA** — Detect mobile stacks, drive real or simulated devices through multi-turn journeys, freeze visual baselines, run design diffs and visual proof verification, and quarantine real devices with lease cleanup.
+  _Where:_ /mobile · /devices · /device · /sim · /bg · /pair · /termcaps · /doctor --mobile
+- **Mobile passport, proof replay, MASVS and Maestro QA** — Inspect mobile host environment passports, replay or verify mobile proof receipts, scan diffs against OWASP MASVS mobile security rules, and run .maestro/*.yaml UI flows.
+  _Where:_ /mobile-passport · /mobile-proof · /security --masvs · /qa --maestro
+- **Team collaboration and encrypted relay** — Manage team signing keys, shared deployment profiles and templates, peer discovery and encrypted relay messages across local workspaces.
+  _Where:_ /team · /peers · /relay
 
 ### Runtime, recovery & operations
 
@@ -177,20 +217,12 @@ Connect to the governed runtime, keep long work alive, and update safely.
   _Where:_ Automatic; ~/.axym/tui/no-keep-awake to disable
 - **Atomic local state** — Sessions, history and allow-lists are written with a temp-file, fsync and rename sequence, so a crash cannot leave half-written state.
   _Where:_ Automatic
-- **AIDE run diagnosis and event inspection** — Inspect failure evidence, event integrity, bounded replay and run-scoped effect counts without destroying the original run.
+- **AIDE run diagnosis and event inspection** — On a connected runtime run, inspect failure evidence, event integrity, bounded pipeline replay and run-scoped effect counts. Pause, investigate or resume diagnosis while retaining the original run and its permissions. Observations do not certify a repair.
   _Where:_ /debug [run-id] · /debug [run-id] inspect
-
-### Additional shipped TUI surfaces
-
-The catalog above is curated; these command families also ship in TUI 0.23.0 and are documented in full on the [feature portal](https://www.irshadpc.in/axym-release/#features):
-
-- **Declarative Flow OS** — `/flow [list|run|resume|status|inspect|capture]` compiles workflows under `.axym/workflows` into least-privilege lockfiles with DAG order, limits and durable resume; five role starter packs ship with it.
-- **Governed run controls** — `/inbox`, `/mission`, `/preview`, `/goldfish`, `/revise`, `/cancel`: one decision inbox, plan preview, drift review and explicit run revision or cancellation.
-- **Code intelligence and safety** — `/investigate`, `/blast`, `/proof`, `/scars`, `/mcp`, `/memory`, `/activity`, `/footprint`: failure analysis, blast radius, offline proof, tool scopes and repo-brain freshness.
-- **Self-improvement proposals** — `/evolve [list|accept|dismiss|rollback <id>]` reviews evidence-gated proposals with a pinned before-state.
-- **Device bridge and visual QA** — `/mobile`, `/mobile-passport`, `/mobile-proof`, `/devices`, `/device`, `/bg`, `/sim`, `/pair`, `/termcaps`: device inventory, multi-turn journeys, screenshots, design diff and terminal capability probing.
-- **Team collaboration** — `/team`, `/peers`, `/relay`: signing keys, peer discovery, shared templates and encrypted relay messages.
-- **Shell entry points** — `axym aei`, `queue`, `flow`, `solve`, `accounts`, `files`, `plugin`, `memory`, `export-session`, `passport`, `relay`, `scars`, `pr`, `verify-proof`, `ship`: the same engine for scripts and CI.
+- **Calm, resilient terminal UX** — An anti-hang command guard with verified-idle process-group escalation, an identical-failure circuit breaker, transient retry collapse and a calm watchdog that keeps one in-place live status row instead of appending scrollback.
+  _Where:_ Automatic in interactive sessions
+- **Zero-trust MCP tool access** — A local MCP stdio/HTTP firewall with scoped capability-lattice admission and untrusted-output tainting; delegated file tools stay behind the audited route.
+  _Where:_ /mcp
 
 ## Axym Desktop — full app
 
@@ -252,6 +284,8 @@ See exactly what the agent did, approve it with evidence, and compare outcomes.
   _Where:_ Compare view
 - **Read-only watch mode** — Follow a running run without any write authority, so reviewers and collaborators can observe safely.
   _Where:_ Watch from a running run
+- **AIDE evidence-based debugging** — Run details show diagnostic mode, evidence, hypotheses and verification. The native inspector checks integrity, bounded replay and run-scoped effects. Reproducible generated-code build failures use a bounded repair loop before returning to existing QA. Advanced strategies remain investigation plans.
+  _Where:_ Desktop Run detail → Diagnosis; paired mobile run detail (viewer is read-only)
 
 ### Providers, models & routing
 
@@ -318,7 +352,7 @@ Extend both apps with the same versioned skills, plugins and project context.
   _Where:_ Settings · Skills
 - **Versioned, sandboxed skill packages** — YAML manifests carry version, dependencies and capabilities; security-critical skills run in sandbox v2 with per-skill limits, and packages can auto-upgrade or roll back.
   _Where:_ Skill Dashboard · axym skill upgrade
-- **Bundled skills** — Product-Owner Intelligence, Axym Engineering Intelligence, reverse engineering, break-it QA and sca-fix ship with the app.
+- **Bundled skills** — Product-Owner Intelligence, Axym Engineering Intelligence, reverse engineering and break-it QA ship with the app.
   _Where:_ Skill Dashboard · /skills in the TUI
 - **Skill test harness** — Runs a skill end to end in isolation before you rely on it.
   _Where:_ axym skill test <skill>
@@ -350,7 +384,7 @@ See the whole system's health, history and release readiness.
 
 Move work between people, devices and machines without losing the thread.
 
-- **Mobile connect** — Authenticated test submissions, a workspace-switcher projection and event-log resync when a phone reconnects.
+- **Mobile connect** — Native TLS on the LAN (self-signed, fingerprint-pinned, fail-closed), authenticated test submissions, a workspace-switcher projection, event-log resync when a phone reconnects, a read-only run activity pane, and opt-in encrypted background push.
   _Where:_ Mobile connect
 - **Run invites and sharing** — Invite collaborators to follow or contribute to a run with scoped access.
   _Where:_ Run detail · Share

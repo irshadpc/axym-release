@@ -26,7 +26,7 @@ window.AXYM_PAGES = {
         <li><span class="ok" aria-hidden="true">●</span> TUI <span class="mono">v0.24.0</span></li>
         <li>Desktop <span class="mono">v12.17.0</span></li>
         <li>MIT licensed</li>
-        <li>No account required</li>
+        <li>No Axym account required</li>
       </ul>
     </div>
 
@@ -273,7 +273,7 @@ $ /handoff export
 
     <div class="tour-stats">
       <h3 id="powerful-and-light">Powerful where it counts. Light where it matters.</h3>
-      <p>Axym has no account layer, no API keys of its own and no telemetry. It drives the agent CLI you already installed and keeps orchestration, writes and evidence on your machine.</p>
+      <p>Axym has no Axym cloud account, no API keys of its own and no telemetry. It drives the agent CLI you already installed (including multiple provider accounts via <code>/accounts</code> and local OpenAI-compatible servers via <code>--provider local</code>) and keeps orchestration, writes and evidence on your machine.</p>
       <dl class="stat-grid">
         <div class="stat-cell"><dt>1</dt><dd>standalone executable</dd></div>
         <div class="stat-cell"><dt>0</dt><dd>static API keys</dd></div>
@@ -305,7 +305,7 @@ $ /handoff export
       <div class="capability-row">
         <div class="capability-tag" style="--stage: var(--stage-implementation)">Local-first runtime</div>
         <div class="capability-body"><h3>Your machine owns the work.</h3><p>The orchestrator, workspace writes and SQLite event store run locally. Axym ships no telemetry. Model inference is performed by the provider CLI you install, under that provider's own network boundary.</p></div>
-        <div class="capability-aside"><span class="status">Available</span>No account layer</div>
+        <div class="capability-aside"><span class="status">Available</span>No Axym account · multi-account provider slots</div>
       </div>
       <div class="capability-row">
         <div class="capability-tag" style="--stage: var(--stage-planning)">Provider fleet</div>
@@ -494,7 +494,7 @@ $ /handoff export
     <div class="section-head">
       <p class="section-kicker">Find your way in</p>
       <h2 id="start-where-you-are">Start where you are.</h2>
-      <p>You do not have to learn 67 features to get value. Pick the job you have today — Axym meets you there, and the full catalog is one click away when you need it.</p>
+      <p>You do not have to learn 77 features to get value. Pick the job you have today — Axym meets you there, and the full catalog is one click away when you need it.</p>
     </div>
     <div class="path-grid">
       <a class="path-card" href="#quickstart/install"><span class="path-card-kicker">Just looking</span><b>Try it in five steps</b><span class="path-card-copy">Download, verify, detect a provider, start a session.</span><span class="path-card-arrow" aria-hidden="true">→</span></a>
@@ -999,7 +999,7 @@ policy:
     <div class="fx-scan" aria-hidden="true"></div>
     <div class="container fx-hero-inner">
       <p class="eyebrow" data-fx-reveal><span class="dot" aria-hidden="true"></span>Axym TUI v0.24.0 · Capability showcase</p>
-      <h1 data-fx-reveal style="--fx-i:1">67 capabilities.<br><em>One promise: proof.</em></h1>
+      <h1 data-fx-reveal style="--fx-i:1">77 capabilities.<br><em>One promise: proof.</em></h1>
       <p class="fx-hero-lead" data-fx-reveal style="--fx-i:2">Axym is a local-first engineering system. Give it a goal in plain English and it plans, implements, reviews and verifies the work — on your machine, behind approval gates you control. This page is every capability that makes that real, presented the way you would actually use it.</p>
       <div class="fx-hero-actions" data-fx-reveal style="--fx-i:3">
         <a class="btn btn-primary btn-lg" href="#features/feature-theater">See it work <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
@@ -1031,7 +1031,7 @@ policy:
     <div class="container fx-localnav-inner">
       <a href="#features/overview" data-fx-spy="overview">Overview</a>
       <a href="#features/feature-theater" data-fx-spy="feature-theater">See it work</a>
-      <a href="#features/catalog" data-fx-spy="catalog">All 67 capabilities</a>
+      <a href="#features/catalog" data-fx-spy="catalog">All 77 capabilities</a>
       <a href="#features/start-here" data-fx-spy="start-here">Start here</a>
       <a href="#features/reference" data-fx-spy="reference">Reference</a>
     </div>
@@ -1234,26 +1234,26 @@ policy:
     <div class="container">
       <div class="section-head" data-fx-reveal>
         <p class="section-kicker">The catalog</p>
-        <h2>All 67. On one canvas.</h2>
-        <p>Filter by the job you are doing, or search by name and command. Every card opens the full explanation further down this page — what it is, why it exists, and exactly where to use it. New in v0.24.0: parallel mux panes, the /ship pipeline, cost routing and the anti-hang guard.</p>
+        <h2>All 77. On one canvas.</h2>
+        <p>Filter by the job you are doing, or search by name and command. Every card opens the full explanation further down this page — what it is, why it exists, and exactly where to use it. New in v0.24.0: parallel mux panes, the /ship pipeline, cost routing, multi-account isolation and the anti-hang guard.</p>
       </div>
       <div class="fx-toolbar" data-fx-reveal>
         <label class="visually-hidden" for="feature-filter">Filter the capability catalog</label>
-        <input class="filter-input fx-search" id="feature-filter" data-filter-grid="fx-catalog" data-filter-noun="capabilities" type="search" placeholder="Search — try “review”, “worktree”, “/remote”, “cache”…" autocomplete="off" spellcheck="false">
+        <input class="filter-input fx-search" id="feature-filter" data-filter-grid="fx-catalog" data-filter-noun="capabilities" type="search" placeholder="Search — try “review”, “worktree”, “/accounts”, “/remote”…" autocomplete="off" spellcheck="false">
         <div class="fx-pills" role="group" aria-label="Filter capabilities by group">
-          <button type="button" class="fx-pill" data-fx-pill="all" aria-pressed="true">All <span class="fx-pill-n">67</span></button>
-          <button type="button" class="fx-pill" data-fx-pill="sessions" aria-pressed="false">Sessions &amp; models <span class="fx-pill-n">7</span></button>
+          <button type="button" class="fx-pill" data-fx-pill="all" aria-pressed="true">All <span class="fx-pill-n">77</span></button>
+          <button type="button" class="fx-pill" data-fx-pill="sessions" aria-pressed="false">Sessions &amp; models <span class="fx-pill-n">10</span></button>
           <button type="button" class="fx-pill" data-fx-pill="chat" aria-pressed="false">Transcript <span class="fx-pill-n">7</span></button>
           <button type="button" class="fx-pill" data-fx-pill="editor" aria-pressed="false">Input &amp; editor <span class="fx-pill-n">5</span></button>
           <button type="button" class="fx-pill" data-fx-pill="modes" aria-pressed="false">Modes &amp; safety <span class="fx-pill-n">7</span></button>
-          <button type="button" class="fx-pill" data-fx-pill="workspaces" aria-pressed="false">Workspaces <span class="fx-pill-n">8</span></button>
-          <button type="button" class="fx-pill" data-fx-pill="verification" aria-pressed="false">Verification <span class="fx-pill-n">6</span></button>
-          <button type="button" class="fx-pill" data-fx-pill="skills" aria-pressed="false">Skills <span class="fx-pill-n">4</span></button>
-          <button type="button" class="fx-pill" data-fx-pill="fleet" aria-pressed="false">Fleet &amp; automation <span class="fx-pill-n">9</span></button>
+          <button type="button" class="fx-pill" data-fx-pill="workspaces" aria-pressed="false">Workspaces <span class="fx-pill-n">10</span></button>
+          <button type="button" class="fx-pill" data-fx-pill="verification" aria-pressed="false">Verification <span class="fx-pill-n">7</span></button>
+          <button type="button" class="fx-pill" data-fx-pill="skills" aria-pressed="false">Skills <span class="fx-pill-n">6</span></button>
+          <button type="button" class="fx-pill" data-fx-pill="fleet" aria-pressed="false">Fleet &amp; automation <span class="fx-pill-n">10</span></button>
           <button type="button" class="fx-pill" data-fx-pill="collab" aria-pressed="false">Remote &amp; team <span class="fx-pill-n">6</span></button>
-          <button type="button" class="fx-pill" data-fx-pill="runtime" aria-pressed="false">Runtime &amp; ops <span class="fx-pill-n">8</span></button>
+          <button type="button" class="fx-pill" data-fx-pill="runtime" aria-pressed="false">Runtime &amp; ops <span class="fx-pill-n">9</span></button>
         </div>
-        <p class="fx-count" id="fx-count" role="status">Showing all 67 capabilities</p>
+        <p class="fx-count" id="fx-count" role="status">Showing all 77 capabilities</p>
       </div>
       <div class="fx-grid" id="fx-catalog">
         <a class="fx-card" href="#features/feat-one-session-any-agent-cli" data-fx-group="sessions" data-fx-search="claude codex gemini opencode cursor copilot provider cli interface"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-cpu"/></svg></span><span class="fx-card-name">One session, any agent CLI</span><span class="fx-card-copy">Drive Claude, Codex, Gemini, OpenCode and more from one consistent interface.</span><code class="fx-card-cmd">axym --provider claude</code></a>
@@ -1263,6 +1263,9 @@ policy:
         <a class="fx-card" href="#features/feat-persistent-claude-connection" data-fx-group="sessions" data-fx-search="claude stream-json persistent connection stdin permissions fast"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-activity"/></svg></span><span class="fx-card-name">Persistent Claude connection</span><span class="fx-card-copy">A live stream-JSON process, so repeat turns start instantly.</span><code class="fx-card-cmd">Automatic</code></a>
         <a class="fx-card" href="#features/feat-sessions-resume-and-git-reconciliation" data-fx-group="sessions" data-fx-search="resume continue session jsonl git reconciliation workspace changed"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-clock"/></svg></span><span class="fx-card-name">Sessions, resume &amp; reconciliation</span><span class="fx-card-copy">Come back tomorrow — it restores the session and reports what changed.</span><code class="fx-card-cmd">axym -c · /resume</code></a>
         <a class="fx-card" href="#features/feat-self-healing-doctor" data-fx-group="sessions" data-fx-search="doctor self-healing onboarding 30 seconds repair scar rules block recurring non-destructive"><span class="fx-new">new · 0.24</span><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-check-circle"/></svg></span><span class="fx-card-name">Self-healing doctor &amp; onboarding</span><span class="fx-card-copy">A 30-second, non-destructive setup that detects providers and repairs common problems itself.</span><code class="fx-card-cmd">axym doctor</code></a>
+        <a class="fx-card" href="#features/feat-multi-account-provider-slots-and-isolation" data-fx-group="sessions" data-fx-search="accounts multi-account slots personal work sandbox trust zone pinned seatbelt landlock canary isolation cooldown"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-users"/></svg></span><span class="fx-card-name">Multi-account provider slots</span><span class="fx-card-copy">Switch personal, work and sandbox accounts per provider with trust zones and kernel isolation.</span><code class="fx-card-cmd">/accounts · axym accounts</code></a>
+        <a class="fx-card" href="#features/feat-openai-compatible-local-inference" data-fx-group="sessions" data-fx-search="local openai-compatible ollama lm studio vllm llama.cpp self-hosted model"><span class="fx-new">new · 0.24</span><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-cpu"/></svg></span><span class="fx-card-name">OpenAI-compatible local inference</span><span class="fx-card-copy">Drive Ollama, LM Studio, vLLM or llama.cpp through the same TUI session and Result Ledger.</span><code class="fx-card-cmd">axym --provider local</code></a>
+        <a class="fx-card" href="#features/feat-session-outcome-profiles" data-fx-group="sessions" data-fx-search="profile outcome strict prototype security audit quality preset"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-sliders"/></svg></span><span class="fx-card-name">Session outcome profiles</span><span class="fx-card-copy">Shape turn evaluation with session-scoped verification, speed or audit profiles.</span><code class="fx-card-cmd">/profile</code></a>
         <a class="fx-card" href="#features/feat-streaming-chat-and-tool-activity" data-fx-group="chat" data-fx-search="streaming tokens tool calls markdown live output"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-message"/></svg></span><span class="fx-card-name">Streaming chat &amp; tool activity</span><span class="fx-card-copy">Watch real commands, paths and output while the agent works.</span><code class="fx-card-cmd">Automatic</code></a>
         <a class="fx-card" href="#features/feat-result-ledger" data-fx-group="chat" data-fx-search="result ledger outcome ok fail ver unv files checks blockers"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-check-circle"/></svg></span><span class="fx-card-name">Result Ledger</span><span class="fx-card-copy">Every turn ends with a receipt: outcome, files, checks, blockers.</span><code class="fx-card-cmd">Ctrl+O for detail</code></a>
         <a class="fx-card" href="#features/feat-markdown-and-syntax-highlighting" data-fx-group="chat" data-fx-search="markdown syntax highlighting code fence rust go python shell yaml"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-book"/></svg></span><span class="fx-card-name">Markdown &amp; syntax highlighting</span><span class="fx-card-copy">Answers render as documents and code as code — no external dependency.</span><code class="fx-card-cmd">Automatic</code></a>
@@ -1290,16 +1293,21 @@ policy:
         <a class="fx-card" href="#features/feat-handover-and-work-passport" data-fx-group="workspaces" data-fx-search="handover passport handoff brief acceptance criteria recovery export"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-book"/></svg></span><span class="fx-card-name">Handover &amp; Work Passport</span><span class="fx-card-copy">The next session inherits the brief, criteria and recovery context.</span><code class="fx-card-cmd">/handover · /passport</code></a>
         <a class="fx-card" href="#features/feat-settings-themes-and-density" data-fx-group="workspaces" data-fx-search="settings theme graphite classic contrast density vim verbose header"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-sliders"/></svg></span><span class="fx-card-name">Settings, themes &amp; density</span><span class="fx-card-copy">Graphite, classic or contrast — comfort settings persist.</span><code class="fx-card-cmd">/theme graphite</code></a>
         <a class="fx-card" href="#features/feat-mux-pane-adapters" data-fx-group="workspaces" data-fx-search="mux pane adapters tmux zellij wezterm psmux tiled wave layout kill before close exec"><span class="fx-new">new · 0.24</span><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-monitor"/></svg></span><span class="fx-card-name">Real mux pane adapters</span><span class="fx-card-copy">Live panes in tmux, zellij and wezterm — argv-safe launchers, kill-before-close.</span><code class="fx-card-cmd">tmux · zellij · wezterm</code></a>
+        <a class="fx-card" href="#features/feat-blast-radius-and-root-cause-investigation" data-fx-group="workspaces" data-fx-search="blast radius callers diagnostics investigate failure trace root cause"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-target"/></svg></span><span class="fx-card-name">Blast radius &amp; investigation</span><span class="fx-card-copy">Inspect changed symbols, callers and diagnostics, or trace failure root causes.</span><code class="fx-card-cmd">/blast · /investigate</code></a>
+        <a class="fx-card" href="#features/feat-agent-activity-inspector-and-receipts" data-fx-group="workspaces" data-fx-search="activity footprint receipt files transparency checksum audit"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-eye"/></svg></span><span class="fx-card-name">Activity Inspector &amp; receipts</span><span class="fx-card-copy">Inspect live tool/file transparency and checksummed evidence receipts.</span><code class="fx-card-cmd">/activity · /receipt</code></a>
         <a class="fx-card" href="#features/feat-code-review-and-qa" data-fx-group="verification" data-fx-search="review qa code quality assumptions edge cases tests references"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-file-check"/></svg></span><span class="fx-card-name">Code review &amp; QA</span><span class="fx-card-copy">A second pass for hidden assumptions, weak tests and edge cases.</span><code class="fx-card-cmd">/review · /qa</code></a>
         <a class="fx-card" href="#features/feat-security-review" data-fx-group="verification" data-fx-search="security threat model audit vulnerabilities remediation evidence"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-shield"/></svg></span><span class="fx-card-name">Security review</span><span class="fx-card-copy">Threat modelling with evidence-cited findings and a remediation plan.</span><code class="fx-card-cmd">/security · /audit</code></a>
         <a class="fx-card" href="#features/feat-background-test-runner" data-fx-group="verification" data-fx-search="test runner background real output exit code conversation"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-activity"/></svg></span><span class="fx-card-name">Background test runner</span><span class="fx-card-copy">Real test output, without blocking the conversation.</span><code class="fx-card-cmd">/test [command]</code></a>
         <a class="fx-card" href="#features/feat-diff-pull-undo-and-bisect" data-fx-group="verification" data-fx-search="diff pull undo bisect checkpoint stash reversible regression"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-git-branch"/></svg></span><span class="fx-card-name">Diff, pull, undo &amp; bisect</span><span class="fx-card-copy">Every change visible and reversible — down to binary-searching a regression.</span><code class="fx-card-cmd">/diff · /undo · /bisect</code></a>
         <a class="fx-card" href="#features/feat-reusable-workflows" data-fx-group="verification" data-fx-search="workflow reusable sequence named replay provider starter"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-command"/></svg></span><span class="fx-card-name">Reusable workflows</span><span class="fx-card-copy">Save a sequence once; replay it on any provider.</span><code class="fx-card-cmd">/workflow run</code></a>
         <a class="fx-card" href="#features/feat-project-setup" data-fx-group="verification" data-fx-search="init project setup starter config axym.yaml desktop shared overwrite"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-download"/></svg></span><span class="fx-card-name">Project setup</span><span class="fx-card-copy">One command wires a project into Axym's conventions — never overwriting.</span><code class="fx-card-cmd">/init</code></a>
+        <a class="fx-card" href="#features/feat-proof-carrying-races-and-offline-verification" data-fx-group="verification" data-fx-search="race proof scars solve verify-proof red green invariant ed25519 worktree"><span class="fx-new">new · 0.24</span><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-shield"/></svg></span><span class="fx-card-name">Proof-carrying races &amp; scars</span><span class="fx-card-copy">Lock a failing invariant, race solutions in worktrees and verify signed RED→GREEN proofs.</span><code class="fx-card-cmd">/race · /proof · /scars</code></a>
         <a class="fx-card" href="#features/feat-bundled-skills" data-fx-group="skills" data-fx-search="bundled skills po aei product owner engineering intelligence qa reverse"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-sparkles"/></svg></span><span class="fx-card-name">Bundled skills</span><span class="fx-card-copy">Four expert personas ship inside the binary — product, eng, QA and reverse engineering.</span><code class="fx-card-cmd">/po · /aei</code></a>
         <a class="fx-card" href="#features/feat-project-and-user-skills" data-fx-group="skills" data-fx-search="project user skill.md agents claude codex portable mode precedence"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-book"/></svg></span><span class="fx-card-name">Project &amp; user skills</span><span class="fx-card-copy">Your SKILL.md files behave like built-ins — project copies win collisions.</span><code class="fx-card-cmd">/skills</code></a>
         <a class="fx-card" href="#features/feat-slash-command-plugins" data-fx-group="skills" data-fx-search="plugin slash command module register narrow built-in wins"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-puzzle"/></svg></span><span class="fx-card-name">Slash-command plugins</span><span class="fx-card-copy">Add narrow commands without touching core views or state.</span><code class="fx-card-cmd">Plugin API</code></a>
         <a class="fx-card" href="#features/feat-project-configuration" data-fx-group="skills" data-fx-search="project configuration axym.yaml stack style guide forbidden libraries budgets"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-sliders"/></svg></span><span class="fx-card-name">Project configuration</span><span class="fx-card-copy">One .axym.yaml teaches it your stack, style and forbidden libraries.</span><code class="fx-card-cmd">.axym.yaml</code></a>
+        <a class="fx-card" href="#features/feat-plugin-trust-and-lifecycle" data-fx-group="skills" data-fx-search="plugin trust init validate list treesha256 tamper revocation verifier"><span class="fx-new">new · 0.24</span><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-puzzle"/></svg></span><span class="fx-card-name">Plugin trust &amp; lifecycle</span><span class="fx-card-copy">Scaffold, validate and trust local plugins with fail-closed treeSha256 tamper revocation.</span><code class="fx-card-cmd">/plugins · axym plugin</code></a>
+        <a class="fx-card" href="#features/feat-living-repo-brain-and-memory" data-fx-group="skills" data-fx-search="memory living repo brain context pyramid ecs import cone co-change causal lessons"><span class="fx-new">new · 0.24</span><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-cpu"/></svg></span><span class="fx-card-name">Living Repo Brain &amp; memory</span><span class="fx-card-copy">Zero-rescan context pyramid and causal lessons closed-loop from /race.</span><code class="fx-card-cmd">/memory · axym memory</code></a>
         <a class="fx-card" href="#features/feat-council-mode" data-fx-group="fleet" data-fx-search="council parallel providers merge synthesis second opinion borda governed"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-users"/></svg></span><span class="fx-card-name">Council mode</span><span class="fx-card-copy">One prompt, many providers, one merged answer.</span><code class="fx-card-cmd">/council</code></a>
         <a class="fx-card" href="#features/feat-cross-provider-verification" data-fx-group="fleet" data-fx-search="cross-provider verification independent reviewer author labelled desktop stage"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-check-circle"/></svg></span><span class="fx-card-name">Cross-provider verification</span><span class="fx-card-copy">The reviewer can be a different AI than the author — honestly labelled.</span><code class="fx-card-cmd">Per-stage AI system</code></a>
         <a class="fx-card" href="#features/feat-agent-hub-and-fleet-overview" data-fx-group="fleet" data-fx-search="agent hub fleet roster capacity active runs oldest failures attach alt+a"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-fleet"/></svg></span><span class="fx-card-name">Agent Hub &amp; fleet overview</span><span class="fx-card-copy">A live roster of every run — attach to the right one instead of guessing.</span><code class="fx-card-cmd">Alt+A · /fleet</code></a>
@@ -1309,6 +1317,7 @@ policy:
         <a class="fx-card" href="#features/feat-live-run-steering-and-queueing" data-fx-group="fleet" data-fx-search="steer queue instruction safe boundary interrupt guidance"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-sliders"/></svg></span><span class="fx-card-name">Live steering &amp; queueing</span><span class="fx-card-copy">Change course mid-run at the next safe boundary — or queue guidance.</span><code class="fx-card-cmd">/steer · /queue</code></a>
         <a class="fx-card" href="#features/feat-follow-fork-and-compare-runtime-runs" data-fx-group="fleet" data-fx-search="attach follow fork lineage child viewer replay live read-only"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-branch"/></svg></span><span class="fx-card-name">Follow, fork &amp; compare runs</span><span class="fx-card-copy">Attach for live replay, fork an experiment, open a read-only viewer.</span><code class="fx-card-cmd">/attach · /fork · /view</code></a>
         <a class="fx-card" href="#features/feat-parallel-isolated-runs" data-fx-group="fleet" data-fx-search="parallel isolated runs worktree switch integrate apply events staged"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-fleet"/></svg></span><span class="fx-card-name">Parallel isolated runs</span><span class="fx-card-copy">Many goals at once — each in its own worktree, merged only by you.</span><code class="fx-card-cmd">/runs start --worktree</code></a>
+        <a class="fx-card" href="#features/feat-controlled-delegation-and-worker-control" data-fx-group="fleet" data-fx-search="delegate workers fencing token recover stall land discard isolated"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-users"/></svg></span><span class="fx-card-name">Delegation &amp; worker control</span><span class="fx-card-copy">Delegate to isolated workers with fencing tokens, acceptance checks and stall recovery.</span><code class="fx-card-cmd">/delegate · /workers</code></a>
         <a class="fx-card" href="#features/feat-share-and-read-only-viewing" data-fx-group="collab" data-fx-search="share read-only viewer observe steer approve write authority isolated stream"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-eye"/></svg></span><span class="fx-card-name">Share &amp; read-only viewing</span><span class="fx-card-copy">Teammates follow along with zero write authority.</span><code class="fx-card-cmd">/share · /view</code></a>
         <a class="fx-card" href="#features/feat-phone-pairing" data-fx-group="collab" data-fx-search="phone remote qr pairing wifi tailscale tunnel pin revocable"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-phone"/></svg></span><span class="fx-card-name">Phone pairing</span><span class="fx-card-copy">Approve gates and steer from your phone via a QR-paired, revocable link.</span><code class="fx-card-cmd">/remote qr</code></a>
         <a class="fx-card" href="#features/feat-browser-bridge" data-fx-group="collab" data-fx-search="browser bridge web page pin token watch approval mobile friendly"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-globe"/></svg></span><span class="fx-card-name">Browser bridge</span><span class="fx-card-copy">A PIN-protected web surface over the governed runtime.</span><code class="fx-card-cmd">axym web --pin</code></a>
@@ -1323,9 +1332,10 @@ policy:
         <a class="fx-card" href="#features/feat-keep-awake-during-long-runs" data-fx-group="runtime" data-fx-search="keep awake power assertion idle sleep suspend opt out"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-bolt"/></svg></span><span class="fx-card-name">Keep-awake during long runs</span><span class="fx-card-copy">Idle sleep cannot suspend a long run — released the moment the turn ends.</span><code class="fx-card-cmd">Automatic</code></a>
         <a class="fx-card" href="#features/feat-atomic-local-state" data-fx-group="runtime" data-fx-search="atomic state fsync rename temp file crash half-written sessions history"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-lock"/></svg></span><span class="fx-card-name">Atomic local state</span><span class="fx-card-copy">A crash cannot leave half-written sessions or history.</span><code class="fx-card-cmd">Automatic</code></a>
         <a class="fx-card" href="#features/feat-aide-run-diagnosis-and-event-inspection" data-fx-group="runtime" data-fx-search="debug aide diagnosis event integrity replay inspect pause resume evidence"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-search"/></svg></span><span class="fx-card-name">AIDE run diagnosis</span><span class="fx-card-copy">Inspect a misbehaving run — events, integrity, replay — without destroying it.</span><code class="fx-card-cmd">/debug [run-id]</code></a>
+        <a class="fx-card" href="#features/feat-zero-trust-mcp-tool-access" data-fx-group="runtime" data-fx-search="mcp firewall capability lattice taint stdio http audited tool"><span class="fx-new">new · 0.24</span><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-lock"/></svg></span><span class="fx-card-name">Zero-trust MCP firewall</span><span class="fx-card-copy">Local stdio/HTTP MCP firewall with capability-lattice admission and taint tracking.</span><code class="fx-card-cmd">/mcp</code></a>
       </div>
       <h3 class="fx-beyond-head" id="beyond">Beyond the curated catalog</h3>
-      <p class="fx-beyond-lead">Seven command families also ship in v0.24.0. They live outside the 67-feature catalog, so nothing you can actually run is left out.</p>
+      <p class="fx-beyond-lead">Seven command families also ship in v0.24.0. They live alongside the 77-feature catalog, so nothing you can actually run is left out.</p>
       <div class="fx-grid fx-grid-beyond">
         <a class="fx-card" href="#features/tui-flow-os" data-fx-group="beyond" data-fx-search="flow os workflow lockfile dag resume least privilege limits capture"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-flow"/></svg></span><span class="fx-card-name">Declarative Flow OS</span><span class="fx-card-copy">Workflows compile to bounded, resumable lockfiles with least-privilege outputs.</span><code class="fx-card-cmd">/flow run</code></a>
         <a class="fx-card" href="#features/tui-run-controls" data-fx-group="beyond" data-fx-search="inbox mission preview goldfish revise cancel drift decision"><span class="fx-card-icon" aria-hidden="true"><svg class="icon"><use href="#i-sliders"/></svg></span><span class="fx-card-name">Governed run controls</span><span class="fx-card-copy">One inbox for every decision; drift review before anything ships.</span><code class="fx-card-cmd">/inbox · /goldfish</code></a>
@@ -1344,7 +1354,7 @@ policy:
       <div class="section-head" data-fx-reveal>
         <p class="section-kicker">Two minutes, five moves</p>
         <h2>Start here.</h2>
-        <p>You do not need to read 67 features to begin. These five moves cover the common path from a fresh download to a verified change — with the exact commands written out so you can copy them.</p>
+        <p>You do not need to read 77 features to begin. These five moves cover the common path from a fresh download to a verified change — with the exact commands written out so you can copy them.</p>
       </div>
       <div class="step-line" data-fx-reveal>
         <div class="step"><div class="step-num">1</div><div class="step-title">Confirm your tools</div><div class="step-body"><code>axym doctor</code> detects the agent CLIs you already have installed. Axym needs no API key of its own.</div></div>
@@ -1406,6 +1416,21 @@ axym
 <p><strong>What it is.</strong> A non-destructive, 30-second onboarding path: <code>axym doctor</code> detects installed agent CLIs, verifies the runtime, repairs common setup problems itself, and locally verified scar rules can block edits that already failed the same way before.</p>
 <p><strong>Why it matters.</strong> Setup stays a detection step that can heal itself, and mistakes the organisation has already made once are not repeated silently.</p>
 <p><strong>Use it.</strong> <code>axym doctor</code> · <code>axym doctor --mobile</code></p>
+
+<h3 id="feat-multi-account-provider-slots-and-isolation">Multi-account provider slots and isolation</h3>
+<p><strong>What it is.</strong> Configure and switch between multiple accounts per provider (personal, work, sandbox) with trust-zone policies, pinned-account enforcement, per-account health and cooldown tracking, and kernel-isolated credential directories (macOS Seatbelt / Linux Landlock) with egress-proxy canary protection.</p>
+<p><strong>Why it matters.</strong> You can keep personal, client and sandbox credentials strictly separated — when one account hits a rate limit or trust-zone rule, Axym never leaks credentials across slots.</p>
+<p><strong>Use it.</strong> <code>/accounts</code> · <code>axym accounts [list|add|test]</code> · <code>~/.axym/providers.json</code></p>
+
+<h3 id="feat-openai-compatible-local-inference">OpenAI-compatible local inference</h3>
+<p><strong>What it is.</strong> Connect local or self-hosted OpenAI-compatible inference servers (Ollama, LM Studio, vLLM, llama.cpp) through the same TUI session, tool loop and Result Ledger with no cloud CLI required.</p>
+<p><strong>Why it matters.</strong> Air-gapped, private or local-GPU workflows get the exact same permissions, diffing and verification harness as cloud CLIs.</p>
+<p><strong>Use it.</strong> <code>axym --provider local</code> · <code>AXYM_LOCAL_BASE_URL</code> · <code>AXYM_LOCAL_MODEL</code></p>
+
+<h3 id="feat-session-outcome-profiles">Session outcome profiles</h3>
+<p><strong>What it is.</strong> Select a session-scoped outcome profile (such as strict verification, rapid prototype or security audit) that shapes how turns are evaluated.</p>
+<p><strong>Why it matters.</strong> You can dial up verification rigor for production changes or speed for exploration without editing config files.</p>
+<p><strong>Use it.</strong> <code>/profile</code></p>
 
 <div class="code-shell"><div class="code-head"><span class="code-lang">shell</span><span class="code-title">Sessions, providers &amp; models — example</span><button type="button" class="copy-btn" data-copy="feat-sessions-providers-models-example"><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>Copy</button></div><div class="code-body"><pre id="feat-sessions-providers-models-example">axym doctor
 axym --provider claude --mode plan
@@ -1916,6 +1941,41 @@ axym -p "summarize uncommitted changes" --format json</pre></div></div>
 </div>
 <p class="small muted">Runtime-backed commands (for example <code>/ship</code>, <code>/runs</code>, <code>/pipeline</code>, <code>/fleet</code> and <code>/attach</code>) need a connected <code>axym-runtime</code> daemon. The core chat, edit and session loop works with any installed agent CLI.</p>
 
+<h3 id="feat-blast-radius-and-root-cause-investigation">Blast radius and root-cause investigation</h3>
+<p><strong>What it is.</strong> Inspect changed symbols, their callers and compiler diagnostics before approving edits, or run structured failure investigations over execution traces and logs.</p>
+<p><strong>Why it matters.</strong> You see the downstream impact of an edit or the root cause of a failure before committing.</p>
+<p><strong>Use it.</strong> <code>/blast</code> · <code>/investigate</code></p>
+
+<h3 id="feat-agent-activity-inspector-and-receipts">Agent Activity Inspector and receipts</h3>
+<p><strong>What it is.</strong> Inspect live tool and file transparency (NOW, FILES, SAFETY, OUTCOME, WHY), per-turn file audit records, and harness-authored evidence receipts with verification checksums.</p>
+<p><strong>Why it matters.</strong> Every file read, write and shell touch is auditable with a verifiable receipt.</p>
+<p><strong>Use it.</strong> <code>/activity</code> · <code>/footprint</code> · <code>/receipt</code> · <code>/files</code> · <code>axym files</code></p>
+
+<h3 id="feat-proof-carrying-races-and-offline-verification">Proof-carrying races and offline verification</h3>
+<p><strong>What it is.</strong> Lock a failing test invariant on HEAD, race candidate implementations in isolated worktrees, verify non-vacuous RED→GREEN proofs with Ed25519 signatures, and enforce organization scar rules that block recurring mistakes.</p>
+<p><strong>Why it matters.</strong> Fixes are backed by cryptographic proof against a real failing baseline, never a vacuous pass.</p>
+<p><strong>Use it.</strong> <code>/race</code> · <code>/proof</code> · <code>/scars</code> · <code>axym solve</code> · <code>axym verify-proof</code></p>
+
+<h3 id="feat-plugin-trust-and-lifecycle">Plugin trust and lifecycle</h3>
+<p><strong>What it is.</strong> Scaffold, validate, trust and list repo-local verifier and command plugins with fail-closed <code>treeSha256</code> tamper revocation.</p>
+<p><strong>Why it matters.</strong> Untrusted or modified plugins cannot execute silently in your workspace.</p>
+<p><strong>Use it.</strong> <code>/plugins</code> · <code>axym plugin init|validate|trust|list</code></p>
+
+<h3 id="feat-living-repo-brain-and-memory">Living Repo Brain and memory</h3>
+<p><strong>What it is.</strong> Zero-rescan three-layer context pyramid (ECS fingerprints, depth-2 import cone, co-change slice) with causal lessons closed-loop from <code>/race</code>.</p>
+<p><strong>Why it matters.</strong> Large repositories stay fast to orient in without paying to re-scan the tree on every turn.</p>
+<p><strong>Use it.</strong> <code>/memory</code> · <code>axym memory status|explain|refresh</code></p>
+
+<h3 id="feat-controlled-delegation-and-worker-control">Controlled delegation and worker control</h3>
+<p><strong>What it is.</strong> Delegate tasks to isolated workers, inspect fencing tokens and progress, wait for acceptance, land verified work or recover stalled sessions.</p>
+<p><strong>Why it matters.</strong> Parallel worker delegation stays fenced and recoverable even if a worker stalls.</p>
+<p><strong>Use it.</strong> <code>/delegate</code> · <code>/workers</code></p>
+
+<h3 id="feat-zero-trust-mcp-tool-access">Zero-trust MCP tool access</h3>
+<p><strong>What it is.</strong> A local MCP stdio/HTTP firewall with scoped capability-lattice admission and untrusted-output tainting; delegated file tools stay behind the audited route.</p>
+<p><strong>Why it matters.</strong> External MCP tools operate under least privilege with every call audited.</p>
+<p><strong>Use it.</strong> <code>/mcp</code></p>
+
 <h2 id="modes">Four ways to shape the work</h2>
 <p class="lead">These are four different dials, not four names for the same setting. Together they decide how careful the agent is, which interface you are looking at, which expert persona is active, and how much evidence the runtime gathers before it proposes a result.</p>
 <dl class="meta-grid">
@@ -2014,7 +2074,7 @@ axym -p "summarize uncommitted changes" --format json</pre></div></div>
       <div class="cta-band">
         <div>
           <h2 id="try-it">Try one feature in the next five minutes</h2>
-          <p>Install the TUI, run <code>axym doctor</code>, then type <code>/</code> inside a session. Every capability on this page is one command away — no account, no static API key, no hosted service.</p>
+          <p>Install the TUI, run <code>axym doctor</code>, then type <code>/</code> inside a session. Every capability on this page is one command away — no Axym account, no hosted service, with multi-account provider slots ready via <code>/accounts</code>.</p>
         </div>
         <div class="cta-actions">
           <a class="btn btn-primary" href="#quickstart">Quick start <svg class="icon"><use href="#i-arrow-right"/></svg></a>
