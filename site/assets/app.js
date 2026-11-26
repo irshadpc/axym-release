@@ -503,6 +503,8 @@
     a.setAttribute('data-fx-id', cap.id);
     a.setAttribute('data-fx-search', (cap.search || '') + ' ' + cap.name);
     if (cap.featured_top12) a.setAttribute('data-fx-featured', 'true');
+    a.setAttribute('data-fx-maturity', cap.maturity);
+    a.setAttribute('data-fx-outcomes', (cap.outcomes || []).join(' '));
     var currentVersionForCard = ((releases && releases.tui && releases.tui.version) || (CAP_MANIFEST.release || '')).replace(/^v/, '');
     if (currentVersionForCard && cap.introduced_in === currentVersionForCard) a.setAttribute('data-fx-new', 'true');
 
@@ -568,26 +570,51 @@
       if (count) count.textContent = 'Catalog unavailable';
       return;
     }
+    var currentVersion = ((releases && releases.tui && releases.tui.version) || CAP_MANIFEST.release || '').replace(/^v/, '');
     if (pillsHost) {
       pillsHost.innerHTML = '';
       var groups = CAP_MANIFEST.groups || {};
       var counts = {};
       var featuredCount = 0;
       var newCount = 0;
-      var currentVersion = ((releases && releases.tui && releases.tui.version) || (CAP_MANIFEST.release || '')).replace(/^v/, '');
       CAPABILITIES.forEach(function (c) {
         counts[c.group] = (counts[c.group] || 0) + 1;
         if (c.featured_top12) featuredCount++;
         if (currentVersion && c.introduced_in === currentVersion) newCount++;
       });
-      pillsHost.appendChild(fxPillEl('featured', 'Featured', featuredCount, false));
-      pillsHost.appendChild(fxPillEl('new', 'New in ' + currentVersion, newCount, false));
-      pillsHost.appendChild(fxPillEl('all', 'All', CAPABILITIES.length, true));
+      pillsHost.appendChild(fxPillEl('featured', 'Featured', featuredCount, fxFilter.group === 'featured'));
+      pillsHost.appendChild(fxPillEl('new', 'New in ' + currentVersion, newCount, fxFilter.group === 'new'));
+      pillsHost.appendChild(fxPillEl('all', 'All', CAPABILITIES.length, fxFilter.group === 'all'));
       Object.keys(groups).forEach(function (g) {
-        pillsHost.appendChild(fxPillEl(g, groups[g], counts[g] || 0, false));
+        pillsHost.appendChild(fxPillEl(g, groups[g], counts[g] || 0, fxFilter.group === g));
       });
     }
-    var currentVersion = ((releases && releases.tui && releases.tui.version) || CAP_MANIFEST.release || '').replace(/^v/, '');
+    var lensRow = document.getElementById('fx-lenses');
+    if (lensRow) {
+      lensRow.innerHTML = '';
+      var lenses = CAP_MANIFEST.outcomes || {};
+      var lensDescriptions = CAP_MANIFEST.outcomeDescriptions || {};
+      var lensCounts = {};
+      var maturityCounts = {};
+      CAPABILITIES.forEach(function (c) {
+        (c.outcomes || []).forEach(function (o) { lensCounts[o] = (lensCounts[o] || 0) + 1; });
+        maturityCounts[c.maturity] = (maturityCounts[c.maturity] || 0) + 1;
+      });
+      var lead = document.createElement('span');
+      lead.className = 'fx-lens-label';
+      lead.textContent = 'Outcome lens';
+      lensRow.appendChild(lead);
+      Object.keys(lenses).forEach(function (key) {
+        var pill = fxPillEl('lens:' + key, lenses[key], lensCounts[key] || 0, fxFilter.group === 'lens:' + key);
+        if (lensDescriptions[key]) pill.setAttribute('title', lensDescriptions[key]);
+        lensRow.appendChild(pill);
+      });
+      var maturityLabels = CAP_MANIFEST.maturity || {};
+      Object.keys(maturityLabels).forEach(function (m) {
+        if (!maturityCounts[m]) return; /* an empty maturity state never renders */
+        lensRow.appendChild(fxPillEl('mat:' + m, maturityLabels[m], maturityCounts[m], fxFilter.group === 'mat:' + m));
+      });
+    }
     grid.innerHTML = '';
     CAPABILITIES.forEach(function (cap) { grid.appendChild(fxCardEl(cap, currentVersion)); });
     applyFxFilter();
@@ -1095,21 +1122,34 @@
     if (fxTheaterTimer) { clearInterval(fxTheaterTimer); fxTheaterTimer = null; }
   }
 
+  /* The catalog defaults to the twelve flagship pillars; everything else is
+     one deliberate click away (the Show-all CTA or any pill — and a typed
+     query always expands the search to every capability). */
+  var FX_DEFAULT_GROUP = 'featured';
+
+  function fxMode() {
+    var mode = fxFilter.group;
+    var sep = mode.indexOf(':');
+    if (sep === -1) return { kind: mode, value: '' };
+    return { kind: mode.slice(0, sep), value: mode.slice(sep + 1) };
+  }
+
   function applyFxFilter() {
     var grid = document.getElementById('fx-catalog');
     if (!grid) return;
     var cards = grid.querySelectorAll('.fx-card');
     var visible = 0;
+    var mode = fxMode();
     for (var i = 0; i < cards.length; i++) {
       var card = cards[i];
-      var mode = fxFilter.group;
-      var inMode;
-      if (mode === 'all') inMode = true;
-      else if (mode === 'featured') inMode = card.getAttribute('data-fx-featured') === 'true';
-      else if (mode === 'new') inMode = card.getAttribute('data-fx-new') === 'true';
-      else inMode = card.getAttribute('data-fx-group') === mode;
+      var inMode = true;
+      if (mode.kind === 'featured') inMode = card.getAttribute('data-fx-featured') === 'true';
+      else if (mode.kind === 'new') inMode = card.getAttribute('data-fx-new') === 'true';
+      else if (mode.kind === 'lens') inMode = (' ' + (card.getAttribute('data-fx-outcomes') || '') + ' ').indexOf(' ' + mode.value + ' ') !== -1;
+      else if (mode.kind === 'mat') inMode = card.getAttribute('data-fx-maturity') === mode.value;
+      else if (mode.kind !== 'all') inMode = card.getAttribute('data-fx-group') === mode.kind;
       /* Anti-lockout: a typed query always searches every capability —
-         matches are never hidden behind the featured cap. */
+         matches are never hidden behind the featured cap or any pill. */
       if (fxFilter.query) inMode = true;
       var hay = (card.textContent + ' ' + (card.getAttribute('data-fx-search') || '')).toLowerCase();
       var matches = inMode && (!fxFilter.query || hay.indexOf(fxFilter.query) !== -1);
@@ -1119,16 +1159,40 @@
     var count = document.getElementById('fx-count');
     if (count) {
       var total = cards.length;
-      if (!fxFilter.query && fxFilter.group === 'all') {
+      var scope = '';
+      if (mode.kind === 'featured') scope = ' among the featured twelve';
+      else if (mode.kind === 'new') scope = ' among capabilities new in this release';
+      else if (mode.kind === 'lens') scope = ' through the "' + ((CAP_MANIFEST && CAP_MANIFEST.outcomes && CAP_MANIFEST.outcomes[mode.value]) || mode.value) + '" lens';
+      else if (mode.kind === 'mat') scope = ' with ' + mode.value + ' maturity';
+      else if (mode.kind !== 'all') scope = ' in the selected group';
+      if (!fxFilter.query && mode.kind === 'all') {
         count.textContent = 'Showing all ' + total + ' capabilities';
       } else {
         var parts = ['Showing ' + visible + ' of ' + total + ' capabilities'];
-        if (fxFilter.query) parts.push('matching "' + fxFilter.raw + '"');
-        if (fxFilter.group === 'featured') parts.push('among the featured twelve');
-        else if (fxFilter.group === 'new') parts.push('among capabilities new in this release');
-        else if (fxFilter.group !== 'all') parts.push('in the selected group');
+        if (fxFilter.query) parts.push('matching "' + fxFilter.raw + '" (searching all ' + total + ')');
+        else if (scope) parts.push(scope.trim());
         count.textContent = parts.join(' ') + '.';
       }
+    }
+    syncFxPills();
+    syncFxShowAll();
+  }
+
+  function syncFxPills() {
+    var pills = document.querySelectorAll('[data-fx-pill]');
+    for (var i = 0; i < pills.length; i++) {
+      pills[i].setAttribute('aria-pressed', String(pills[i].getAttribute('data-fx-pill') === fxFilter.group));
+    }
+  }
+
+  function syncFxShowAll() {
+    var host = document.getElementById('fx-showall');
+    if (!host) return;
+    var show = fxFilter.group === FX_DEFAULT_GROUP && !fxFilter.query;
+    host.hidden = !show;
+    if (show) {
+      var btn = host.querySelector('#fx-showall-btn');
+      if (btn && CAPABILITIES.length) btn.textContent = 'Show all ' + CAPABILITIES.length + ' capabilities';
     }
   }
 
@@ -1197,7 +1261,7 @@
     fxTheaterStopped = false;
     fxFilter.query = '';
     fxFilter.raw = '';
-    fxFilter.group = 'all';
+    fxFilter.group = FX_DEFAULT_GROUP;
     if (!page) return;
 
     renderCapabilityCatalog();
@@ -1752,10 +1816,17 @@
     document.addEventListener('click', function (e) {
       var pill = e.target.closest('[data-fx-pill]');      if (pill) {
         fxFilter.group = pill.getAttribute('data-fx-pill');
-        var pills = pill.parentNode.querySelectorAll('[data-fx-pill]');
-        for (var pi = 0; pi < pills.length; pi++) {
-          pills[pi].setAttribute('aria-pressed', String(pills[pi] === pill));
-        }
+        applyFxFilter();
+        return;
+      }
+
+      var showAllBtn = e.target.closest('#fx-showall-btn');
+      if (showAllBtn) {
+        fxFilter.group = 'all';
+        fxFilter.query = '';
+        fxFilter.raw = '';
+        var searchInput = document.getElementById('feature-filter');
+        if (searchInput) searchInput.value = '';
         applyFxFilter();
         return;
       }

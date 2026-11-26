@@ -1284,15 +1284,19 @@ policy:
       <div class="section-head" data-fx-reveal>
         <p class="section-kicker">The catalog</p>
         <h2>The full catalog. On one canvas.</h2>
-        <p>Filter by the job you are doing, or search by name and command. Every card opens an inline detail drawer — what it is, why it exists, and exactly where to use it. New in v0.24.0: parallel mux panes, the /ship pipeline, cost routing, multi-account isolation and the anti-hang guard.</p>
+        <p>Filter by the job you are doing, or search by name and command. The twelve flagship pillars show by default — any search, lens or pill expands across the full catalog — and every card opens an inline detail drawer with the honest limitations included. New in v0.24.0: parallel mux panes, the /ship pipeline, cost routing, multi-account isolation and the anti-hang guard.</p>
       </div>
       <div class="fx-toolbar" data-fx-reveal>
         <label class="visually-hidden" for="feature-filter">Filter the capability catalog</label>
         <input class="filter-input fx-search" id="feature-filter" data-filter-grid="fx-catalog" data-filter-noun="capabilities" type="search" placeholder="Search — try “review”, “worktree”, “/accounts”, “/remote”…" autocomplete="off" spellcheck="false">
         <div class="fx-pills" id="fx-pills" role="group" aria-label="Filter capabilities"></div>
+        <div class="fx-lenses" id="fx-lenses" role="group" aria-label="Filter by developer outcome lens and maturity"></div>
         <p class="fx-count" id="fx-count" role="status">Loading the capability catalog…</p>
       </div>
       <div class="fx-grid" id="fx-catalog"><p class="muted small">Loading the capability catalog…</p></div>
+      <div class="fx-showall" id="fx-showall" hidden>
+        <button type="button" class="btn btn-secondary btn-lg" id="fx-showall-btn">Show all capabilities</button>
+      </div>
       <p class="fx-maturity small muted"><span class="badge badge-active">Stable</span> ships in v0.24.0 &nbsp;·&nbsp; <span class="badge badge-pending">Experimental</span> limited surfaces, tracked (T-050) &nbsp;·&nbsp; <span class="badge badge-neutral">Roadmap</span> not yet shipped</p>
     </div>
   </section>
