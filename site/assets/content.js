@@ -1227,6 +1227,19 @@ policy:
           </div>
         </div>
       </div>
+
+      <div class="fx-proof" data-fx-reveal id="proof-theater">
+        <div class="fx-proof-head">
+          <p class="section-kicker">Proof theater</p>
+          <h3>Three flagship sequences. Every badge tells the truth.</h3>
+          <p>A sequence shows <strong>Verified Recording</strong> only when a real capture file exists on disk — the build fails otherwise (ADR-0016). Until a capture is committed, each viewer says <strong>Illustrative Schematic</strong> and shows the documented behaviour instead of pretending. Install a build, run <code>scripts/capture-proof.sh</code>, and a schematic becomes a recording in under five minutes.</p>
+        </div>
+        <div id="fx-proof-root"><p class="muted small">Loading proof sequences…</p></div>
+        <div class="fx-proof-verify">
+          <p class="fx-proof-verify-title">Verify it yourself in 60 seconds</p>
+          <div class="fx-proof-verify-cmds" id="fx-proof-verify-cmds"><p class="muted small">Loading verify commands…</p></div>
+        </div>
+      </div>
     </div>
   </section>
 

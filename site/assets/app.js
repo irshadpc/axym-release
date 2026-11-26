@@ -36,6 +36,13 @@
   var CAPABILITIES = [];
   var CAPABILITY_INDEX = {};
 
+  /* Proof Artifact Registry (Contract D). Badge truth (ADR-0016): a sequence
+     renders "Verified Recording · <version>" only when captured is true —
+     which scripts/verify-manifest-sync.mjs only allows when the referenced
+     recording/diff/receipt files exist and are non-empty on disk. Everything
+     else renders an explicit "Illustrative Schematic" badge. */
+  var PROOF_MANIFEST = null;
+
   var FALLBACK_RELEASES = {
     repo: 'irshadpc/axym-release',
     tui: {
@@ -601,6 +608,261 @@
     }
   }
 
+  /* ------------------------------------------------------- proof theater -- */
+  /* Tabbed viewer over the three flagship sequences. Every text node from
+     the proofs manifest is set with textContent — nothing from the data
+     files passes through innerHTML. */
+  function proofBadge(seq) {
+    var badge = document.createElement('span');
+    if (seq.captured === true && seq.captured_version) {
+      badge.className = 'fx-proof-badge verified';
+      badge.textContent = 'Verified Recording · ' + seq.captured_version;
+    } else {
+      badge.className = 'fx-proof-badge illustrative';
+      badge.textContent = 'Illustrative Schematic';
+    }
+    return badge;
+  }
+
+  function proofSeqPanel(seq, first) {
+    var panel = document.createElement('div');
+    panel.className = 'tab-panel' + (first ? ' active' : '');
+    panel.setAttribute('role', 'tabpanel');
+    panel.setAttribute('data-panel', seq.id);
+    if (!first) panel.setAttribute('hidden', '');
+
+    var top = document.createElement('div');
+    top.className = 'fx-proof-seqhead';
+    top.appendChild(proofBadge(seq));
+    if (seq.summary) {
+      var sum = document.createElement('p');
+      sum.className = 'fx-proof-summary';
+      sum.textContent = seq.summary;
+      top.appendChild(sum);
+    }
+    panel.appendChild(top);
+
+    /* sub-tabs: Session / Diff & Artifacts / Verification Receipt */
+    var groupId = 'proof-' + seq.id;
+    var subTabs = document.createElement('div');
+    subTabs.className = 'fx-proof-subtabs';
+    subTabs.setAttribute('data-tabs', groupId);
+    subTabs.setAttribute('role', 'tablist');
+    subTabs.setAttribute('aria-label', seq.title + ' artifacts');
+    var subPanels = document.createElement('div');
+    subPanels.setAttribute('data-panels', groupId);
+
+    var defs = [
+      { key: 'session', label: 'Session' },
+      { key: 'diff', label: 'Diff / Artifacts' },
+      { key: 'receipt', label: 'Verification Receipt' }
+    ];
+    defs.forEach(function (def, di) {
+      var tb = document.createElement('button');
+      tb.type = 'button';
+      tb.className = 'fx-proof-subtab' + (di === 0 ? ' active' : '');
+      tb.setAttribute('data-tab', def.key);
+      tb.setAttribute('role', 'tab');
+      tb.setAttribute('aria-selected', String(di === 0));
+      tb.textContent = def.label;
+      if (di !== 0) tb.setAttribute('tabindex', '-1');
+      subTabs.appendChild(tb);
+
+      var sp = document.createElement('div');
+      sp.className = 'fx-proof-subpanel' + (di === 0 ? ' active' : '');
+      sp.setAttribute('role', 'tabpanel');
+      sp.setAttribute('data-panel', def.key);
+      if (di !== 0) sp.setAttribute('hidden', '');
+      if (def.key === 'session') {
+        var term = document.createElement('div');
+        term.className = 'fx-proof-terminal';
+        var pre = document.createElement('pre');
+        pre.textContent = (seq.session || []).join('\n');
+        term.appendChild(pre);
+        sp.appendChild(term);
+      } else if (def.key === 'diff') {
+        sp.appendChild(renderProofDiff(seq.diff || {}));
+      } else {
+        sp.appendChild(renderProofReceipt(seq.receipt || {}));
+      }
+      subPanels.appendChild(sp);
+    });
+
+    panel.appendChild(subTabs);
+    panel.appendChild(subPanels);
+
+    var cap = document.createElement('p');
+    cap.className = 'fx-proof-caption';
+    cap.textContent = seq.caption || '';
+    panel.appendChild(cap);
+    return panel;
+  }
+
+  function renderProofDiff(diff) {
+    var wrap = document.createElement('div');
+    wrap.className = 'fx-proof-diff';
+    if (diff.meta) {
+      var meta = document.createElement('p');
+      meta.className = 'fx-proof-diffmeta';
+      meta.textContent = diff.meta;
+      wrap.appendChild(meta);
+    }
+    if (diff.kind === 'visual') {
+      (diff.items || []).forEach(function (item) {
+        var row = document.createElement('div');
+        row.className = 'fx-proof-visual';
+        var label = document.createElement('b');
+        label.textContent = item.label || '';
+        row.appendChild(label);
+        var detail = document.createElement('span');
+        detail.textContent = item.detail || '';
+        row.appendChild(detail);
+        wrap.appendChild(row);
+      });
+    } else {
+      (diff.lines || []).forEach(function (line) {
+        var row = document.createElement('div');
+        row.className = 'fx-proof-diffline ' + (line.t === 'add' ? 'is-add' : line.t === 'del' ? 'is-del' : 'is-hunk');
+        if (line.ln) {
+          var ln = document.createElement('span');
+          ln.className = 'fx-proof-ln';
+          ln.textContent = String(line.ln);
+          row.appendChild(ln);
+        }
+        var text = document.createElement('span');
+        text.textContent = line.s || '';
+        row.appendChild(text);
+        wrap.appendChild(row);
+      });
+    }
+    if (diff.boundary) {
+      var note = document.createElement('p');
+      note.className = 'fx-proof-boundary';
+      note.textContent = diff.boundary;
+      wrap.appendChild(note);
+    }
+    return wrap;
+  }
+
+  function renderProofReceipt(receipt) {
+    var wrap = document.createElement('div');
+    wrap.className = 'fx-proof-receipt';
+    var scalars = Object.keys(receipt).filter(function (k) {
+      var v = receipt[k];
+      return typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean';
+    });
+    if (scalars.length) {
+      var dl = document.createElement('dl');
+      dl.className = 'fx-proof-receipt-dl';
+      scalars.forEach(function (k) {
+        var row = document.createElement('div');
+        var dt = document.createElement('dt');
+        dt.textContent = k.replace(/_/g, ' ');
+        var dd = document.createElement('dd');
+        dd.textContent = String(receipt[k]);
+        row.appendChild(dt); row.appendChild(dd);
+        dl.appendChild(row);
+      });
+      wrap.appendChild(dl);
+    }
+    if (Array.isArray(receipt.checks) && receipt.checks.length) {
+      var tbl = document.createElement('div');
+      tbl.className = 'fx-proof-checks';
+      receipt.checks.forEach(function (c) {
+        var row = document.createElement('div');
+        row.className = 'fx-proof-check';
+        var name = document.createElement('code');
+        name.textContent = c.name || '';
+        var res = document.createElement('span');
+        res.setAttribute('data-check-result', c.result || '');
+        res.textContent = c.result || '';
+        row.appendChild(name); row.appendChild(res);
+        if (c.detail) {
+          var d = document.createElement('small');
+          d.textContent = c.detail;
+          row.appendChild(d);
+        }
+        tbl.appendChild(row);
+      });
+      wrap.appendChild(tbl);
+    }
+    if (Array.isArray(receipt.unverified) && receipt.unverified.length) {
+      receipt.unverified.forEach(function (u) {
+        var row = document.createElement('p');
+        row.className = 'fx-proof-unv';
+        row.textContent = 'UNV · ' + u;
+        wrap.appendChild(row);
+      });
+    }
+    var pre = document.createElement('pre');
+    pre.className = 'fx-proof-json';
+    pre.textContent = JSON.stringify(receipt, null, 2);
+    wrap.appendChild(pre);
+    return wrap;
+  }
+
+  function renderProofTheater() {
+    var root = document.getElementById('fx-proof-root');
+    if (!root) return;
+    var verifyHost = document.getElementById('fx-proof-verify-cmds');
+    if (verifyHost) {
+      verifyHost.innerHTML = '';
+      var cmds = (PROOF_MANIFEST && PROOF_MANIFEST.verify_commands) || [];
+      if (cmds.length) {
+        cmds.forEach(function (c) {
+          var row = document.createElement('div');
+          row.className = 'fx-proof-verify-cmd';
+          var code = document.createElement('code');
+          code.textContent = c;
+          row.appendChild(code);
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'fx-cmd-copy';
+          btn.setAttribute('data-copy-text', c);
+          btn.setAttribute('aria-label', 'Copy command: ' + c);
+          btn.innerHTML = icon('copy', 'icon-sm');
+          row.appendChild(btn);
+          verifyHost.appendChild(row);
+        });
+      } else {
+        var p = document.createElement('p');
+        p.className = 'muted small';
+        p.textContent = 'Verify commands load with the proof manifest.';
+        verifyHost.appendChild(p);
+      }
+    }
+    if (!root) return;
+    root.innerHTML = '';
+    if (!PROOF_MANIFEST || !Array.isArray(PROOF_MANIFEST.sequences) || !PROOF_MANIFEST.sequences.length) {
+      var err = document.createElement('p');
+      err.className = 'muted small';
+      err.textContent = 'Proof sequences could not be loaded. No verified or illustrative claim is shown in their place.';
+      root.appendChild(err);
+      return;
+    }
+    var tabs = document.createElement('div');
+    tabs.className = 'fx-proof-tabs';
+    tabs.setAttribute('data-tabs', 'proof');
+    tabs.setAttribute('role', 'tablist');
+    tabs.setAttribute('aria-label', 'Flagship proof sequences');
+    var panels = document.createElement('div');
+    panels.setAttribute('data-panels', 'proof');
+    PROOF_MANIFEST.sequences.forEach(function (seq, i) {
+      var tb = document.createElement('button');
+      tb.type = 'button';
+      tb.className = 'fx-proof-tab' + (i === 0 ? ' active' : '');
+      tb.setAttribute('data-tab', seq.id);
+      tb.setAttribute('role', 'tab');
+      tb.setAttribute('aria-selected', String(i === 0));
+      tb.textContent = (i + 1) + ' · ' + seq.title;
+      if (i !== 0) tb.setAttribute('tabindex', '-1');
+      tabs.appendChild(tb);
+      panels.appendChild(proofSeqPanel(seq, i === 0));
+    });
+    root.appendChild(tabs);
+    root.appendChild(panels);
+  }
+
   /* ------------------------------------------------------ detail drawer -- */
   /* Accessible right-hand slide-over for one capability. Opening is driven by
      the #features/<id> hash (so browser Back/Forward and deep links work);
@@ -940,6 +1202,7 @@
 
     renderCapabilityCatalog();
     fillCapabilityCounts();
+    renderProofTheater();
 
     var reduced = false;
     try { reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (err) { reduced = true; }
@@ -1073,6 +1336,13 @@
         CAPABILITIES = [];
         CAPABILITY_INDEX = {};
       });
+  }
+
+  function loadProofs() {
+    return fetch('./data/proofs.manifest.json')
+      .then(function (r) { if (!r.ok) throw new Error('manifest HTTP ' + r.status); return r.json(); })
+      .then(function (data) { PROOF_MANIFEST = data; })
+      .catch(function () { PROOF_MANIFEST = null; });
   }
 
   function artifactGroups() {
@@ -1679,6 +1949,9 @@
       searchItems = buildSearchIndex();
       render();
       fillCapabilityCounts();
+    });
+    loadProofs().then(function () {
+      if (currentRoute === 'features') renderProofTheater();
     });
     loadReleases().then(function () {
       applyReleaseData();
