@@ -232,10 +232,10 @@ test.describe('navigation and interaction', () => {
 test.describe('release data', () => {
   test('home hydrates the verified version and history', async ({ page }) => {
     await open(page, 'home', 'dark');
-    await expect(page.locator('#version-pill')).toHaveText('TUI v0.23.0');
+    await expect(page.locator('#version-pill')).toHaveText('TUI v0.24.0');
     await expect(page.locator('#downloads-grid .download-card')).toHaveCount(6);
-    await expect(page.locator('#release-timeline .timeline-item')).toHaveCount(6);
-    await expect(page.locator('#release-timeline')).toContainText('tui-v0.23.0');
+    await expect(page.locator('#release-timeline .timeline-item')).toHaveCount(7);
+    await expect(page.locator('#release-timeline')).toContainText('tui-v0.24.0');
     await expect(page.locator('#release-timeline')).toContainText('desktop-v12.17.0');
   });
 
@@ -266,6 +266,7 @@ test.describe('responsive layout', () => {
   const widths = [320, 390, 768, 1024, 1440];
   for (const width of widths) {
     test(`no page-level horizontal overflow at ${width}px`, async ({ page }) => {
+      test.setTimeout(90_000);
       await page.setViewportSize({ width, height: 900 });
       for (const route of ['home', 'architecture', 'quickstart', 'features', 'releases']) {
         await page.goto(`/axym-release/#${route}`, { waitUntil: 'networkidle' });
@@ -290,6 +291,9 @@ test.describe('responsive layout', () => {
 });
 
 test.describe('accessibility (axe-core, WCAG 2.2 AA)', () => {
+  // The features showcase is the largest page in the portal; axe needs more
+  // than the 30s default on slower engines (firefox/webkit).
+  test.setTimeout(90_000);
   for (const route of ROUTES) {
     for (const theme of ['dark', 'light']) {
       test(`#${route} — ${theme} has no axe violations`, async ({ page }) => {

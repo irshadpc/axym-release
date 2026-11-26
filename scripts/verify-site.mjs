@@ -116,7 +116,7 @@ catch (e) { check('releases.json parses as JSON', false, e.message); }
 if (manifest) {
   check('generatedAt is an ISO timestamp', !Number.isNaN(Date.parse(manifest.generatedAt)));
   check('repo is irshadpc/axym-release', manifest.repo === 'irshadpc/axym-release');
-  check('tui.version is v0.23.0', manifest.tui?.version === 'v0.23.0');
+  check('tui.version is v0.24.0', manifest.tui?.version === 'v0.24.0');
   check('tui.releaseDate is ISO date', /^\d{4}-\d{2}-\d{2}$/.test(manifest.tui?.releaseDate || ''));
   check('tui.status is active', manifest.tui?.status === 'active');
   const install = manifest.tui?.install || {};

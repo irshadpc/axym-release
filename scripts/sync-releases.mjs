@@ -27,13 +27,17 @@ const OUTPUT = resolve(HERE, '../site/data/releases.json');
 const REPO = 'irshadpc/axym-release';
 const REPO_URL = `https://github.com/${REPO}`;
 const DOWNLOADS = `${REPO_URL}/releases/download`;
-const TUI_TAG = 'tui-v0.23.0';
-const TUI_VERSION = '0.23.0';
+const TUI_TAG = 'tui-v0.24.0';
+const TUI_VERSION = '0.24.0';
 const DESKTOP_TAG = 'desktop-v12.17.0';
 
 // Verified release history (tags, names and dates read from GitHub).
 // Notes are limited to statements supported by the release body or README.
 const RELEASE_HISTORY = [
+  {
+    tag: 'tui-v0.24.0', product: 'TUI', version: '0.24.0', date: '2026-11-26', name: 'Axym TUI 0.24.0',
+    note: 'Parallel isolated runs with real mux pane adapters, the /ship governed pipeline, declarative Flow OS, a zero-trust MCP firewall and calm, anti-hang terminal resilience.',
+  },
   {
     tag: 'tui-v0.23.0', product: 'TUI', version: '0.23.0', date: '2026-11-05', name: 'Axym TUI 0.23.0',
     note: 'Terminal capability probing, a fullscreen inline-image viewer, and mouse/focus handling that restores terminal state on exit.',
@@ -65,6 +69,16 @@ const RELEASE_HISTORY = [
 // Verified baseline — real release metadata (captured from GitHub 2026-11-24)
 // ---------------------------------------------------------------------------
 const BASELINE_RELEASES = {
+  'tui-v0.24.0': {
+    tagName: 'tui-v0.24.0',
+    publishedAt: '2026-11-26T07:23:22Z',
+    assets: [
+      { name: 'axym-0.24.0-macos.tar.gz', digest: 'sha256:758fd736a22f1be4dca475ed537591f7287213d33818f07c5af36b531e031fe3', size: 56004271 },
+      { name: 'axym-0.24.0-linux-x86_64.tar.gz', digest: 'sha256:73d2abf8aa8b9469f1e7dc60e381c3424ca1d8ce1d401581a353bc1c23484d0b', size: 37541835 },
+      { name: 'axym-0.24.0-windows-x86_64.zip', digest: 'sha256:91d91687bfd163facbdf6f181ff8569fad149e73e9f6b791164a6c49089f3bd1', size: 40705984 },
+      { name: 'SHA256SUMS.txt', digest: 'sha256:1490b510b514f483a34ad771baac4b45b296dfb3d0d8f32818d9d9775838f49d', size: 584 },
+    ],
+  },
   'tui-v0.23.0': {
     tagName: 'tui-v0.23.0',
     publishedAt: '2026-11-05T18:10:00Z',
@@ -96,9 +110,9 @@ const BASELINE_RELEASES = {
 
 // The platform matrix the site renders. `file` is matched against real assets.
 const ARTIFACT_MATRIX = [
-  { product: 'tui', platform: 'macos', version: '0.23.0', tag: 'tui-v0.23.0', file: 'axym-0.23.0-macos.tar.gz', label: 'macOS (Apple Silicon + Intel)' },
-  { product: 'tui', platform: 'linux', version: '0.23.0', tag: 'tui-v0.23.0', file: 'axym-0.23.0-linux-x86_64.tar.gz', label: 'Linux x86_64' },
-  { product: 'tui', platform: 'windows', version: '0.23.0', tag: 'tui-v0.23.0', file: 'axym-0.23.0-windows-x86_64.zip', label: 'Windows x86_64' },
+  { product: 'tui', platform: 'macos', version: '0.24.0', tag: 'tui-v0.24.0', file: 'axym-0.24.0-macos.tar.gz', label: 'macOS (Apple Silicon + Intel)' },
+  { product: 'tui', platform: 'linux', version: '0.24.0', tag: 'tui-v0.24.0', file: 'axym-0.24.0-linux-x86_64.tar.gz', label: 'Linux x86_64' },
+  { product: 'tui', platform: 'windows', version: '0.24.0', tag: 'tui-v0.24.0', file: 'axym-0.24.0-windows-x86_64.zip', label: 'Windows x86_64' },
   { product: 'desktop', platform: 'macos', version: '12.17.0', tag: 'desktop-v12.17.0', file: 'Axym_12.17.0_universal.dmg', label: 'macOS (universal .dmg)' },
   { product: 'desktop', platform: 'linux', version: '12.16.0', tag: 'desktop-v12.16.0', file: 'axym-12.16.0-linux-x86_64.tar.gz', label: 'Linux x86_64 (latest cross-OS build)' },
   { product: 'desktop', platform: 'windows', version: '12.16.0', tag: 'desktop-v12.16.0', file: 'axym-12.16.0-windows-x86_64.zip', label: 'Windows x86_64 (latest cross-OS build)' },
@@ -150,7 +164,7 @@ function main() {
   for (const tag of Object.keys(BASELINE_RELEASES)) live[tag] = fetchRelease(tag);
 
   const tagOf = (key) => live[key] || BASELINE_RELEASES[key];
-  const tui = tagOf('tui-v0.23.0');
+  const tui = tagOf('tui-v0.24.0');
   const desktop = tagOf('desktop-v12.17.0');
   const desktopCross = tagOf('desktop-v12.16.0');
   const tuiBase = `${DOWNLOADS}/${TUI_TAG}`;
@@ -180,7 +194,7 @@ function main() {
       },
     },
     artifacts: ARTIFACT_MATRIX.map((row) => {
-      const release = row.tag === 'tui-v0.23.0' ? tui : row.tag === 'desktop-v12.17.0' ? desktop : desktopCross;
+      const release = row.tag === 'tui-v0.24.0' ? tui : row.tag === 'desktop-v12.17.0' ? desktop : desktopCross;
       return buildArtifact(row, release);
     }),
     history: RELEASE_HISTORY,

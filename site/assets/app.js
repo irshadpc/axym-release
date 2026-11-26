@@ -33,13 +33,13 @@
   var FALLBACK_RELEASES = {
     repo: 'irshadpc/axym-release',
     tui: {
-      version: 'v0.23.0',
+      version: 'v0.24.0',
       releaseDate: '2026-11-05',
       install: {
-        macos_arm: 'curl -fLO https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-macos.tar.gz\ntar -xzf axym-0.23.0-macos.tar.gz\n./axym-macos-arm64 --install',
-        macos_intel: 'curl -fLO https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-macos.tar.gz\ntar -xzf axym-0.23.0-macos.tar.gz\n./axym-macos-x64 --install',
-        linux: 'curl -fLO https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-linux-x86_64.tar.gz\ntar -xzf axym-0.23.0-linux-x86_64.tar.gz\n./axym-linux-x86_64 --install',
-        windows: 'Invoke-WebRequest -Uri https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-windows-x86_64.zip -OutFile axym.zip\nExpand-Archive axym.zip -DestinationPath .\n.\\axym-windows-x86_64.exe --install'
+        macos_arm: 'curl -fLO https://github.com/irshadpc/axym-release/releases/download/tui-v0.24.0/axym-0.24.0-macos.tar.gz\ntar -xzf axym-0.24.0-macos.tar.gz\n./axym-macos-arm64 --install',
+        macos_intel: 'curl -fLO https://github.com/irshadpc/axym-release/releases/download/tui-v0.24.0/axym-0.24.0-macos.tar.gz\ntar -xzf axym-0.24.0-macos.tar.gz\n./axym-macos-x64 --install',
+        linux: 'curl -fLO https://github.com/irshadpc/axym-release/releases/download/tui-v0.24.0/axym-0.24.0-linux-x86_64.tar.gz\ntar -xzf axym-0.24.0-linux-x86_64.tar.gz\n./axym-linux-x86_64 --install',
+        windows: 'Invoke-WebRequest -Uri https://github.com/irshadpc/axym-release/releases/download/tui-v0.24.0/axym-0.24.0-windows-x86_64.zip -OutFile axym.zip\nExpand-Archive axym.zip -DestinationPath .\n.\\axym-windows-x86_64.exe --install'
       }
     },
     desktop: { version: 'v12.17.0', crossOsVersion: 'v12.16.0', releaseDate: '2026-11-04', supportedRange: '12.13.x-12.17.x', eolRange: '12.12.x and earlier' },
@@ -204,7 +204,7 @@
     function link(key, label, ico) {
       var active = key === route;
       return '<a class="docs-side-link' + (active ? ' active' : '') + '" href="#' + key + '" data-nav="' + key + '"' + (active ? ' aria-current="page"' : '') + '>' +
-        icon(ico) + '<span>' + label + '</span>' + (key === 'releases' ? '<span class="docs-side-badge" id="side-version">v0.23.0</span>' : '') + '</a>';
+        icon(ico) + '<span>' + label + '</span>' + (key === 'releases' ? '<span class="docs-side-badge" id="side-version">v0.24.0</span>' : '') + '</a>';
     }
     return '<aside class="docs-sidebar" aria-label="Documentation navigation">' +
       '<div class="docs-side-group"><p class="docs-side-title">Getting started</p>' +

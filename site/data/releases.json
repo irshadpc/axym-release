@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-11-24T14:11:43.757Z",
+  "generatedAt": "2026-11-26T07:46:09.573Z",
   "repo": "irshadpc/axym-release",
   "tui": {
-    "version": "v0.23.0",
-    "releaseDate": "2026-11-05",
+    "version": "v0.24.0",
+    "releaseDate": "2026-11-26",
     "status": "active",
     "install": {
-      "macos_arm": "curl -fLO https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-macos.tar.gz\ntar -xzf axym-0.23.0-macos.tar.gz\n./axym-macos-arm64 --install",
-      "macos_intel": "curl -fLO https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-macos.tar.gz\ntar -xzf axym-0.23.0-macos.tar.gz\n./axym-macos-x64 --install",
-      "linux": "curl -fLO https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-linux-x86_64.tar.gz\ntar -xzf axym-0.23.0-linux-x86_64.tar.gz\n./axym-linux-x86_64 --install",
-      "windows": "Invoke-WebRequest -Uri https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-windows-x86_64.zip -OutFile axym-0.23.0-windows-x86_64.zip\nExpand-Archive axym-0.23.0-windows-x86_64.zip -DestinationPath .\n.\\axym-windows-x86_64.exe --install"
+      "macos_arm": "curl -fLO https://github.com/irshadpc/axym-release/releases/download/tui-v0.24.0/axym-0.24.0-macos.tar.gz\ntar -xzf axym-0.24.0-macos.tar.gz\n./axym-macos-arm64 --install",
+      "macos_intel": "curl -fLO https://github.com/irshadpc/axym-release/releases/download/tui-v0.24.0/axym-0.24.0-macos.tar.gz\ntar -xzf axym-0.24.0-macos.tar.gz\n./axym-macos-x64 --install",
+      "linux": "curl -fLO https://github.com/irshadpc/axym-release/releases/download/tui-v0.24.0/axym-0.24.0-linux-x86_64.tar.gz\ntar -xzf axym-0.24.0-linux-x86_64.tar.gz\n./axym-linux-x86_64 --install",
+      "windows": "Invoke-WebRequest -Uri https://github.com/irshadpc/axym-release/releases/download/tui-v0.24.0/axym-0.24.0-windows-x86_64.zip -OutFile axym-0.24.0-windows-x86_64.zip\nExpand-Archive axym-0.24.0-windows-x86_64.zip -DestinationPath .\n.\\axym-windows-x86_64.exe --install"
     }
   },
   "desktop": {
@@ -26,35 +26,35 @@
     {
       "product": "tui",
       "platform": "macos",
-      "version": "0.23.0",
+      "version": "0.24.0",
       "label": "macOS (Apple Silicon + Intel)",
-      "file": "axym-0.23.0-macos.tar.gz",
+      "file": "axym-0.24.0-macos.tar.gz",
       "status": "active",
-      "url": "https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-macos.tar.gz",
-      "sha256": "6f4f24af2bbd0591fedccc6cb26a5b9297bc0626c1cd2a37fe3727f86b1dd2a9",
-      "sizeBytes": 55363441
+      "url": "https://github.com/irshadpc/axym-release/releases/download/tui-v0.24.0/axym-0.24.0-macos.tar.gz",
+      "sha256": "758fd736a22f1be4dca475ed537591f7287213d33818f07c5af36b531e031fe3",
+      "sizeBytes": 56004271
     },
     {
       "product": "tui",
       "platform": "linux",
-      "version": "0.23.0",
+      "version": "0.24.0",
       "label": "Linux x86_64",
-      "file": "axym-0.23.0-linux-x86_64.tar.gz",
+      "file": "axym-0.24.0-linux-x86_64.tar.gz",
       "status": "active",
-      "url": "https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-linux-x86_64.tar.gz",
-      "sha256": "a4b7df9d21fd48671d3d554cbe1aae6a6434d7d7a6508ff162c23e286ca06758",
-      "sizeBytes": 37233856
+      "url": "https://github.com/irshadpc/axym-release/releases/download/tui-v0.24.0/axym-0.24.0-linux-x86_64.tar.gz",
+      "sha256": "73d2abf8aa8b9469f1e7dc60e381c3424ca1d8ce1d401581a353bc1c23484d0b",
+      "sizeBytes": 37541835
     },
     {
       "product": "tui",
       "platform": "windows",
-      "version": "0.23.0",
+      "version": "0.24.0",
       "label": "Windows x86_64",
-      "file": "axym-0.23.0-windows-x86_64.zip",
+      "file": "axym-0.24.0-windows-x86_64.zip",
       "status": "active",
-      "url": "https://github.com/irshadpc/axym-release/releases/download/tui-v0.23.0/axym-0.23.0-windows-x86_64.zip",
-      "sha256": "be97174e03f0752d0057ba6bf8b859a5975bd442e1df8a3b520a3501af33c6f9",
-      "sizeBytes": 40398732
+      "url": "https://github.com/irshadpc/axym-release/releases/download/tui-v0.24.0/axym-0.24.0-windows-x86_64.zip",
+      "sha256": "91d91687bfd163facbdf6f181ff8569fad149e73e9f6b791164a6c49089f3bd1",
+      "sizeBytes": 40705984
     },
     {
       "product": "desktop",
@@ -91,6 +91,14 @@
     }
   ],
   "history": [
+    {
+      "tag": "tui-v0.24.0",
+      "product": "TUI",
+      "version": "0.24.0",
+      "date": "2026-11-26",
+      "name": "Axym TUI 0.24.0",
+      "note": "Parallel isolated runs with real mux pane adapters, the /ship governed pipeline, declarative Flow OS, a zero-trust MCP firewall and calm, anti-hang terminal resilience."
+    },
     {
       "tag": "tui-v0.23.0",
       "product": "TUI",
