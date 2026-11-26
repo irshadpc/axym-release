@@ -1055,19 +1055,21 @@ tar -xzf axym-0.24.0-macos.tar.gz && ./axym-macos-arm64 --install</pre></div>
     <div class="container">
       <div class="section-head" data-fx-reveal>
         <p class="section-kicker">Command index</p>
-        <h2>Every capability, scannable in one place.</h2>
-        <p>Search by name or command, or filter by the job you are doing. Every row answers one question — what does this do for me — and opens an inline detail drawer with the honest limitations included. New in v0.24.0: parallel mux panes, the /ship pipeline, cost routing, multi-account isolation and the anti-hang guard.</p>
+        <h2>Every capability, one crisp row.</h2>
+        <p>Search by name, command or outcome, or jump straight to the job you are doing. The twelve flagship pillars show by default — any search or tab queries the full index — and every row opens a detail drawer with the honest limitations included.</p>
       </div>
       <div class="fx-toolbar" data-fx-reveal>
-        <label class="visually-hidden" for="feature-filter">Filter the capability catalog</label>
-        <input class="filter-input fx-search" id="feature-filter" data-filter-grid="fx-catalog" data-filter-noun="capabilities" type="search" placeholder="Search — try “review”, “worktree”, “/accounts”, “/remote”…" autocomplete="off" spellcheck="false">
-        <div class="fx-pills" id="fx-pills" role="group" aria-label="Filter capabilities"></div>
-        <div class="fx-lenses" id="fx-lenses" role="group" aria-label="Filter by developer outcome lens and maturity"></div>
-        <p class="fx-count" id="fx-count" role="status">Loading the capability catalog…</p>
+        <div class="fx-searchrow">
+          <label class="visually-hidden" for="feature-filter">Search commands or outcomes</label>
+          <input class="filter-input fx-search" id="feature-filter" data-filter-grid="fx-catalog" data-filter-noun="capabilities" type="search" placeholder="Search commands or outcomes — try “worktree”, “maestro”, “mcp”, “/ship”…" autocomplete="off" spellcheck="false">
+          <button type="button" class="fx-newtoggle" id="fx-newtoggle" aria-pressed="false">New in 0.24 <span class="fx-pill-n"></span></button>
+        </div>
+        <div class="fx-tabs" id="fx-tabs" role="group" aria-label="Capability index tabs"></div>
+        <p class="fx-count" id="fx-count" role="status">Loading the capability index…</p>
       </div>
-      <div class="fx-grid" id="fx-catalog"><p class="muted small">Loading the capability catalog…</p></div>
-      <div class="fx-showall" id="fx-showall" hidden>
-        <button type="button" class="btn btn-secondary btn-lg" id="fx-showall-btn">Show all capabilities</button>
+      <div class="fx-index" id="fx-catalog" role="list" aria-label="Capability index"><p class="muted small">Loading the capability index…</p></div>
+      <div class="fx-expand" id="fx-expand" hidden>
+        <button type="button" class="fx-expand-btn" id="fx-expand-btn">Expand full index ↓</button>
       </div>
       <p class="fx-maturity small muted"><span class="badge badge-active">Stable</span> ships in v0.24.0 &nbsp;·&nbsp; <span class="badge badge-pending">Experimental</span> limited surfaces, tracked (T-050) &nbsp;·&nbsp; <span class="badge badge-neutral">Roadmap</span> not yet shipped</p>
     </div>

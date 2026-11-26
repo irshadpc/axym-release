@@ -220,7 +220,9 @@ check('zero stale hardcoded capability counts', staleOk, staleHits.join(' | '));
 
 /* Dynamic counters must exist where counts are displayed. */
 check('home stat strip derives its capability count from the manifest', content.includes('data-capability-count'));
-check('catalog pills and stats render through the manifest totals', app.includes('data-fx-pill') && app.includes('applyFxFilter'));
+check('catalog tabs and stats render through the manifest totals', app.includes('data-fx-tab') && app.includes('applyFxFilter'));
+check('the catalog renders hairline rows, not cards (REV3 zero-box)',
+  app.includes("className = 'fx-row'") && !/className = 'fx-card'/.test(app) && !/class="fx-grid"/.test(content));
 
 /* ------------------------------------------------- Contract C — release -- */
 process.stdout.write('\n[d] Contract C — README and site match releases.json\n');
