@@ -1,0 +1,327 @@
+{
+  "version": 1,
+  "adr": "ADR-0016",
+  "title": "One session, end to end",
+  "notes": "Contract A (REV3). The five-chapter walkthrough teaches all twelve flagship pillars inside one continuous engineering session. Stage schematics describe documented v0.24.0 behaviour; whether a chapter may show a Verified Recording badge lives in proofs.manifest.json — never here. Every command pill links the capability that owns it.",
+  "try_flow": [
+    "axym doctor",
+    "/runs start \"<goal>\" --mux tmux",
+    "axym fitness --json",
+    "axym bench --reproduce"
+  ],
+  "chapters": [
+    {
+      "id": "chapter-01",
+      "num": "01",
+      "title": "Keep your CLIs. Add a living brain.",
+      "lede": "Axym wraps the agent CLIs already on your machine — Claude, Codex, OpenCode and more — with zero static API keys. Behind them, a living repo brain keeps context warm and /po turns a fuzzy request into a scoped decision before any code moves.",
+      "capabilities": [
+        "feat-one-session-any-agent-cli",
+        "feat-living-repo-brain-and-memory",
+        "feat-bundled-skills",
+        "feat-self-healing-doctor",
+        "feat-automatic-failover-and-provider-cooldowns"
+      ],
+      "commands": [
+        { "cmd": "axym --provider claude", "cap": "feat-one-session-any-agent-cli" },
+        { "cmd": "/po", "cap": "feat-bundled-skills" },
+        { "cmd": "/memory", "cap": "feat-living-repo-brain-and-memory" }
+      ],
+      "stage": {
+        "summary": "Provider selection with zero static keys, the living repo brain loading its context pyramid, and /po scoping the task — all before the first edit.",
+        "session": [
+          "$ axym --provider claude",
+          "  claude     detected   stream-json   preferred",
+          "  codex      detected   cli           available",
+          "  opencode   detected   cli           available",
+          "  keys 0 static · credentials stay with each CLI",
+          "",
+          "$ /memory",
+          "  context pyramid · repo skeleton loaded (no full rescan)",
+          "  lessons 14 · closed-loop from /race outcomes",
+          "",
+          "$ /po \"add rate limiting to the public API\"",
+          "  mode: quick → discovery → shaping",
+          "  evidence: 6 repo facts · 2 prior decisions recalled",
+          "  scope: 3 files · acceptance criteria set · providers eligible: 2"
+        ],
+        "diff": {
+          "kind": "text",
+          "meta": "context pyramid — what the brain holds before the first turn",
+          "lines": [
+            { "t": "hunk", "s": "repo skeleton (AST summary — never the full tree)" },
+            { "t": "add", "s": "src/app.ts        exports 12 · routes 9 · ~480 lines" },
+            { "t": "add", "s": "src/rate.test.ts   exists · 6 tests · last touched 3d ago" },
+            { "t": "hunk", "s": "lessons (causal, from /race outcomes)" },
+            { "t": "note", "s": "\"token-bucket beat sliding-window on this repo (2 races)\"" },
+            { "t": "hunk", "s": "prompt-cache" },
+            { "t": "add", "s": "prefix reuse across turns · repeat turns skip re-reading the repo" }
+          ]
+        },
+        "receipt": {
+          "outcome": "READY · 0 KEYS",
+          "providers": "3 detected · 1 selected · failover order recorded",
+          "context": "pyramid loaded · full rescan skipped",
+          "scope": "3 files · acceptance criteria set by /po",
+          "blockers": 0,
+          "evidence": "scope and recalled evidence journaled before any edit is staged"
+        }
+      }
+    },
+    {
+      "id": "chapter-02",
+      "num": "02",
+      "title": "Run agents in parallel without collisions.",
+      "lede": "/runs gives every agent its own linked git worktree with live tmux, zellij or wezterm panes, so events and staged files never mix. A Council cross-check reviews the author's work, and when a provider hits its quota the run parks until reset instead of dying.",
+      "capabilities": [
+        "feat-parallel-isolated-runs",
+        "feat-council-mode",
+        "feat-mux-pane-adapters",
+        "tui-flow-os",
+        "feat-run-comparison-and-stage-costs"
+      ],
+      "commands": [
+        { "cmd": "/runs start --mux tmux", "cap": "feat-parallel-isolated-runs" },
+        { "cmd": "/council", "cap": "feat-council-mode" },
+        { "cmd": "axym queue", "cap": "tui-flow-os" }
+      ],
+      "stage": {
+        "summary": "Two linked worktrees with live mux panes, an isolated run recovered from a provider stall, and a Council cross-check with a recorded decision.",
+        "session": [
+          "$ /runs start \"add rate limiting\" --worktree --mux tmux",
+          "  run 4f2a · worktree wt-parallel-1 · pane %0 live",
+          "$ /runs start \"migrate cache keys\" --worktree --mux tmux",
+          "  run 9c11 · worktree wt-parallel-2 · pane %1 live",
+          "$ /runs switch 4f2a",
+          "  visible: 4f2a · 9c11's events and staged files hidden",
+          "",
+          "  ⚠ tool stall on 9c11 — lock classifier: provider read timeout",
+          "  → orphan drained · verified-idle process group · ToolStallError (typed)",
+          "  → provider benched until quota reset · run parked in axym queue",
+          "  ✓ run recovered · events intact",
+          "",
+          "$ /council \"pick the rate limiter design\"",
+          "  3 providers · borda consensus · 1 decision record"
+        ],
+        "diff": {
+          "kind": "text",
+          "meta": "per-run isolation — staged files never mix across worktrees",
+          "lines": [
+            { "t": "hunk", "s": "run 4f2a → wt-parallel-1 (staged)" },
+            { "t": "add", "s": "src/rate.ts            | 18 +++" },
+            { "t": "add", "s": "src/rate.test.ts       |  9 ++" },
+            { "t": "hunk", "s": "run 9c11 → wt-parallel-2 (staged)" },
+            { "t": "add", "s": "src/cache/keys.ts      | 42 +++" },
+            { "t": "del", "s": "src/cache/legacy.ts    | 30 ---" },
+            { "t": "hunk", "s": "integration" },
+            { "t": "note", "s": "/runs integrate 9c11        # preview only" },
+            { "t": "note", "s": "/runs integrate 9c11 --apply # explicit, checkpointed merge" }
+          ]
+        },
+        "receipt": {
+          "outcome": "RECOVERED · VER",
+          "runs": 2,
+          "isolation": "per-run worktrees · events and staged files scoped per run",
+          "mux": "tmux panes %0 %1 · argv-safe launcher · kill-before-close (ADR-0018)",
+          "resilience": [
+            "stall classified by the lock classifier, drained, escalated as a typed ToolStallError",
+            "identical-failure circuit breaker armed — no retry loop",
+            "provider benched to quota reset · run parked in the queue"
+          ],
+          "blockers": 0,
+          "evidence": "hash-chained event trail per run · merge is a separate human decision"
+        }
+      }
+    },
+    {
+      "id": "chapter-03",
+      "num": "03",
+      "title": "Firewall tools, stop hangs, control spend.",
+      "lede": "The local MCP firewall admits tools by capability, taints untrusted output and keeps a full audit trail. Calm-UX classifies a hang, drains the orphan and arms the circuit breaker, while LinUCB cost routing picks the provider your budget agrees with — and speculative shadow evidence gathers proof while the review gate waits.",
+      "capabilities": [
+        "feat-zero-trust-mcp-tool-access",
+        "feat-anti-hang-guard",
+        "feat-cost-routing",
+        "feat-failure-circuit-breaker",
+        "feat-security-review"
+      ],
+      "commands": [
+        { "cmd": "/mcp", "cap": "feat-zero-trust-mcp-tool-access" },
+        { "cmd": "/cost", "cap": "feat-cost-routing" },
+        { "cmd": "/security", "cap": "feat-security-review" }
+      ],
+      "stage": {
+        "summary": "A poisoned MCP response is denied and tainted before it reaches the model, a stall is classified instead of retried forever, and the cost router records why it picked the cheaper provider.",
+        "session": [
+          "$ /mcp",
+          "  firewall: capability lattice · 6 tools admitted · 2 denied",
+          "  ⚠ tool docs_scraper returned untrusted content",
+          "  → output TAINTED · not shown to the model · audit entry written",
+          "",
+          "  ⚠ tool stall — lock classifier: provider read timeout",
+          "  → orphan drained · verified-idle process group",
+          "  → identical-failure circuit breaker armed · no retry loop",
+          "",
+          "$ /cost",
+          "  router: LinUCB · chose codex for this stage",
+          "  why: est. $0.011 vs $0.043 · local rate card 2026-11-24",
+          "",
+          "  shadow evidence: 3 speculative test runs collected while",
+          "  the review gate waits · marked speculative until approval"
+        ],
+        "diff": {
+          "kind": "text",
+          "meta": "firewall decision log — local, append-only, inspectable",
+          "lines": [
+            { "t": "hunk", "s": "mcp audit trail (this session)" },
+            { "t": "add", "s": "admit  fs_read        capability: repo:read" },
+            { "t": "add", "s": "admit  test_runner    capability: test:run" },
+            { "t": "del", "s": "deny   docs_scraper   capability: net:fetch · untrusted output" },
+            { "t": "note", "s": "taint  docs_scraper#2 content never entered the model context" },
+            { "t": "hunk", "s": "hang ledger" },
+            { "t": "add", "s": "stall #1 provider read timeout → drained · breaker armed" }
+          ]
+        },
+        "receipt": {
+          "outcome": "PROTECTED · VER",
+          "firewall": "2 denied · 1 tainted · audit trail written locally",
+          "resilience": "stall drained and classified · breaker armed on identical failure",
+          "spend": "router picked codex · est. $0.011 vs $0.043 · rate card dated",
+          "shadow": "3 speculative runs · marked speculative, never scored as proof",
+          "blockers": 0,
+          "evidence": "decisions hash-chained · nothing left the machine"
+        }
+      }
+    },
+    {
+      "id": "chapter-04",
+      "num": "04",
+      "title": "Build, diff, and test mobile apps natively.",
+      "lede": "Declare your target in .axym/mobile.json and Axym drives iOS simulators and Android emulators end to end: visual diffs with hierarchy evidence, Maestro UI automation, MASVS security passes and /bg cloud builds — with one-tap approvals from your phone over LAN TLS.",
+      "capabilities": [
+        "tui-device-bridge",
+        "feat-security-review",
+        "feat-session-and-run-handoff"
+      ],
+      "commands": [
+        { "cmd": "/sim boot ios", "cap": "tui-device-bridge" },
+        { "cmd": "/qa --maestro", "cap": "tui-device-bridge" },
+        { "cmd": "/security --masvs", "cap": "feat-security-review" }
+      ],
+      "stage": {
+        "summary": "A simulator journey with schema-v2 visual proof, a Maestro UI pass and a MASVS security gate — the certified simulator surface, with the real-device boundary labelled honestly.",
+        "session": [
+          "$ axym doctor --mobile",
+          "  ios      iPhone 16 Pro simulator   booted",
+          "  android  Pixel 8 emulator          booted",
+          "  real devices: none attached (T-050 hardware journey partial)",
+          "",
+          "$ /device list",
+          "  1 ios simulator · 1 android emulator · lease cleanup on",
+          "$ /sim boot ios --target .axym/mobile.json#checkout",
+          "  app installed · session live · /bg keeps it running",
+          "$ /mobile \"sign in, add item to cart, screenshot the receipt\"",
+          "  journey 3 turns · crash/ANR harvest clean · self-healing bounded",
+          "$ /mobile-proof capture",
+          "  screenshot + hierarchy + visual diff · schema v2 · verified",
+          "$ /qa --maestro",
+          "  12 flows executed · 0 failures",
+          "$ /security --masvs",
+          "  MASVS pass · 0 blockers · store preflight gate: ready"
+        ],
+        "diff": {
+          "kind": "visual",
+          "meta": "schema v2 visual proof — capture, hierarchy and design diff",
+          "items": [
+            { "label": "Receipt screen · before", "detail": "cart badge missing after checkout" },
+            { "label": "Receipt screen · after", "detail": "cart badge resets · button state settled" },
+            { "label": "Visual diff", "detail": "1 region changed · hierarchy delta: CartBadge.count 1 → 0" }
+          ],
+          "boundary": "Captures shown here come from simulators. Real-device visual-diff fidelity, cert-pinned Wi-Fi and closed-app Web Push are part of the T-050 hardware journey, which is partial — the badge stays illustrative until a real capture is committed."
+        },
+        "receipt": {
+          "outcome": "OK · VER (simulator surface)",
+          "surface": "iOS simulator + Android emulator · real devices: none attached",
+          "journey": "3 turns · crash/ANR harvest clean",
+          "visual_proof": "schema v2 · screenshot + hierarchy + design diff",
+          "qa": "maestro — 12 flows · 0 failures",
+          "security": "MASVS pass · 0 blockers · store preflight ready",
+          "blockers": 0,
+          "unverified": ["real-device (hardware) certification — T-050, not GA"],
+          "evidence": "captures and diffs stored locally · nothing uploaded"
+        }
+      }
+    },
+    {
+      "id": "chapter-05",
+      "num": "05",
+      "title": "Ship only what passes independent proof.",
+      "lede": "Adversarial QA, AIDE root-cause diagnosis and axym fitness gate the change before /ship offers it; the Result Ledger is hash-chained and a cassette replay proves the run reproduces. Shipping stays a separate human decision — apply is explicit and reversible.",
+      "capabilities": [
+        "feat-ship-governed-pipeline",
+        "feat-aide-run-diagnosis-and-event-inspection",
+        "feat-security-review",
+        "feat-proof-carrying-races-and-offline-verification",
+        "tui-flow-os"
+      ],
+      "commands": [
+        { "cmd": "axym fitness --json", "cap": "feat-ship-governed-pipeline" },
+        { "cmd": "/ship apply", "cap": "feat-ship-governed-pipeline" },
+        { "cmd": "axym bench --reproduce", "cap": "feat-proof-carrying-races-and-offline-verification" }
+      ],
+      "stage": {
+        "summary": "The governed pipeline from /po problem framing to a hash-chained Result Ledger: independent review, fitness contracts, typed command-contract checks (ADR-0007) and a cassette replay that proves the run reproduces.",
+        "session": [
+          "$ /po \"add rate limiting to the public API\"",
+          "  scope: 3 files · acceptance criteria set · 2 providers eligible",
+          "",
+          "$ axym ship \"add rate limiting to the public API\"",
+          "  ● plan      scope + acceptance criteria",
+          "  ● design    token bucket · per-route limits",
+          "  ● code      src/app.ts +18 −2 · tests +6   (shadow evidence while gates hold)",
+          "  ● security  threat model attached · 0 blockers",
+          "  ◆ review    gate · awaiting human decision",
+          "  ✓ qa        18 tests passed · build exit 0",
+          "",
+          "$ axym fitness --json",
+          "  contracts 9/9 pass · context satisfied",
+          "$ /flow run release-check",
+          "  lockfile compiled · bounded · resumable",
+          "$ axym bench --reproduce",
+          "  cassette replayed · identical outcome",
+          "  ledger: OK · VER · 2 files · 0 blockers · receipt hash-chained"
+        ],
+        "diff": {
+          "kind": "text",
+          "meta": "git diff — 3 files changed, 18 insertions(+), 2 deletions(-)",
+          "lines": [
+            { "t": "hunk", "s": "src/app.ts" },
+            { "t": "add", "ln": 41, "s": "+ const limiter = createLimiter({ windowMs: 60_000, max: 120 });" },
+            { "t": "add", "ln": 42, "s": "+ app.use(\"/api\", limiter.middleware);" },
+            { "t": "add", "ln": 43, "s": "+ export const _limiterTestHooks = limiter;" },
+            { "t": "del", "ln": 18, "s": "- app.use(\"/api\", legacyThrottle);" },
+            { "t": "hunk", "s": "src/rate.test.ts" },
+            { "t": "add", "ln": 7, "s": "+ it(\"returns 429 past the window budget\", async () => {" },
+            { "t": "add", "ln": 8, "s": "+   await expect(flood(api, 121)).rejects.toMatchObject({ status: 429 });" },
+            { "t": "add", "ln": 9, "s": "+ });" }
+          ]
+        },
+        "receipt": {
+          "outcome": "OK · VER",
+          "files_changed": 2,
+          "checks": [
+            { "name": "typecheck", "result": "pass", "exit": 0 },
+            { "name": "tests", "result": "pass", "exit": 0, "detail": "18 passed · 2 new" },
+            { "name": "fitness", "result": "pass", "exit": 0, "detail": "9/9 contracts · context satisfied" },
+            { "name": "command contracts", "result": "pass", "detail": "ADR-0007 shapes held" },
+            { "name": "build", "result": "pass", "exit": 0 },
+            { "name": "review", "result": "awaiting-approval", "independence": "labelled — different provider from the coder" }
+          ],
+          "blockers": 0,
+          "unverified": ["performance under sustained load marked UNV — not measured this turn"],
+          "evidence": "hash-chained event trail · cassette replay matches · staged in .axym/edit-staging/run-<id> · reaches the repo only through /ship apply"
+        }
+      }
+    }
+  ]
+}

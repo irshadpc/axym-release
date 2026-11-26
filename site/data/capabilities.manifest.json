@@ -1,22 +1,8 @@
 {
-  "version": 1,
+  "version": 3,
   "generatedAt": "2026-11-26",
   "release": "v0.24.0",
-  "notes": "Canonical capability manifest (Contract A). Every stat, card, pill, drawer and search hit on the portal derives from this file. Maturity is stable | experimental | roadmap. Outcomes use exactly the five developer lenses. featured_top12 marks the twelve flagship pillars (Contract B).",
-  "outcomes": {
-    "build-verify": "Build & Verify",
-    "parallel-runs": "Parallel Worktrees & Fleet",
-    "mobile-remote": "Mobile Dev Platform & Remote",
-    "security-firewall": "MCP Firewall, QA & Fitness",
-    "context-runtime": "Context Brain, Cost & Replay"
-  },
-  "outcomeDescriptions": {
-    "build-verify": "Scope with /po, run the governed pipeline, collect Speculative Shadow Evidence and close with a Result Ledger and /ship.",
-    "parallel-runs": "Linked worktrees under /runs, live mux panes in tmux/zellij/wezterm, Council Mode and quota-reset parking.",
-    "mobile-remote": "Drive iOS and Android from .axym/mobile.json: /sim, /device visual diff, /qa --maestro, /security --masvs, /bg and LAN pairing.",
-    "security-firewall": "Local MCP capability-lattice firewall, adversarial QA passes, Web posture checks and the headless axym fitness CI gate.",
-    "context-runtime": "Living Repo Brain and prompt-cache telemetry, LinUCB cost routing, offline replay, Calm-UX resilience and cross-surface continuity."
-  },
+  "notes": "Canonical capability manifest (Contracts A & B, REV3 zero-box). Every stat, hairline index row, story-chapter pill, drawer and search hit derives from this file. tab is one of exactly five REV3 index tabs; story_chapter is 1-5; maturity is stable | experimental | roadmap; one_liner is <= 110 chars. The twelve flagship pillars carry a unique flagship_id and teach inside the five-chapter walkthrough.",
   "groups": {
     "sessions": "Sessions & models",
     "chat": "Transcript",
@@ -41,18 +27,28 @@
       "group": "sessions",
       "icon": "cpu",
       "summary": "Drive Claude, Codex, Gemini, OpenCode and more from one consistent interface.",
-      "commands": ["axym --provider claude", "/provider", "/model"],
+      "commands": [
+        "axym --provider claude",
+        "/provider",
+        "/model"
+      ],
       "search": "claude codex gemini opencode cursor copilot keyless provider cli interface failover",
       "maturity": "stable",
-      "outcomes": ["build-verify", "context-runtime"],
       "featured_top12": true,
       "introduced_in": null,
       "problem": "Every agent CLI ships its own interface, so switching models means re-learning a tool and losing the thread mid-problem.",
       "what_it_is": "One terminal session that drives Claude Code, OpenCode, Codex, Gemini CLI, Cursor Agent, GitHub Copilot CLI and Antigravity through a single consistent interface with zero static API keys.",
       "why_it_matters": "You keep one conversation and one set of habits while choosing the model that fits the task — credentials stay with each CLI, never with Axym.",
       "use_it": "axym --provider claude · /provider · /model",
-      "surfaces": ["TUI"],
-      "limitations": "Provider coverage depends on the CLIs installed on your PATH; a provider that is not installed is listed as 'not found' by axym doctor."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Provider coverage depends on the CLIs installed on your PATH; a provider that is not installed is listed as 'not found' by axym doctor.",
+      "one_liner": "Drive Claude, Codex, Gemini, OpenCode and more from one consistent interface.",
+      "command": "axym --provider claude",
+      "tab": "core-workflow",
+      "story_chapter": 1,
+      "flagship_id": "flagship-01-keyless-multi-cli"
     },
     {
       "id": "feat-provider-discovery-and-defaults",
@@ -60,17 +56,24 @@
       "group": "sessions",
       "icon": "search",
       "summary": "Setup is detection, not configuration — installed CLIs are found automatically.",
-      "commands": ["axym doctor"],
+      "commands": [
+        "axym doctor"
+      ],
       "search": "doctor detection install path alias typo defaults config",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Finds installed CLIs on PATH and in common install directories, accepts ids, aliases and display names, and suggests the closest match on a typo.",
       "why_it_matters": "Setup stays a detection step, not a config-file exercise: Axym finds what you installed and suggests the closest match when you mistype an id.",
       "use_it": "axym doctor · ~/.axym/config.yaml (default-coder) · ~/.axym/provider_paths.json",
-      "surfaces": ["TUI"],
-      "limitations": "Private or uncommonly located CLIs may need a one-time registration in ~/.axym/providers.json."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Private or uncommonly located CLIs may need a one-time registration in ~/.axym/providers.json.",
+      "one_liner": "Setup is detection, not configuration — installed CLIs are found automatically.",
+      "command": "axym doctor",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-mid-session-provider-model-and-effort-switching",
@@ -78,17 +81,26 @@
       "group": "sessions",
       "icon": "refresh",
       "summary": "Swap provider, model or reasoning effort mid-problem. The thread never drops.",
-      "commands": ["/provider", "/model", "/effort"],
+      "commands": [
+        "/provider",
+        "/model",
+        "/effort"
+      ],
       "search": "switch provider model effort mid-session reasoning",
       "maturity": "stable",
-      "outcomes": ["build-verify", "context-runtime"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Change the agent, model or reasoning effort without losing the conversation or restarting the session.",
       "why_it_matters": "A provider that is wrong for one step no longer costs the conversation — you switch and continue with the same context.",
       "use_it": "/provider · /model · /models · /effort",
-      "surfaces": ["TUI"],
-      "limitations": "Model availability differs per provider CLI; the picker lists what the selected CLI actually exposes."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Model availability differs per provider CLI; the picker lists what the selected CLI actually exposes.",
+      "one_liner": "Swap provider, model or reasoning effort mid-problem. The thread never drops.",
+      "command": "/provider",
+      "tab": "core-workflow",
+      "story_chapter": 3
     },
     {
       "id": "feat-automatic-failover-and-provider-cooldowns",
@@ -96,17 +108,24 @@
       "group": "sessions",
       "icon": "bolt",
       "summary": "A quota wall benches that provider; the run continues somewhere else.",
-      "commands": ["/priority"],
+      "commands": [
+        "/priority"
+      ],
       "search": "failover cooldown quota circuit breaker bench reset",
       "maturity": "stable",
-      "outcomes": ["build-verify", "context-runtime"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Classifies failures as immediate, after-reset or never; benches quota walls until their reset time and policy walls for 24h; a circuit breaker stops repeated sub-minute failures.",
       "why_it_matters": "A quota wall or flaky CLI no longer ends the run: the failure is classified, the provider is benched until reset, and the next provider receives a handoff.",
       "use_it": "Automatic on a failed turn · /priority shows the resolution order",
-      "surfaces": ["TUI"],
-      "limitations": "Failover quality depends on how many provider CLIs are installed; with a single CLI there is nowhere to fail over to."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Failover quality depends on how many provider CLIs are installed; with a single CLI there is nowhere to fail over to.",
+      "one_liner": "A quota wall benches that provider; the run continues somewhere else.",
+      "command": "/priority",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-persistent-claude-connection",
@@ -114,17 +133,24 @@
       "group": "sessions",
       "icon": "activity",
       "summary": "A live stream-JSON process, so repeat turns start instantly.",
-      "commands": ["Automatic"],
+      "commands": [
+        "Automatic"
+      ],
       "search": "claude stream-json persistent connection stdin permissions fast",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Claude runs as a long-lived stream-JSON process, so repeat turns skip CLI re-initialisation and permission requests flow over live stdin.",
       "why_it_matters": "Repeat turns skip CLI startup, so interactive work stays immediate and permission prompts flow over the live connection.",
       "use_it": "Automatic for the Claude provider",
-      "surfaces": ["TUI"],
-      "limitations": "Applies to the Claude provider only; other CLIs are invoked per turn."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Applies to the Claude provider only; other CLIs are invoked per turn.",
+      "one_liner": "A live stream-JSON process, so repeat turns start instantly.",
+      "command": "Automatic",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-sessions-resume-and-git-reconciliation",
@@ -132,17 +158,25 @@
       "group": "sessions",
       "icon": "clock",
       "summary": "Come back tomorrow — it restores the session and reports what changed.",
-      "commands": ["axym -c", "/resume"],
+      "commands": [
+        "axym -c",
+        "/resume"
+      ],
       "search": "resume continue session jsonl git reconciliation workspace changed",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Saves every finished turn as JSONL, restores the provider's own session id, and tells you what changed in the workspace since the session was last active.",
       "why_it_matters": "Coming back later is safe: the provider's own session id is restored and you are told what changed in the workspace while you were away.",
       "use_it": "/sessions · /resume · /continue · axym -c",
-      "surfaces": ["TUI"],
-      "limitations": "Provider-side session retention policies still apply; very old provider sessions may no longer be restorable by the CLI itself."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Provider-side session retention policies still apply; very old provider sessions may no longer be restorable by the CLI itself.",
+      "one_liner": "Come back tomorrow — it restores the session and reports what changed.",
+      "command": "axym -c",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-self-healing-doctor",
@@ -150,17 +184,24 @@
       "group": "sessions",
       "icon": "check-circle",
       "summary": "A 30-second, non-destructive setup that detects providers and repairs common problems itself.",
-      "commands": ["axym doctor"],
+      "commands": [
+        "axym doctor"
+      ],
       "search": "doctor self-healing onboarding 30 seconds repair scar rules block recurring non-destructive",
       "maturity": "stable",
-      "outcomes": ["build-verify", "security-firewall"],
       "featured_top12": false,
       "introduced_in": "0.24.0",
       "what_it_is": "A non-destructive onboarding path: axym doctor detects installed agent CLIs, verifies the runtime, repairs common setup problems itself, and locally verified scar rules can block edits that already failed the same way before.",
       "why_it_matters": "Setup stays a detection step that can heal itself, and mistakes the organisation has already made once are not repeated silently.",
       "use_it": "axym doctor · axym doctor --mobile",
-      "surfaces": ["TUI"],
-      "limitations": "Repairs are limited to known, safe setup fixes; anything destructive is reported, never attempted."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Repairs are limited to known, safe setup fixes; anything destructive is reported, never attempted.",
+      "one_liner": "A 30-second, non-destructive setup that detects providers and repairs common problems itself.",
+      "command": "axym doctor",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-multi-account-provider-slots-and-isolation",
@@ -168,17 +209,25 @@
       "group": "sessions",
       "icon": "users",
       "summary": "Switch personal, work and sandbox accounts per provider with trust zones and kernel isolation.",
-      "commands": ["/accounts", "axym accounts"],
+      "commands": [
+        "/accounts",
+        "axym accounts"
+      ],
       "search": "accounts multi-account slots personal work sandbox trust zone pinned seatbelt landlock canary isolation cooldown",
       "maturity": "stable",
-      "outcomes": ["security-firewall", "parallel-runs"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Configure and switch between multiple accounts per provider (personal, work, sandbox) with trust-zone policies, pinned-account enforcement, per-account health and cooldown tracking, and kernel-isolated credential directories (macOS Seatbelt / Linux Landlock) with egress-proxy canary protection.",
       "why_it_matters": "You can keep personal, client and sandbox credentials strictly separated — when one account hits a rate limit or trust-zone rule, Axym never leaks credentials across slots.",
       "use_it": "/accounts · axym accounts [list|add|test] · ~/.axym/providers.json",
-      "surfaces": ["TUI"],
-      "limitations": "Kernel isolation uses macOS Seatbelt and Linux Landlock; Windows credential directories are isolated by path but not by an OS sandbox."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Kernel isolation uses macOS Seatbelt and Linux Landlock; Windows credential directories are isolated by path but not by an OS sandbox.",
+      "one_liner": "Switch personal, work and sandbox accounts per provider with trust zones and kernel isolation.",
+      "command": "/accounts",
+      "tab": "security-proof",
+      "story_chapter": 3
     },
     {
       "id": "feat-openai-compatible-local-inference",
@@ -186,17 +235,24 @@
       "group": "sessions",
       "icon": "cpu",
       "summary": "Drive Ollama, LM Studio, vLLM or llama.cpp through the same TUI session and Result Ledger.",
-      "commands": ["axym --provider local"],
+      "commands": [
+        "axym --provider local"
+      ],
       "search": "local openai-compatible ollama lm studio vllm llama.cpp self-hosted model air-gapped",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": "0.24.0",
       "what_it_is": "Connect local or self-hosted OpenAI-compatible inference servers (Ollama, LM Studio, vLLM, llama.cpp) through the same TUI session, tool loop and Result Ledger with no cloud CLI required.",
       "why_it_matters": "Air-gapped, private or local-GPU workflows get the exact same permissions, diffing and verification harness as cloud CLIs.",
       "use_it": "axym --provider local · AXYM_LOCAL_BASE_URL · AXYM_LOCAL_MODEL",
-      "surfaces": ["TUI"],
-      "limitations": "Tool-calling fidelity varies by local server; features that need native provider modes (e.g. Claude stream-json permissions) do not apply."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Tool-calling fidelity varies by local server; features that need native provider modes (e.g. Claude stream-json permissions) do not apply.",
+      "one_liner": "Drive Ollama, LM Studio, vLLM or llama.cpp through the same TUI session and Result Ledger.",
+      "command": "axym --provider local",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-session-outcome-profiles",
@@ -204,17 +260,24 @@
       "group": "sessions",
       "icon": "sliders",
       "summary": "Shape turn evaluation with session-scoped verification, speed or audit profiles.",
-      "commands": ["/profile"],
+      "commands": [
+        "/profile"
+      ],
       "search": "profile outcome strict prototype security audit quality preset",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Select a session-scoped outcome profile (such as strict verification, rapid prototype or security audit) that shapes how turns are evaluated.",
       "why_it_matters": "You can dial up verification rigor for production changes or speed for exploration without editing config files.",
       "use_it": "/profile",
-      "surfaces": ["TUI"],
-      "limitations": "Profiles shape evaluation and defaults; they never weaken approval gates."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Profiles shape evaluation and defaults; they never weaken approval gates.",
+      "one_liner": "Shape turn evaluation with session-scoped verification, speed or audit profiles.",
+      "command": "/profile",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-streaming-chat-and-tool-activity",
@@ -222,17 +285,24 @@
       "group": "chat",
       "icon": "message",
       "summary": "Watch real commands, paths and output while the agent works.",
-      "commands": ["Automatic"],
+      "commands": [
+        "Automatic"
+      ],
       "search": "streaming tokens tool calls markdown live output",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Token-level deltas, lightweight markdown and animated tool calls with real commands, paths and outputs instead of raw protocol dumps.",
       "why_it_matters": "You see real commands, paths and outputs as they happen, so you can intervene before a wrong assumption becomes a committed change.",
       "use_it": "Automatic in every interactive session",
-      "surfaces": ["TUI"],
-      "limitations": "Rendering fidelity follows the provider's stream format; raw protocol dumps are summarised, not hidden."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Rendering fidelity follows the provider's stream format; raw protocol dumps are summarised, not hidden.",
+      "one_liner": "Watch real commands, paths and output while the agent works.",
+      "command": "Automatic",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-result-ledger",
@@ -240,17 +310,24 @@
       "group": "chat",
       "icon": "check-circle",
       "summary": "Every turn ends with a receipt: outcome, files, checks, blockers.",
-      "commands": ["Ctrl+O for detail"],
+      "commands": [
+        "Ctrl+O for detail"
+      ],
       "search": "result ledger outcome ok fail ver unv files checks blockers",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Each turn ends with an outcome banner (OK, FAIL, VER, UNV), modified files, verification checks, blockers or risks, a concise summary and contextual next actions.",
       "why_it_matters": "A turn ends with an inspectable outcome instead of a vibe — files touched, checks run, blockers and next actions are explicit.",
       "use_it": "Automatic at turn completion · Ctrl+O expands detail",
-      "surfaces": ["TUI"],
-      "limitations": "Unverified dimensions are marked UNV; the ledger never scores unmeasured work as perfect."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Unverified dimensions are marked UNV; the ledger never scores unmeasured work as perfect.",
+      "one_liner": "Every turn ends with a receipt: outcome, files, checks, blockers.",
+      "command": "Ctrl+O for detail",
+      "tab": "core-workflow",
+      "story_chapter": 5
     },
     {
       "id": "feat-markdown-and-syntax-highlighting",
@@ -258,17 +335,24 @@
       "group": "chat",
       "icon": "book",
       "summary": "Answers render as documents and code as code — no external dependency.",
-      "commands": ["Automatic"],
+      "commands": [
+        "Automatic"
+      ],
       "search": "markdown syntax highlighting code fence rust go python shell yaml",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Fenced code is highlighted for JavaScript/TypeScript, Python, Rust, Go, shell, YAML/TOML and C-family languages with no external dependency.",
       "why_it_matters": "Code in the terminal is scannable without a separate viewer or an external highlighting dependency.",
       "use_it": "Automatic in responses",
-      "surfaces": ["TUI"],
-      "limitations": "Very long fenced blocks collapse for scroll performance; expand with Ctrl+O."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Very long fenced blocks collapse for scroll performance; expand with Ctrl+O.",
+      "one_liner": "Answers render as documents and code as code — no external dependency.",
+      "command": "Automatic",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-message-queueing",
@@ -276,17 +360,24 @@
       "group": "chat",
       "icon": "command",
       "summary": "Keep typing while it works — instructions drain in order, never lost.",
-      "commands": ["Type ahead"],
+      "commands": [
+        "Type ahead"
+      ],
       "search": "queue message typing busy drain order workstream",
       "maturity": "stable",
-      "outcomes": ["build-verify", "parallel-runs"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Text submitted while a turn is running is queued and drains automatically when the turn ends, with a visible queued count. Governed workstream submissions are the exception: they are refused while the runtime is busy and can be retried when it is idle.",
       "why_it_matters": "You can keep typing while the agent works; the next instruction is queued and drains in order instead of being lost to a busy turn. Governed work is never silently stacked behind another turn.",
       "use_it": "Type while the agent is working",
-      "surfaces": ["TUI"],
-      "limitations": "Governed workstreams deliberately refuse submission while a run is busy instead of queueing behind it."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Governed workstreams deliberately refuse submission while a run is busy instead of queueing behind it.",
+      "one_liner": "Keep typing while it works — instructions drain in order, never lost.",
+      "command": "Type ahead",
+      "tab": "core-workflow",
+      "story_chapter": 2
     },
     {
       "id": "feat-transcript-search-and-turn-jump",
@@ -294,17 +385,25 @@
       "group": "chat",
       "icon": "search",
       "summary": "Find any decision and jump straight back to the turn that made it.",
-      "commands": ["Ctrl+F", "/find"],
+      "commands": [
+        "Ctrl+F",
+        "/find"
+      ],
       "search": "find search transcript jump turns ctrl+f export saved",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Search the current session, open a scrollable hit preview, or jump directly to an earlier conversational turn.",
       "why_it_matters": "Long sessions stay navigable: find a decision by text and jump straight back to the turn where it was made.",
       "use_it": "Ctrl+F · /find · /turns",
-      "surfaces": ["TUI"],
-      "limitations": "Search covers the current session transcript; use /handoff export to carry context to a new session."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Search covers the current session transcript; use /handoff export to carry context to a new session.",
+      "one_liner": "Find any decision and jump straight back to the turn that made it.",
+      "command": "/find",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-copy-and-export",
@@ -312,17 +411,25 @@
       "group": "chat",
       "icon": "copy",
       "summary": "Lift one answer or the whole transcript into a ticket or PR.",
-      "commands": ["/copy", "/export"],
+      "commands": [
+        "/copy",
+        "/export"
+      ],
       "search": "copy export clipboard markdown transcript ticket pr",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Copy the latest or an earlier response to the system clipboard, or save the full transcript as markdown.",
       "why_it_matters": "Results move into a note, ticket or PR without retyping, and the whole transcript can be kept as markdown.",
       "use_it": "/copy · /export",
-      "surfaces": ["TUI"],
-      "limitations": "Exports are local files; nothing is uploaded anywhere."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Exports are local files; nothing is uploaded anywhere.",
+      "one_liner": "Lift one answer or the whole transcript into a ticket or PR.",
+      "command": "/copy",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-calm-status",
@@ -330,17 +437,24 @@
       "group": "chat",
       "icon": "activity",
       "summary": "One in-place live status row instead of scrollback noise; retries collapse to a quiet line.",
-      "commands": ["Automatic"],
+      "commands": [
+        "Automatic"
+      ],
       "search": "calm status row retry collapse scrollback quiet expandable in-place live calm-ux",
       "maturity": "stable",
-      "outcomes": ["context-runtime"],
       "featured_top12": false,
       "introduced_in": "0.24.0",
       "what_it_is": "One in-place live status row replaces appended pause markers, and transient retries that recover on their own collapse into a single quiet, expandable line instead of a stack of scrollback.",
       "why_it_matters": "The transcript stays readable during long, flaky turns: you see current state at a glance and can expand the history only if you care.",
       "use_it": "Automatic in every interactive session",
-      "surfaces": ["TUI"],
-      "limitations": "Collapsed retries remain expandable in place; the full history is never deleted."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Collapsed retries remain expandable in place; the full history is never deleted.",
+      "one_liner": "One in-place live status row instead of scrollback noise; retries collapse to a quiet line.",
+      "command": "Automatic",
+      "tab": "runtime-flow",
+      "story_chapter": 1
     },
     {
       "id": "feat-multi-line-composer-with-readline-keys",
@@ -348,17 +462,24 @@
       "group": "editor",
       "icon": "terminal",
       "summary": "Readline keys your fingers already know — motion, kill/yank, undo.",
-      "commands": ["Ctrl+A/E/U/K/W"],
+      "commands": [
+        "Ctrl+A/E/U/K/W"
+      ],
       "search": "readline multi-line newline ctrl+a e u k w kill yank undo history footer",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Cursor motion, word jump, kill/yank, undo, history navigation and a hinted footer work across single-line and multi-line input.",
       "why_it_matters": "The composer behaves like an editor, so long prompts and pasted context are comfortable to shape in a terminal.",
       "use_it": "Shift+Enter or Ctrl+J for a newline · Ctrl+A/E/U/K/W for editing",
-      "surfaces": ["TUI"],
-      "limitations": "Key handling follows standard readline conventions; terminal-specific key reporting gaps may remap a few chords."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Key handling follows standard readline conventions; terminal-specific key reporting gaps may remap a few chords.",
+      "one_liner": "Readline keys your fingers already know — motion, kill/yank, undo.",
+      "command": "Ctrl+A/E/U/K/W",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-vim-mode-and-external-editor",
@@ -366,17 +487,25 @@
       "group": "editor",
       "icon": "terminal",
       "summary": "Compose in Vim bindings, or open the prompt in $EDITOR.",
-      "commands": ["/vim", "Ctrl+G"],
+      "commands": [
+        "/vim",
+        "Ctrl+G"
+      ],
       "search": "vim external editor visual editor ctrl+g keybindings",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Persistent Vim keybindings for the prompt, or open the current prompt in your own $VISUAL/$EDITOR.",
       "why_it_matters": "Your existing editing muscle memory works in the prompt, and $EDITOR handles anything you would rather write in a full editor.",
       "use_it": "/vim · Ctrl+G",
-      "surfaces": ["TUI"],
-      "limitations": "Vim mode covers the composer, not the whole interface."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Vim mode covers the composer, not the whole interface.",
+      "one_liner": "Compose in Vim bindings, or open the prompt in $EDITOR.",
+      "command": "/vim",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat--file-completion",
@@ -384,17 +513,24 @@
       "group": "editor",
       "icon": "file-check",
       "summary": "Attach any file with a fuzzy @ mention — a few keystrokes, not a path.",
-      "commands": ["@src/app"],
+      "commands": [
+        "@src/app"
+      ],
       "search": "@file completion fuzzy attach path git ls-files",
       "maturity": "stable",
-      "outcomes": ["build-verify", "context-runtime"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Fuzzy-complete project files from git ls-files, or a bounded directory walk outside git, ranked by filename, path and subsequence match.",
       "why_it_matters": "Attaching the right file is a few keystrokes instead of a path you have to remember or paste.",
       "use_it": "Type @ followed by part of a path",
-      "surfaces": ["TUI"],
-      "limitations": "Outside git, the directory walk is deliberately bounded; very large untracked trees may need an explicit path."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Outside git, the directory walk is deliberately bounded; very large untracked trees may need an explicit path.",
+      "one_liner": "Attach any file with a fuzzy @ mention — a few keystrokes, not a path.",
+      "command": "@src/app",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-prompt-history-and-reverse-search",
@@ -402,17 +538,25 @@
       "group": "editor",
       "icon": "clock",
       "summary": "Your last 500 prompts, searchable — good prompts stay reusable.",
-      "commands": ["Up/Down", "Ctrl+R"],
+      "commands": [
+        "Up/Down",
+        "Ctrl+R"
+      ],
       "search": "history reverse search 500 prompts ctrl+r regex",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Keeps the last 500 prompts and offers bash-style reverse search over them.",
       "why_it_matters": "Useful prompts stay reusable; reverse search finds them without scrolling the transcript.",
       "use_it": "Up/Down · Ctrl+R",
-      "surfaces": ["TUI"],
-      "limitations": "History is local to your machine and capped at the last 500 prompts."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "History is local to your machine and capped at the last 500 prompts.",
+      "one_liner": "Your last 500 prompts, searchable — good prompts stay reusable.",
+      "command": "Up/Down",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-paste-formatting-and-image-attachments",
@@ -420,17 +564,25 @@
       "group": "editor",
       "icon": "eye",
       "summary": "Screenshots and big pastes become structured inputs the model can use.",
-      "commands": ["Ctrl+I", "Ctrl+V"],
+      "commands": [
+        "Ctrl+I",
+        "Ctrl+V"
+      ],
       "search": "paste image screenshot attach clipboard format collapsible ctrl+i",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Formats large pasted text into a collapsible prompt, and attaches screenshots or image files as [Image #n] inputs.",
       "why_it_matters": "Large pastes and screenshots become structured inputs the provider can actually use, rather than a wall of text.",
       "use_it": "Ctrl+Shift+F · Ctrl+V · Ctrl+I · Ctrl+Shift+S",
-      "surfaces": ["TUI"],
-      "limitations": "Image support depends on the provider CLI accepting image inputs; terminal graphics support is probed with /termcaps."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Image support depends on the provider CLI accepting image inputs; terminal graphics support is probed with /termcaps.",
+      "one_liner": "Screenshots and big pastes become structured inputs the model can use.",
+      "command": "Ctrl+I",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-plan-ask-edit-and-auto-modes",
@@ -438,17 +590,25 @@
       "group": "modes",
       "icon": "sliders",
       "summary": "Four dials of freedom, one keystroke apart. Start in Plan.",
-      "commands": ["Shift+Tab", "/mode"],
+      "commands": [
+        "Shift+Tab",
+        "/mode"
+      ],
       "search": "plan ask edit auto permission mode shift+tab read-only yolo",
       "maturity": "stable",
-      "outcomes": ["build-verify", "security-firewall"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Plan is read-only, Ask never edits, Edit auto-accepts file edits, and Auto bypasses permission prompts; each maps to the provider's native permission mode.",
       "why_it_matters": "You choose how much authority the agent has for this task with a visible mode, not an implicit trust decision.",
       "use_it": "Shift+Tab · /mode plan|ask|edit|auto",
-      "surfaces": ["TUI"],
-      "limitations": "Governed runtime approval gates are never bypassed, even in Auto."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Governed runtime approval gates are never bypassed, even in Auto.",
+      "one_liner": "Four dials of freedom, one keystroke apart. Start in Plan.",
+      "command": "/mode",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-inline-permission-gate",
@@ -456,17 +616,24 @@
       "group": "modes",
       "icon": "shield",
       "summary": "Risky commands pause and show themselves before they run.",
-      "commands": ["y / n at the gate"],
+      "commands": [
+        "y / n at the gate"
+      ],
       "search": "permission gate allow deny command path relay y n default deny",
       "maturity": "stable",
-      "outcomes": ["security-firewall"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Permission-requiring tool calls are relayed to the TUI and answered there: allow or deny with the real command or path shown. Gate errors and interrupts deny by default.",
       "why_it_matters": "Dangerous commands are decided where you are, with the real command shown; errors and interrupts deny by default.",
       "use_it": "Answer y or n when a gate appears · AXYM_TUI_NO_RELAY=1 opts out",
-      "surfaces": ["TUI"],
-      "limitations": "Gate prompts are answered by the person at the terminal; remote surfaces get the same gates only when paired with scoped access."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Gate prompts are answered by the person at the terminal; remote surfaces get the same gates only when paired with scoped access.",
+      "one_liner": "Risky commands pause and show themselves before they run.",
+      "command": "y / n at the gate",
+      "tab": "security-proof",
+      "story_chapter": 1
     },
     {
       "id": "feat-always-allow-command-list",
@@ -474,17 +641,24 @@
       "group": "modes",
       "icon": "check",
       "summary": "Pre-approve exact commands you trust; everything else still asks.",
-      "commands": ["/permissions"],
+      "commands": [
+        "/permissions"
+      ],
       "search": "always allow permissions list exact review clear trust",
       "maturity": "stable",
-      "outcomes": ["security-firewall"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Review or clear exact commands you have chosen to always allow, so repeated safe commands stop asking.",
       "why_it_matters": "Repeated safe commands stop interrupting you, while the list stays reviewable and exact instead of becoming a blanket bypass.",
       "use_it": "/permissions · /permissions clear",
-      "surfaces": ["TUI"],
-      "limitations": "Matches are exact strings, not globs — a changed command asks again."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Matches are exact strings, not globs — a changed command asks again.",
+      "one_liner": "Pre-approve exact commands you trust; everything else still asks.",
+      "command": "/permissions",
+      "tab": "security-proof",
+      "story_chapter": 1
     },
     {
       "id": "feat-explicit-yolo-mode",
@@ -492,17 +666,24 @@
       "group": "modes",
       "icon": "alert",
       "summary": "Full autonomy exists — you must ask for it by name.",
-      "commands": ["axym --yolo"],
+      "commands": [
+        "axym --yolo"
+      ],
       "search": "yolo explicit risk auto sandbox governed gates never bypassed",
       "maturity": "stable",
-      "outcomes": ["security-firewall"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Skips every approval prompt and implies Auto mode, with the risk stated up front. Governed runtime approval gates are never bypassed.",
       "why_it_matters": "For disposable sandboxes you can opt into speed explicitly, with the risk stated up front and governed runtime gates still intact.",
       "use_it": "axym --yolo",
-      "surfaces": ["TUI"],
-      "limitations": "Not recommended outside disposable sandboxes; governed runtime gates still apply."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Not recommended outside disposable sandboxes; governed runtime gates still apply.",
+      "one_liner": "Full autonomy exists — you must ask for it by name.",
+      "command": "axym --yolo",
+      "tab": "security-proof",
+      "story_chapter": 1
     },
     {
       "id": "feat-crash-safe-terminal-handling",
@@ -510,17 +691,24 @@
       "group": "modes",
       "icon": "shield",
       "summary": "A crash never leaves a garbled terminal or a stuck wake-lock.",
-      "commands": ["Automatic"],
+      "commands": [
+        "Automatic"
+      ],
       "search": "crash safe terminal render raw mode wake lock signal garbled",
       "maturity": "stable",
-      "outcomes": ["security-firewall", "context-runtime"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "A render error or external signal unmounts cleanly, restores raw-mode terminal state, and releases the wake-lock child instead of leaving a garbled screen.",
       "why_it_matters": "A crash or signal restores the terminal instead of leaving a garbled screen and a held wake lock.",
       "use_it": "Automatic",
-      "surfaces": ["TUI"],
-      "limitations": "Restoration covers Axym-owned terminal state; state changed by other processes cannot be repaired."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Restoration covers Axym-owned terminal state; state changed by other processes cannot be repaired.",
+      "one_liner": "A crash never leaves a garbled terminal or a stuck wake-lock.",
+      "command": "Automatic",
+      "tab": "security-proof",
+      "story_chapter": 1
     },
     {
       "id": "feat-anti-hang-guard",
@@ -528,18 +716,27 @@
       "group": "modes",
       "icon": "shield",
       "summary": "A hung tool call is classified, drained and escalated — it can never wedge the session.",
-      "commands": ["Automatic"],
+      "commands": [
+        "Automatic"
+      ],
       "search": "anti-hang guard calm-ux hung tool prompt killer lock classifier orphan drain stall escalation circuit breaker linucb cost router failover",
       "maturity": "stable",
-      "outcomes": ["context-runtime", "security-firewall"],
       "featured_top12": true,
       "introduced_in": "0.24.0",
       "problem": "Silent hangs and runaway retry loops burn tokens and terminal patience — the session looks alive while nothing progresses.",
       "what_it_is": "The Calm-UX layer: tool calls run in a non-interactive command environment with a prompt killer, a lock classifier, an orphan drain and verified-idle process-group escalation, surfacing as a typed ToolStallError instead of a silent hang — alongside an identical-failure circuit breaker and, on the daemon, LinUCB cost/failover routing that moves work off a stalling provider.",
       "why_it_matters": "A hung tool call is classified, drained and escalated — it can never wedge the session, loop on the same failure, or burn quota on a provider that stopped answering.",
       "use_it": "Automatic · pair with AXYM_AUTO_ROUTE=cost on axym serve for cost-aware failover",
-      "surfaces": ["TUI", "Desktop"],
-      "limitations": "Cost routing (LinUCB + economic governor) needs the axym serve daemon; in a plain TUI session the anti-hang and circuit-breaker guards apply but routing decisions stay manual."
+      "surfaces": [
+        "TUI",
+        "Desktop"
+      ],
+      "limitations": "Cost routing (LinUCB + economic governor) needs the axym serve daemon; in a plain TUI session the anti-hang and circuit-breaker guards apply but routing decisions stay manual.",
+      "one_liner": "A hung tool call is classified, drained and escalated — it can never wedge the session.",
+      "command": "Automatic",
+      "tab": "runtime-flow",
+      "story_chapter": 3,
+      "flagship_id": "flagship-08-anti-hang-cost"
     },
     {
       "id": "feat-failure-circuit-breaker",
@@ -547,17 +744,24 @@
       "group": "modes",
       "icon": "bolt",
       "summary": "Stops repeated identical tool failures and offers a clean, visible way forward.",
-      "commands": ["Automatic"],
+      "commands": [
+        "Automatic"
+      ],
       "search": "identical failure circuit breaker tool loop repeat question footer bypass autonomous",
       "maturity": "stable",
-      "outcomes": ["context-runtime"],
       "featured_top12": false,
       "introduced_in": "0.24.0",
       "what_it_is": "A tool-loop breaker detects repeated identical failures and stops them, offering a native question footer with a clean, explicit autonomous bypass.",
       "why_it_matters": "Repeating the same failing action cannot burn tokens in a loop; the way forward is always a visible decision, not a crash.",
       "use_it": "Automatic",
-      "surfaces": ["TUI"],
-      "limitations": "Near-identical failures with cosmetic differences are not collapsed; the breaker keys on repeated identical failures."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Near-identical failures with cosmetic differences are not collapsed; the breaker keys on repeated identical failures.",
+      "one_liner": "Stops repeated identical tool failures and offers a clean, visible way forward.",
+      "command": "Automatic",
+      "tab": "runtime-flow",
+      "story_chapter": 1
     },
     {
       "id": "feat-adaptive-workspaces",
@@ -565,17 +769,24 @@
       "group": "workspaces",
       "icon": "layers",
       "summary": "The interface reshapes itself for the job: explore, execute, review, approve.",
-      "commands": ["/workspace review"],
+      "commands": [
+        "/workspace review"
+      ],
       "search": "workspace adaptive explore execute investigate review approval hints header",
       "maturity": "stable",
-      "outcomes": ["context-runtime"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Switch the session between explore, execute, investigate, review and approval modes so the header, hints and available actions match the job.",
       "why_it_matters": "The interface matches the job — exploring, implementing, investigating, reviewing or approving — so the relevant actions are near at hand.",
       "use_it": "/workspace explore|execute|investigate|review|approval",
-      "surfaces": ["TUI"],
-      "limitations": "Workspaces reshape hints and defaults; they do not change permission modes."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Workspaces reshape hints and defaults; they do not change permission modes.",
+      "one_liner": "The interface reshapes itself for the job: explore, execute, review, approve.",
+      "command": "/workspace review",
+      "tab": "runtime-flow",
+      "story_chapter": 1
     },
     {
       "id": "feat-pipeline-view",
@@ -583,17 +794,25 @@
       "group": "workspaces",
       "icon": "layers",
       "summary": "A run, stage by stage with its files and checks — not one green checkmark.",
-      "commands": ["/pipeline [run-id]"],
+      "commands": [
+        "/pipeline [run-id]"
+      ],
       "search": "pipeline stages run files verification events stage by stage",
       "maturity": "stable",
-      "outcomes": ["build-verify", "context-runtime"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Lists recent runtime runs, then shows a run's recorded stages, files and verification events stage by stage.",
       "why_it_matters": "A governed run is inspectable stage by stage with its files and verification events, not just a final green check.",
       "use_it": "/pipeline [run-id]",
-      "surfaces": ["TUI", "Desktop"],
-      "limitations": "Runtime-backed: needs a connected axym-runtime daemon."
+      "surfaces": [
+        "TUI",
+        "Desktop"
+      ],
+      "limitations": "Runtime-backed: needs a connected axym-runtime daemon.",
+      "one_liner": "A run, stage by stage with its files and checks — not one green checkmark.",
+      "command": "/pipeline [run-id]",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-execution-graph",
@@ -601,17 +820,25 @@
       "group": "workspaces",
       "icon": "git-branch",
       "summary": "See why a run is waiting: stages, gates, agents and dependencies.",
-      "commands": ["/graph [run-id]"],
+      "commands": [
+        "/graph [run-id]"
+      ],
       "search": "graph dependency tree stage gate agent task waiting",
       "maturity": "stable",
-      "outcomes": ["context-runtime", "parallel-runs"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Interactive stage, gate, agent and task dependency tree for a runtime run.",
       "why_it_matters": "Dependencies between stages, gates, agents and tasks are visible, so you can see why a run is waiting.",
       "use_it": "/graph [run-id]",
-      "surfaces": ["TUI", "Desktop"],
-      "limitations": "Runtime-backed: needs a connected axym-runtime daemon."
+      "surfaces": [
+        "TUI",
+        "Desktop"
+      ],
+      "limitations": "Runtime-backed: needs a connected axym-runtime daemon.",
+      "one_liner": "See why a run is waiting: stages, gates, agents and dependencies.",
+      "command": "/graph [run-id]",
+      "tab": "runtime-flow",
+      "story_chapter": 1
     },
     {
       "id": "feat-evidence-browser",
@@ -619,17 +846,25 @@
       "group": "workspaces",
       "icon": "file-check",
       "summary": "Trace any claim to inspected, inferred, verified or failed proof.",
-      "commands": ["/evidence [id]"],
+      "commands": [
+        "/evidence [id]"
+      ],
       "search": "evidence inspected inferred verified failed claim proof trace hash-chained",
       "maturity": "stable",
-      "outcomes": ["build-verify", "context-runtime"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Inspect the evidence primitive behind a claim: inspected, inferred, verified and failed proof.",
       "why_it_matters": "Claims are traceable to inspected, inferred, verified or failed proof, so you can judge a result on its evidence.",
       "use_it": "/evidence [id]",
-      "surfaces": ["TUI", "Desktop"],
-      "limitations": "Runtime-backed: needs a connected axym-runtime daemon."
+      "surfaces": [
+        "TUI",
+        "Desktop"
+      ],
+      "limitations": "Runtime-backed: needs a connected axym-runtime daemon.",
+      "one_liner": "Trace any claim to inspected, inferred, verified or failed proof.",
+      "command": "/evidence [id]",
+      "tab": "core-workflow",
+      "story_chapter": 5
     },
     {
       "id": "feat-health-intelligence-and-observatory",
@@ -637,17 +872,26 @@
       "group": "workspaces",
       "icon": "activity",
       "summary": "Runtime health, provider cooldowns and active skills, readable in place.",
-      "commands": ["/health", "/intel"],
+      "commands": [
+        "/health",
+        "/intel"
+      ],
       "search": "health intel observatory daemon cooldowns ledger skills active",
       "maturity": "stable",
-      "outcomes": ["context-runtime"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Read the daemon self-report and provider cooldowns, the decision ledger with estimates and measured outcomes, and active skills with evaluation candidates.",
       "why_it_matters": "Runtime health, measured routing decisions and active skills are readable without leaving the terminal.",
       "use_it": "/health · /intel · /observatory",
-      "surfaces": ["TUI", "Desktop"],
-      "limitations": "Daemon-backed sections need axym-runtime; TUI-local health is always available."
+      "surfaces": [
+        "TUI",
+        "Desktop"
+      ],
+      "limitations": "Daemon-backed sections need axym-runtime; TUI-local health is always available.",
+      "one_liner": "Runtime health, provider cooldowns and active skills, readable in place.",
+      "command": "/health",
+      "tab": "runtime-flow",
+      "story_chapter": 1
     },
     {
       "id": "feat-handover-and-work-passport",
@@ -655,17 +899,25 @@
       "group": "workspaces",
       "icon": "book",
       "summary": "The next session inherits the brief, criteria and recovery context.",
-      "commands": ["/handover", "/passport"],
+      "commands": [
+        "/handover",
+        "/passport"
+      ],
       "search": "handover passport handoff brief acceptance criteria recovery export",
       "maturity": "stable",
-      "outcomes": ["build-verify", "mobile-remote"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "See session state, unresolved tasks and uncommitted work, or show and export the durable passport (product brief, acceptance criteria, execution truth, recovery context).",
       "why_it_matters": "The next session or person receives the brief, criteria, execution truth and recovery context instead of a blank chat.",
       "use_it": "/handover · /passport",
-      "surfaces": ["TUI"],
-      "limitations": "The passport is an explicit export, never an automatic transfer of session state."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "The passport is an explicit export, never an automatic transfer of session state.",
+      "one_liner": "The next session inherits the brief, criteria and recovery context.",
+      "command": "/handover",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-settings-themes-and-density",
@@ -673,17 +925,24 @@
       "group": "workspaces",
       "icon": "sliders",
       "summary": "Graphite, classic or contrast — comfort settings persist.",
-      "commands": ["/theme graphite"],
+      "commands": [
+        "/theme graphite"
+      ],
       "search": "settings theme graphite classic contrast density vim verbose header",
       "maturity": "stable",
-      "outcomes": ["context-runtime"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Toggle Vim editing, verbose tool output and a compact header, or switch between graphite, classic and high-contrast themes.",
       "why_it_matters": "Comfort settings persist, so the terminal fits your screen and reading preference across sessions.",
       "use_it": "/settings · /theme graphite|classic|contrast",
-      "surfaces": ["TUI"],
-      "limitations": "Themes affect the TUI only; each surface keeps its own appearance settings."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Themes affect the TUI only; each surface keeps its own appearance settings.",
+      "one_liner": "Graphite, classic or contrast — comfort settings persist.",
+      "command": "/theme graphite",
+      "tab": "runtime-flow",
+      "story_chapter": 1
     },
     {
       "id": "feat-mux-pane-adapters",
@@ -691,17 +950,24 @@
       "group": "workspaces",
       "icon": "monitor",
       "summary": "Live panes in tmux, zellij and wezterm — argv-safe launchers, kill-before-close.",
-      "commands": ["--mux tmux|zellij|wezterm"],
+      "commands": [
+        "--mux tmux|zellij|wezterm"
+      ],
       "search": "mux pane adapters tmux zellij wezterm psmux tiled wave layout kill before close exec adr-0018",
       "maturity": "stable",
-      "outcomes": ["parallel-runs"],
       "featured_top12": false,
       "introduced_in": "0.24.0",
       "what_it_is": "A mux viewer contract with a strict pane-ID sanitizer and prober, argv-safe launchers for tmux, zellij and wezterm (psmux runs through the tmux adapter), and a tiled wave layout manager with manual close and kill-before-close semantics (ADR-0018).",
       "why_it_matters": "Runs can drive real terminal panes in the multiplexer you already use, without unsafe argument handling or orphaned processes.",
       "use_it": "/runs start --mux tmux|zellij|wezterm · axym-pane-exec",
-      "surfaces": ["TUI"],
-      "limitations": "Requires the named multiplexer installed; without one, runs stay in the TUI's own layout."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Requires the named multiplexer installed; without one, runs stay in the TUI's own layout.",
+      "one_liner": "Live panes in tmux, zellij and wezterm — argv-safe launchers, kill-before-close.",
+      "command": "/runs start --mux tmux",
+      "tab": "parallel-worktrees",
+      "story_chapter": 2
     },
     {
       "id": "feat-blast-radius-and-root-cause-investigation",
@@ -709,17 +975,25 @@
       "group": "workspaces",
       "icon": "target",
       "summary": "Inspect changed symbols, callers and diagnostics, or trace failure root causes.",
-      "commands": ["/blast", "/investigate"],
+      "commands": [
+        "/blast",
+        "/investigate"
+      ],
       "search": "blast radius callers diagnostics investigate failure trace root cause",
       "maturity": "stable",
-      "outcomes": ["security-firewall", "context-runtime"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Inspect changed symbols, their callers and compiler diagnostics before approving edits, or run structured failure investigations over execution traces and logs.",
       "why_it_matters": "You see the downstream impact of an edit or the root cause of a failure before committing.",
       "use_it": "/blast · /investigate",
-      "surfaces": ["TUI"],
-      "limitations": "Blast radius is computed from language-server and compiler data where available; dynamic call paths are not tracked."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Blast radius is computed from language-server and compiler data where available; dynamic call paths are not tracked.",
+      "one_liner": "Inspect changed symbols, callers and diagnostics, or trace failure root causes.",
+      "command": "/blast",
+      "tab": "security-proof",
+      "story_chapter": 1
     },
     {
       "id": "feat-agent-activity-inspector-and-receipts",
@@ -727,17 +1001,25 @@
       "group": "workspaces",
       "icon": "eye",
       "summary": "Inspect live tool/file transparency and checksummed evidence receipts.",
-      "commands": ["/activity", "/receipt"],
+      "commands": [
+        "/activity",
+        "/receipt"
+      ],
       "search": "activity footprint receipt files transparency checksum audit hash-chained",
       "maturity": "stable",
-      "outcomes": ["security-firewall", "build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Inspect live tool and file transparency (NOW, FILES, SAFETY, OUTCOME, WHY), per-turn file audit records, and harness-authored evidence receipts with verification checksums.",
       "why_it_matters": "Every file read, write and shell touch is auditable with a verifiable receipt.",
       "use_it": "/activity · /footprint · /receipt · /files",
-      "surfaces": ["TUI"],
-      "limitations": "Receipts cover harness-recorded actions; actions taken outside the governed tools are not receipted."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Receipts cover harness-recorded actions; actions taken outside the governed tools are not receipted.",
+      "one_liner": "Inspect live tool/file transparency and checksummed evidence receipts.",
+      "command": "/activity",
+      "tab": "security-proof",
+      "story_chapter": 1
     },
     {
       "id": "tui-code-intelligence",
@@ -745,17 +1027,25 @@
       "group": "workspaces",
       "icon": "target",
       "summary": "Failure investigations and blast radius, before you approve or roll back.",
-      "commands": ["/investigate", "/blast"],
+      "commands": [
+        "/investigate",
+        "/blast"
+      ],
       "search": "investigate blast radius proof scars mcp memory activity footprint goldfish drift",
       "maturity": "stable",
-      "outcomes": ["security-firewall", "context-runtime"],
       "featured_top12": false,
       "introduced_in": "0.24.0",
       "what_it_is": "The inspection family: /investigate for focused failure analysis, /blast for change impact, /proof for offline evidence verification and /scars for the organisation's recorded rules.",
       "why_it_matters": "You can answer what broke, what else it touches, and whether the claim is provable — before you approve or roll back.",
       "use_it": "/investigate · /blast · /proof · /scars",
-      "surfaces": ["TUI"],
-      "limitations": "Investigations read recorded evidence; they observe and explain, they do not certify a repair."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Investigations read recorded evidence; they observe and explain, they do not certify a repair.",
+      "one_liner": "Failure investigations and blast radius, before you approve or roll back.",
+      "command": "/investigate",
+      "tab": "security-proof",
+      "story_chapter": 1
     },
     {
       "id": "feat-code-review-and-qa",
@@ -763,17 +1053,25 @@
       "group": "verification",
       "icon": "file-check",
       "summary": "A second pass for hidden assumptions, weak tests and edge cases.",
-      "commands": ["/review", "/qa"],
+      "commands": [
+        "/review",
+        "/qa"
+      ],
       "search": "review qa code quality assumptions edge cases tests references",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Runs a code-quality pass for hidden assumptions, simplicity, surgical diffs, edge cases and test completeness, with file and line references.",
       "why_it_matters": "A second pass finds hidden assumptions and weak tests before they reach your branch, with file and line references.",
       "use_it": "/review [goal] · /qa [goal]",
-      "surfaces": ["TUI"],
-      "limitations": "Review quality depends on the selected provider; independence is labelled, not assumed."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Review quality depends on the selected provider; independence is labelled, not assumed.",
+      "one_liner": "A second pass for hidden assumptions, weak tests and edge cases.",
+      "command": "/review",
+      "tab": "core-workflow",
+      "story_chapter": 5
     },
     {
       "id": "feat-security-review",
@@ -781,18 +1079,28 @@
       "group": "verification",
       "icon": "shield",
       "summary": "Threat modelling with evidence-cited findings and a remediation plan.",
-      "commands": ["/security", "/security --masvs"],
+      "commands": [
+        "/security",
+        "/security --masvs"
+      ],
       "search": "security threat model audit vulnerabilities remediation evidence masvs web check posture scan store preflight",
       "maturity": "stable",
-      "outcomes": ["security-firewall", "mobile-remote"],
       "featured_top12": true,
       "introduced_in": null,
       "problem": "\"Is this safe?\" usually gets a vibe-answer — you need threat modelling with cited evidence, and mobile work needs a store-grade pass, not a promise.",
       "what_it_is": "Threat-models the target, reviews code and configuration with captured evidence, and returns a prioritized remediation plan. On mobile targets, /security --masvs adds an OWASP MASVS-aligned pass and a store preflight gate runs before submission.",
       "why_it_matters": "Evidence-cited findings turn \"is this safe?\" into a prioritized, reviewable list, and store submission is gated rather than hoped for.",
       "use_it": "/security [goal] · /audit · /security --masvs",
-      "surfaces": ["TUI", "Mobile"],
-      "limitations": "Web posture scanning runs against URLs you point it at from your machine; MASVS depth on real devices depends on the device bridge connection (T-050 hardware journey partial — see the device bridge entry)."
+      "surfaces": [
+        "TUI",
+        "Mobile"
+      ],
+      "limitations": "Web posture scanning runs against URLs you point it at from your machine; MASVS depth on real devices depends on the device bridge connection (T-050 hardware journey partial — see the device bridge entry).",
+      "one_liner": "Threat modelling with evidence-cited findings and a remediation plan.",
+      "command": "/security",
+      "tab": "security-proof",
+      "story_chapter": 5,
+      "flagship_id": "flagship-10-security-runtime"
     },
     {
       "id": "feat-background-test-runner",
@@ -800,17 +1108,24 @@
       "group": "verification",
       "icon": "activity",
       "summary": "Real test output, without blocking the conversation.",
-      "commands": ["/test [command]"],
+      "commands": [
+        "/test [command]"
+      ],
       "search": "test runner background real output exit code conversation",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Runs the project's tests without blocking the conversation and reports the result back into the session.",
       "why_it_matters": "Tests run without blocking the conversation and the real result comes back into the same session.",
       "use_it": "/test [command]",
-      "surfaces": ["TUI"],
-      "limitations": "The runner reports real exit codes; it does not interpret or paper over failing suites."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "The runner reports real exit codes; it does not interpret or paper over failing suites.",
+      "one_liner": "Real test output, without blocking the conversation.",
+      "command": "/test [command]",
+      "tab": "core-workflow",
+      "story_chapter": 5
     },
     {
       "id": "feat-diff-pull-undo-and-bisect",
@@ -818,17 +1133,26 @@
       "group": "verification",
       "icon": "git-branch",
       "summary": "Every change visible and reversible — down to binary-searching a regression.",
-      "commands": ["/diff", "/undo", "/bisect"],
+      "commands": [
+        "/diff",
+        "/undo",
+        "/bisect"
+      ],
       "search": "diff pull undo bisect checkpoint stash reversible regression",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Inspect uncommitted changes with interactive hunk review, pull the remote tracking branch, shelve work into a reversible stash, or binary-search checkpoints for the turn that introduced a regression.",
       "why_it_matters": "Edits are reversible and reviewable hunk by hunk: inspect changes, pull updates, undo a turn, or binary-search checkpoints to find the regression.",
       "use_it": "/diff · /pull · /undo · /bisect",
-      "surfaces": ["TUI"],
-      "limitations": "Undo covers Axym-recorded turns; manual edits between turns are outside its checkpoints."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Undo covers Axym-recorded turns; manual edits between turns are outside its checkpoints.",
+      "one_liner": "Every change visible and reversible — down to binary-searching a regression.",
+      "command": "/diff",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-reusable-workflows",
@@ -836,17 +1160,24 @@
       "group": "verification",
       "icon": "command",
       "summary": "Save a sequence once; replay it on any provider.",
-      "commands": ["/workflow run"],
+      "commands": [
+        "/workflow run"
+      ],
       "search": "workflow reusable sequence named replay provider starter",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Define a named sequence of prompts once, then replay it on any provider. Four starter workflows cover engineering, product discovery, security review and QA.",
       "why_it_matters": "A sequence that worked once becomes a repeatable procedure you can run on any provider.",
       "use_it": "/workflow new|run|save|edit|delete|list · /workflows",
-      "surfaces": ["TUI"],
-      "limitations": "Workflows replay prompts, not tool side effects; each run still passes the gates."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Workflows replay prompts, not tool side effects; each run still passes the gates.",
+      "one_liner": "Save a sequence once; replay it on any provider.",
+      "command": "/workflow run",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-project-setup",
@@ -854,17 +1185,25 @@
       "group": "verification",
       "icon": "download",
       "summary": "One command wires a project into Axym's conventions — never overwriting.",
-      "commands": ["/init"],
+      "commands": [
+        "/init"
+      ],
       "search": "init project setup starter config axym.yaml desktop shared overwrite",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Writes a starter .axym.yaml shared with the desktop app, without ever overwriting an existing file.",
       "why_it_matters": "A project gets a starter config in one command without overwriting the configuration you already wrote.",
       "use_it": "/init",
-      "surfaces": ["TUI", "Desktop"],
-      "limitations": "Refuses to overwrite; existing configuration always wins."
+      "surfaces": [
+        "TUI",
+        "Desktop"
+      ],
+      "limitations": "Refuses to overwrite; existing configuration always wins.",
+      "one_liner": "One command wires a project into Axym's conventions — never overwriting.",
+      "command": "/init",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-proof-carrying-races-and-offline-verification",
@@ -872,18 +1211,30 @@
       "group": "verification",
       "icon": "shield",
       "summary": "Lock a failing invariant, race solutions in worktrees and verify signed RED→GREEN proofs.",
-      "commands": ["/race", "/proof", "/scars", "axym solve", "axym verify-proof"],
+      "commands": [
+        "/race",
+        "/proof",
+        "/scars",
+        "axym solve",
+        "axym verify-proof"
+      ],
       "search": "race proof scars solve verify-proof red green invariant ed25519 worktree speculative shadow evidence golden cassette replay bench reproduce offline",
       "maturity": "stable",
-      "outcomes": ["build-verify", "parallel-runs", "context-runtime"],
       "featured_top12": true,
       "introduced_in": "0.24.0",
       "problem": "\"Tests passed\" claims are unverifiable after the fact, and speculative work has no way to prove it exercised a real failing baseline.",
       "what_it_is": "Lock a failing test invariant on HEAD, race candidate implementations in isolated worktrees, verify non-vacuous RED→GREEN proofs with Ed25519 signatures, and enforce organization scar rules that block recurring mistakes. Speculative shadow evidence runs verification while approval gates hold, and offline replay (axym bench --reproduce, the T-048 cassette path) re-checks recorded runs without live CLIs.",
       "why_it_matters": "Fixes are backed by cryptographic proof against a real failing baseline — never a vacuous pass — and recorded runs can be re-verified offline.",
       "use_it": "/race · /proof · /scars · axym solve · axym verify-proof · axym bench --reproduce",
-      "surfaces": ["TUI"],
-      "limitations": "Race worktree brackets need git; offline replay covers recorded cassette runs only — it cannot conjure evidence for turns that were never recorded."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Race worktree brackets need git; offline replay covers recorded cassette runs only — it cannot conjure evidence for turns that were never recorded.",
+      "one_liner": "Lock a failing invariant, race solutions in worktrees and verify signed RED→GREEN proofs.",
+      "command": "/race",
+      "tab": "core-workflow",
+      "story_chapter": 5,
+      "flagship_id": "flagship-11-shadow-races"
     },
     {
       "id": "tui-flow-os",
@@ -891,18 +1242,28 @@
       "group": "verification",
       "icon": "flow",
       "summary": "Workflows compile to bounded, resumable lockfiles with least-privilege outputs.",
-      "commands": ["/flow run", "/flow resume", "axym flow"],
+      "commands": [
+        "/flow run",
+        "/flow resume",
+        "axym flow"
+      ],
       "search": "flow os workflow lockfile dag resume least privilege limits capture starter packs publish",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": true,
       "introduced_in": "0.24.0",
       "problem": "Trusted multi-step procedures live in people's heads or in fragile shell scripts, with no bound on cost, outputs or resume behaviour.",
       "what_it_is": "/flow [list|run|resume|status|inspect|capture] runs workflows stored under .axym/workflows. They compile to least-privilege lockfiles with safe-output caps, execute in DAG order under turn, cost and wall-clock limits, resume durably, and capture the session for inspection.",
       "why_it_matters": "A procedure you trust becomes a bounded, reviewable unit of work instead of a prompt you hope behaves — with role starter packs and signed organisation packs.",
       "use_it": "/flow list · /flow run <name> · /flow resume · axym flow",
-      "surfaces": ["TUI"],
-      "limitations": "Workflows are declarative lockfiles, not arbitrary code; five role starter packs ship, and organisation packs must be signed to publish."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Workflows are declarative lockfiles, not arbitrary code; five role starter packs ship, and organisation packs must be signed to publish.",
+      "one_liner": "Workflows compile to bounded, resumable lockfiles with least-privilege outputs.",
+      "command": "/flow run",
+      "tab": "core-workflow",
+      "story_chapter": 5,
+      "flagship_id": "flagship-12-flow-cassettes"
     },
     {
       "id": "feat-bundled-skills",
@@ -910,17 +1271,26 @@
       "group": "skills",
       "icon": "sparkles",
       "summary": "Four expert personas ship inside the binary — product, eng, QA and reverse engineering.",
-      "commands": ["/po", "/aei"],
+      "commands": [
+        "/po",
+        "/aei"
+      ],
       "search": "bundled skills po aei product owner engineering intelligence qa reverse",
       "maturity": "stable",
-      "outcomes": ["build-verify", "security-firewall"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Product-Owner Intelligence, Axym Engineering Intelligence, reverse engineering and break-it QA ship inside the binary and work in any project.",
       "why_it_matters": "Four experts ship inside the binary, so product, engineering, QA and reverse-engineering work is available in every project.",
       "use_it": "/skills · /skill <name> [task] · /po · /aei",
-      "surfaces": ["TUI", "Desktop"],
-      "limitations": "Installed same-name skills take precedence over bundled ones."
+      "surfaces": [
+        "TUI",
+        "Desktop"
+      ],
+      "limitations": "Installed same-name skills take precedence over bundled ones.",
+      "one_liner": "Four expert personas ship inside the binary — product, eng, QA and reverse engineering.",
+      "command": "/po",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-project-and-user-skills",
@@ -928,17 +1298,25 @@
       "group": "skills",
       "icon": "book",
       "summary": "Your SKILL.md files behave like built-ins — project copies win collisions.",
-      "commands": ["/skills"],
+      "commands": [
+        "/skills"
+      ],
       "search": "project user skill.md agents claude codex portable mode precedence",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Discovers SKILL.md definitions from .agents, .claude, .codex and compatible project or user folders, with mode support.",
       "why_it_matters": "Your team's SKILL.md files work like built-ins, and project copies win when names collide.",
       "use_it": "/skills · /skill <name> [task]",
-      "surfaces": ["TUI", "Desktop"],
-      "limitations": "Skill format follows SKILL.md conventions; undeclared modes error instead of silently falling back."
+      "surfaces": [
+        "TUI",
+        "Desktop"
+      ],
+      "limitations": "Skill format follows SKILL.md conventions; undeclared modes error instead of silently falling back.",
+      "one_liner": "Your SKILL.md files behave like built-ins — project copies win collisions.",
+      "command": "/skills",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-slash-command-plugins",
@@ -946,17 +1324,24 @@
       "group": "skills",
       "icon": "puzzle",
       "summary": "Add narrow commands without touching core views or state.",
-      "commands": ["Plugin API"],
+      "commands": [
+        "Plugin API"
+      ],
       "search": "plugin slash command module register narrow built-in wins",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "External modules can register narrow slash commands; built-in commands always win.",
       "why_it_matters": "Narrow extensions add commands without taking over views, keybindings or state — and built-in commands always win.",
       "use_it": "See the plugin API in the TUI docs",
-      "surfaces": ["TUI"],
-      "limitations": "Plugins register commands only; they cannot override built-ins or core views."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Plugins register commands only; they cannot override built-ins or core views.",
+      "one_liner": "Add narrow commands without touching core views or state.",
+      "command": "Plugin API",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-project-configuration",
@@ -964,17 +1349,25 @@
       "group": "skills",
       "icon": "sliders",
       "summary": "One .axym.yaml teaches it your stack, style and forbidden libraries.",
-      "commands": [".axym.yaml"],
+      "commands": [
+        ".axym.yaml"
+      ],
       "search": "project configuration axym.yaml stack style guide forbidden libraries budgets",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Reads .axym.yaml for tech stack, language, style guide, forbidden libraries, custom instructions, secrets, capabilities and budgets.",
       "why_it_matters": "One .axym.yaml teaches the agent your stack, style, forbidden libraries and secrets, so it works in your codebase rather than a generic one.",
       "use_it": ".axym.yaml at the project root",
-      "surfaces": ["TUI", "Desktop"],
-      "limitations": "Configuration constrains prompts and gates; it is not a sandbox boundary by itself."
+      "surfaces": [
+        "TUI",
+        "Desktop"
+      ],
+      "limitations": "Configuration constrains prompts and gates; it is not a sandbox boundary by itself.",
+      "one_liner": "One .axym.yaml teaches it your stack, style and forbidden libraries.",
+      "command": ".axym.yaml",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-plugin-trust-and-lifecycle",
@@ -982,17 +1375,25 @@
       "group": "skills",
       "icon": "puzzle",
       "summary": "Scaffold, validate and trust local plugins with fail-closed treeSha256 tamper revocation.",
-      "commands": ["/plugins", "axym plugin"],
+      "commands": [
+        "/plugins",
+        "axym plugin"
+      ],
       "search": "plugin trust init validate list treesha256 tamper revocation verifier fail-closed",
       "maturity": "stable",
-      "outcomes": ["security-firewall"],
       "featured_top12": false,
       "introduced_in": "0.24.0",
       "what_it_is": "Scaffold, validate, trust and list repo-local verifier and command plugins with fail-closed treeSha256 tamper revocation.",
       "why_it_matters": "Untrusted or modified plugins cannot execute silently in your workspace.",
       "use_it": "/plugins · axym plugin init|validate|trust|list",
-      "surfaces": ["TUI"],
-      "limitations": "Trust is per-repo and explicit; an untrusted plugin is refused, not sandboxed."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Trust is per-repo and explicit; an untrusted plugin is refused, not sandboxed.",
+      "one_liner": "Scaffold, validate and trust local plugins with fail-closed treeSha256 tamper revocation.",
+      "command": "/plugins",
+      "tab": "security-proof",
+      "story_chapter": 3
     },
     {
       "id": "feat-living-repo-brain-and-memory",
@@ -1000,18 +1401,27 @@
       "group": "skills",
       "icon": "cpu",
       "summary": "Zero-rescan context pyramid and causal lessons closed-loop from /race.",
-      "commands": ["/memory", "axym memory"],
+      "commands": [
+        "/memory",
+        "axym memory"
+      ],
       "search": "memory living repo brain context pyramid ecs import cone co-change causal lessons prompt cache crc32 delta prefix stability e1 telemetry",
       "maturity": "stable",
-      "outcomes": ["context-runtime"],
       "featured_top12": true,
       "introduced_in": "0.24.0",
       "problem": "Every turn re-pays to re-orient in a large codebase, and lessons the organisation already learned are forgotten by the next session.",
       "what_it_is": "A zero-rescan three-layer context pyramid (ECS fingerprints, depth-2 import cone, co-change slice) with causal lessons closed-loop from /race, feeding a stable shared prompt prefix whose cache hit rate is measured — in a repeated ~40k-token prompt, $0.161 cold versus $0.008 warm (91% cached).",
       "why_it_matters": "Large repositories stay fast and cheap to orient in: the prefix the provider cache exploits is preserved across providers and turns instead of being rebuilt.",
       "use_it": "/memory · axym memory status|explain|refresh",
-      "surfaces": ["TUI"],
-      "limitations": "Cache figures come from one measured repeated prompt, not a guarantee; staleness is reported by /memory rather than hidden."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Cache figures come from one measured repeated prompt, not a guarantee; staleness is reported by /memory rather than hidden.",
+      "one_liner": "Zero-rescan context pyramid and causal lessons closed-loop from /race.",
+      "command": "/memory",
+      "tab": "runtime-flow",
+      "story_chapter": 1,
+      "flagship_id": "flagship-07-living-brain"
     },
     {
       "id": "tui-evolve",
@@ -1019,17 +1429,24 @@
       "group": "skills",
       "icon": "sparkles",
       "summary": "Evidence-gated, reversible tweaks to its own instructions.",
-      "commands": ["/evolve"],
+      "commands": [
+        "/evolve"
+      ],
       "search": "evolve self-improvement proposals statistical gate rollback before-state",
       "maturity": "stable",
-      "outcomes": ["context-runtime"],
       "featured_top12": false,
       "introduced_in": "0.24.0",
       "what_it_is": "/evolve [list|accept|dismiss|rollback <id>] reviews proposals that have passed a sequential-probability gate. Accepting updates a target file; rollback restores the pinned before-state.",
       "why_it_matters": "Improvements to the agent's own instructions are evidence-gated and reversible, not silent edits to behaviour.",
       "use_it": "/evolve list · /evolve accept <id> · /evolve rollback <id>",
-      "surfaces": ["TUI"],
-      "limitations": "Proposals never self-apply; a human accepts, and rollback always exists."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Proposals never self-apply; a human accepts, and rollback always exists.",
+      "one_liner": "Evidence-gated, reversible tweaks to its own instructions.",
+      "command": "/evolve",
+      "tab": "runtime-flow",
+      "story_chapter": 5
     },
     {
       "id": "feat-council-mode",
@@ -1037,18 +1454,28 @@
       "group": "fleet",
       "icon": "users",
       "summary": "One prompt, many providers, one merged answer.",
-      "commands": ["/council", "axym queue"],
+      "commands": [
+        "/council",
+        "axym queue"
+      ],
       "search": "council parallel providers merge synthesis second opinion borda governed overnight queue quota-reset parking warm handoff e3 e7",
       "maturity": "stable",
-      "outcomes": ["parallel-runs"],
       "featured_top12": true,
       "introduced_in": null,
       "problem": "Getting a genuine second opinion means babysitting two sessions, and overnight work dies when a quota resets at 2am.",
       "what_it_is": "Runs the same prompt across two or more providers in parallel and merges their answers into one synthesized response; on a governed run, Borda-ranked consensus with anonymous ballots and a decision record. Overnight work parks through quota walls: benched providers resume at their reset time and hand the next provider a ≤2 KB warm delta, and axym queue submits governed work without blocking the terminal.",
       "why_it_matters": "You get cross-checked answers and a decision record without managing sessions, and work keeps moving across quota resets instead of dying at a 401.",
       "use_it": "/council <prompt> · /council --governed \"<goal>\" · axym queue",
-      "surfaces": ["TUI", "Desktop"],
-      "limitations": "Council needs two or more installed providers; queue submissions still respect human approval gates and never auto-approve."
+      "surfaces": [
+        "TUI",
+        "Desktop"
+      ],
+      "limitations": "Council needs two or more installed providers; queue submissions still respect human approval gates and never auto-approve.",
+      "one_liner": "One prompt, many providers, one merged answer.",
+      "command": "/council",
+      "tab": "parallel-worktrees",
+      "story_chapter": 2,
+      "flagship_id": "flagship-06-council-queue"
     },
     {
       "id": "feat-cross-provider-verification",
@@ -1056,17 +1483,25 @@
       "group": "fleet",
       "icon": "check-circle",
       "summary": "The reviewer can be a different AI than the author — honestly labelled.",
-      "commands": ["Per-stage AI system"],
+      "commands": [
+        "Per-stage AI system"
+      ],
       "search": "cross-provider verification independent reviewer author labelled desktop stage",
       "maturity": "stable",
-      "outcomes": ["build-verify", "security-firewall"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Run review or security on a different provider than the coder; the run labels whether the verifier was independent of the code author or shared its provider and model.",
       "why_it_matters": "Review by a different provider than the author is labelled honestly, so independence is a fact you can check rather than a claim.",
       "use_it": "Desktop → Expert options → AI system per stage",
-      "surfaces": ["TUI", "Desktop"],
-      "limitations": "True independence requires a second installed provider; otherwise the shared-provider label is shown."
+      "surfaces": [
+        "TUI",
+        "Desktop"
+      ],
+      "limitations": "True independence requires a second installed provider; otherwise the shared-provider label is shown.",
+      "one_liner": "The reviewer can be a different AI than the author — honestly labelled.",
+      "command": "Per-stage AI system",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-agent-hub-and-fleet-overview",
@@ -1074,17 +1509,26 @@
       "group": "fleet",
       "icon": "fleet",
       "summary": "A live roster of every run — attach to the right one instead of guessing.",
-      "commands": ["Alt+A", "/fleet"],
+      "commands": [
+        "Alt+A",
+        "/fleet"
+      ],
       "search": "agent hub fleet roster capacity active runs oldest failures attach alt+a",
       "maturity": "stable",
-      "outcomes": ["parallel-runs"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Toggle a live roster of runtime runs, select and attach to one, or read configured capacity, active runs, oldest in-flight work and recent failures.",
       "why_it_matters": "A live roster shows what the runtime is doing, so you can attach to the right run instead of guessing.",
       "use_it": "Alt+A · /agents · /fleet",
-      "surfaces": ["TUI", "Desktop"],
-      "limitations": "Runtime-backed: needs a connected axym-runtime daemon."
+      "surfaces": [
+        "TUI",
+        "Desktop"
+      ],
+      "limitations": "Runtime-backed: needs a connected axym-runtime daemon.",
+      "one_liner": "A live roster of every run — attach to the right one instead of guessing.",
+      "command": "/fleet",
+      "tab": "parallel-worktrees",
+      "story_chapter": 2
     },
     {
       "id": "feat-run-comparison-and-stage-costs",
@@ -1092,17 +1536,26 @@
       "group": "fleet",
       "icon": "git-branch",
       "summary": "Why one run beat another — commits, configs and per-stage spend.",
-      "commands": ["/compare", "/cost"],
+      "commands": [
+        "/compare",
+        "/cost"
+      ],
       "search": "compare runs stage costs tokens spend calls commit dependencies config",
       "maturity": "stable",
-      "outcomes": ["parallel-runs", "context-runtime"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Compare what two runtime runs actually ran against (commit, dependencies, config), and read per-stage token, spend and call-count evidence.",
       "why_it_matters": "Comparing commit, dependencies, configuration and per-stage spend explains why one run beat another.",
       "use_it": "/compare [run-a run-b] · /pipeline · /cost [run-id]",
-      "surfaces": ["TUI", "Desktop"],
-      "limitations": "Runtime-backed: needs a connected axym-runtime daemon."
+      "surfaces": [
+        "TUI",
+        "Desktop"
+      ],
+      "limitations": "Runtime-backed: needs a connected axym-runtime daemon.",
+      "one_liner": "Why one run beat another — commits, configs and per-stage spend.",
+      "command": "/compare",
+      "tab": "parallel-worktrees",
+      "story_chapter": 3
     },
     {
       "id": "feat-cost-routing",
@@ -1110,17 +1563,26 @@
       "group": "fleet",
       "icon": "target",
       "summary": "Model choice learns from real cost data — a dated local rate card backs every decision.",
-      "commands": ["AXYM_AUTO_ROUTE=cost", "/cost"],
+      "commands": [
+        "AXYM_AUTO_ROUTE=cost",
+        "/cost"
+      ],
       "search": "linucb cost routing failover rate card queue arbitrage auto route keyless economic governor budget",
       "maturity": "stable",
-      "outcomes": ["context-runtime"],
       "featured_top12": false,
       "introduced_in": "0.24.0",
       "what_it_is": "A LinUCB cost/failover router unifies the keyless cloud CLIs, adds queue arbitrage, and backs decisions with a dated local rate card via the daemon's AXYM_AUTO_ROUTE=cost setting, inside the economic governor's Normal/Restricted/Blocked spend states.",
       "why_it_matters": "Model choice learns from measured cost and queue data instead of guesses, and the reasoning stays inspectable on your machine.",
       "use_it": "axym serve with AXYM_AUTO_ROUTE=cost · /cost · /priority",
-      "surfaces": ["TUI", "Desktop"],
-      "limitations": "Requires the axym serve daemon; rate cards are dated local files, not live pricing feeds."
+      "surfaces": [
+        "TUI",
+        "Desktop"
+      ],
+      "limitations": "Requires the axym serve daemon; rate cards are dated local files, not live pricing feeds.",
+      "one_liner": "Model choice learns from real cost data — a dated local rate card backs every decision.",
+      "command": "/cost",
+      "tab": "runtime-flow",
+      "story_chapter": 3
     },
     {
       "id": "feat-headless-mode",
@@ -1128,17 +1590,24 @@
       "group": "fleet",
       "icon": "terminal",
       "summary": "Scripts and CI: JSON output, stable exit codes, same engine.",
-      "commands": ["axym -p \"prompt\""],
+      "commands": [
+        "axym -p \"prompt\""
+      ],
       "search": "headless script ci jsonl exit codes pipeline shell prompt",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Run one prompt from the shell or stdin with text or JSONL output and stable exit codes for scripts and CI.",
       "why_it_matters": "The same engine runs in scripts and CI with text or JSONL output and stable exit codes.",
       "use_it": "axym -p \"prompt\" · --format json · exit 0/1/2/130",
-      "surfaces": ["TUI"],
-      "limitations": "Headless turns share the same permission gates; gates that need a human fail closed with a recorded reason."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Headless turns share the same permission gates; gates that need a human fail closed with a recorded reason.",
+      "one_liner": "Scripts and CI: JSON output, stable exit codes, same engine.",
+      "command": "axym -p \"prompt\"",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-live-run-steering-and-queueing",
@@ -1146,17 +1615,25 @@
       "group": "fleet",
       "icon": "sliders",
       "summary": "Change course mid-run at the next safe boundary — or queue guidance.",
-      "commands": ["/steer", "/queue"],
+      "commands": [
+        "/steer",
+        "/queue"
+      ],
       "search": "steer queue instruction safe boundary interrupt guidance",
       "maturity": "stable",
-      "outcomes": ["parallel-runs"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Change course mid-turn at the next safe boundary on the governed runtime, or queue guidance for later without interrupting the run.",
       "why_it_matters": "You can change course at a safe boundary or queue guidance for later without interrupting a long run.",
       "use_it": "/steer <instruction> · /queue <instruction>",
-      "surfaces": ["TUI"],
-      "limitations": "Steering lands at safe boundaries, not mid-edit; it never bypasses gates."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Steering lands at safe boundaries, not mid-edit; it never bypasses gates.",
+      "one_liner": "Change course mid-run at the next safe boundary — or queue guidance.",
+      "command": "/steer",
+      "tab": "parallel-worktrees",
+      "story_chapter": 2
     },
     {
       "id": "feat-follow-fork-and-compare-runtime-runs",
@@ -1164,17 +1641,27 @@
       "group": "fleet",
       "icon": "branch",
       "summary": "Attach for live replay, fork an experiment, open a read-only viewer.",
-      "commands": ["/attach", "/fork", "/view"],
+      "commands": [
+        "/attach",
+        "/fork",
+        "/view"
+      ],
       "search": "attach follow fork lineage child viewer replay live read-only",
       "maturity": "stable",
-      "outcomes": ["parallel-runs"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Attach to a Desktop or Mobile run with durable replay and live updates, fork it into a child lineage, or open a second read-only viewer.",
       "why_it_matters": "Runs have lineage: attach for live replay, fork a child experiment, or open a read-only viewer.",
       "use_it": "/attach · /view · /fork",
-      "surfaces": ["TUI", "Desktop"],
-      "limitations": "Runtime-backed: needs a connected axym-runtime daemon."
+      "surfaces": [
+        "TUI",
+        "Desktop"
+      ],
+      "limitations": "Runtime-backed: needs a connected axym-runtime daemon.",
+      "one_liner": "Attach for live replay, fork an experiment, open a read-only viewer.",
+      "command": "/attach",
+      "tab": "parallel-worktrees",
+      "story_chapter": 2
     },
     {
       "id": "feat-parallel-isolated-runs",
@@ -1182,18 +1669,28 @@
       "group": "fleet",
       "icon": "fleet",
       "summary": "Many goals at once — each in its own worktree, merged only by you.",
-      "commands": ["/runs list|start|switch|integrate", "/runs start --worktree --mux tmux"],
+      "commands": [
+        "/runs list|start|switch|integrate",
+        "/runs start --worktree --mux tmux"
+      ],
       "search": "parallel isolated runs worktree switch integrate apply events staged mux panes tmux zellij wezterm adr-0018 kill-before-close",
       "maturity": "stable",
-      "outcomes": ["parallel-runs"],
       "featured_top12": true,
       "introduced_in": null,
       "problem": "Parallel agents collide on one working tree: staged files mix, events interleave, and a close can orphan live panes.",
       "what_it_is": "Start several governed pipeline runs in isolated linked worktrees, switch the visible run without mixing events or staged files, and preview or explicitly apply a finished run's worktree integration — with live panes in tmux, zellij or wezterm via argv-safe adapters and kill-before-close semantics (ADR-0018).",
       "why_it_matters": "Several features progress at once without fighting over one working tree; each run keeps its own events and staged files, integration is a separate explicit decision, and closing never orphans a pane.",
       "use_it": "/runs list · /runs start \"<goal>\" --worktree [--mux tmux|zellij|wezterm] · /runs switch <id> · /runs integrate [id] [--apply]",
-      "surfaces": ["TUI", "Desktop"],
-      "limitations": "Structural worktree creation is gated by AXYM_PERSISTENT_RUNTIME=1 on the daemon (the error is shown verbatim); mux panes need the named multiplexer installed."
+      "surfaces": [
+        "TUI",
+        "Desktop"
+      ],
+      "limitations": "Structural worktree creation is gated by AXYM_PERSISTENT_RUNTIME=1 on the daemon (the error is shown verbatim); mux panes need the named multiplexer installed.",
+      "one_liner": "Many goals at once — each in its own worktree, merged only by you.",
+      "command": "/runs start",
+      "tab": "parallel-worktrees",
+      "story_chapter": 2,
+      "flagship_id": "flagship-02-parallel-mux"
     },
     {
       "id": "feat-controlled-delegation-and-worker-control",
@@ -1201,17 +1698,25 @@
       "group": "fleet",
       "icon": "users",
       "summary": "Delegate to isolated workers with fencing tokens, acceptance checks and stall recovery.",
-      "commands": ["/delegate", "/workers"],
+      "commands": [
+        "/delegate",
+        "/workers"
+      ],
       "search": "delegate workers fencing token recover stall land discard isolated",
       "maturity": "stable",
-      "outcomes": ["parallel-runs"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Delegate tasks to isolated workers, inspect fencing tokens and progress, wait for acceptance, land verified work or recover stalled sessions.",
       "why_it_matters": "Parallel worker delegation stays fenced and recoverable even if a worker stalls.",
       "use_it": "/delegate · /workers",
-      "surfaces": ["TUI"],
-      "limitations": "Stalled workers can be recovered or discarded, but their uncommitted scratch state may be lost by design."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Stalled workers can be recovered or discarded, but their uncommitted scratch state may be lost by design.",
+      "one_liner": "Delegate to isolated workers with fencing tokens, acceptance checks and stall recovery.",
+      "command": "/delegate",
+      "tab": "parallel-worktrees",
+      "story_chapter": 1
     },
     {
       "id": "tui-shell-surfaces",
@@ -1219,17 +1724,26 @@
       "group": "fleet",
       "icon": "terminal",
       "summary": "The whole engine, exposed as non-interactive commands for scripts and CI.",
-      "commands": ["axym solve", "axym queue", "axym ship"],
+      "commands": [
+        "axym solve",
+        "axym queue",
+        "axym ship"
+      ],
       "search": "shell entry points non-interactive scripts ci solve queue ship pr flow aei memory plugin export passport relay team scars verify-proof web bench fitness",
       "maturity": "stable",
-      "outcomes": ["build-verify", "parallel-runs"],
       "featured_top12": false,
       "introduced_in": "0.24.0",
       "what_it_is": "Everything the interactive TUI can do has a non-interactive form: axym solve, axym queue, axym ship, axym flow, axym verify-proof, axym accounts/files/plugin/memory, axym export-session/passport, axym relay/team, axym scars/pr, axym web — plus the engineering gates (axym fitness --json, axym bench --reproduce) used by the repo's own CI.",
       "why_it_matters": "Scripts and CI drive the same governed engine, policy and evidence store as the interactive session — no parallel implementation to drift.",
       "use_it": "axym solve \"<goal>\" · axym queue · axym ship · axym flow · axym verify-proof",
-      "surfaces": ["TUI"],
-      "limitations": "Exit codes are stable (0/1/2/130); gates that need a human fail closed in CI rather than blocking interactively."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Exit codes are stable (0/1/2/130); gates that need a human fail closed in CI rather than blocking interactively.",
+      "one_liner": "The whole engine, exposed as non-interactive commands for scripts and CI.",
+      "command": "axym solve",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-share-and-read-only-viewing",
@@ -1237,17 +1751,25 @@
       "group": "collab",
       "icon": "eye",
       "summary": "Teammates follow along with zero write authority.",
-      "commands": ["/share", "/view"],
+      "commands": [
+        "/share",
+        "/view"
+      ],
       "search": "share read-only viewer observe steer approve write authority isolated stream",
       "maturity": "stable",
-      "outcomes": ["mobile-remote"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Share a session or live run with collaborators; viewers follow an isolated read-only event stream and cannot steer, approve or write.",
       "why_it_matters": "Collaborators can follow without write authority, so observation never becomes an accidental change.",
       "use_it": "/share [viewer|contributor|approver|admin|stop] · /view <run-id>",
-      "surfaces": ["TUI"],
-      "limitations": "Viewers see the shared stream only; side conversations stay local to the owner."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Viewers see the shared stream only; side conversations stay local to the owner.",
+      "one_liner": "Teammates follow along with zero write authority.",
+      "command": "/share",
+      "tab": "mobile-remote",
+      "story_chapter": 1
     },
     {
       "id": "feat-phone-pairing",
@@ -1255,17 +1777,25 @@
       "group": "collab",
       "icon": "phone",
       "summary": "Approve gates and steer from your phone via a QR-paired, revocable link.",
-      "commands": ["/remote qr"],
+      "commands": [
+        "/remote qr"
+      ],
       "search": "phone remote qr pairing wifi tailscale tunnel pin revocable t-050 cert-pinning web push",
       "maturity": "experimental",
-      "outcomes": ["mobile-remote"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Continue the live session from a phone over the same Wi-Fi, Tailscale or a Cloudflare tunnel, with a QR pairing card, PIN or scoped access and a revocable link.",
       "why_it_matters": "A QR code and scoped link let you approve or steer from a phone while the session stays on your workstation.",
       "use_it": "/remote · /remote tunnel · /remote status · /remote stop",
-      "surfaces": ["TUI", "Mobile"],
-      "limitations": "T-050 real-phone journey is partial: Wi-Fi cert-pinning and closed-app Web Push delivery are not yet certified — treat mobile connectivity and the TLS preview as experimental until the release notes mark them GA."
+      "surfaces": [
+        "TUI",
+        "Mobile"
+      ],
+      "limitations": "T-050 real-phone journey is partial: Wi-Fi cert-pinning and closed-app Web Push delivery are not yet certified — treat mobile connectivity and the TLS preview as experimental until the release notes mark them GA.",
+      "one_liner": "Approve gates and steer from your phone via a QR-paired, revocable link.",
+      "command": "/remote qr",
+      "tab": "mobile-remote",
+      "story_chapter": 4
     },
     {
       "id": "feat-browser-bridge",
@@ -1273,17 +1803,25 @@
       "group": "collab",
       "icon": "globe",
       "summary": "A PIN-protected web surface over the governed runtime.",
-      "commands": ["axym web --pin"],
+      "commands": [
+        "axym web --pin"
+      ],
       "search": "browser bridge web page pin token watch approval mobile friendly",
       "maturity": "experimental",
-      "outcomes": ["mobile-remote"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Serve a phone-friendly page over the governed runtime with live transcript, submit, steer, cancel and approval actions, protected by a PIN or token.",
       "why_it_matters": "A PIN-protected page gives a phone-sized approval surface over the governed runtime without moving the session.",
       "use_it": "axym web --host 0.0.0.0 --pin 4821",
-      "surfaces": ["TUI", "Mobile"],
-      "limitations": "Shares the T-050 experimental status: cert-pinned Wi-Fi and closed-app push are not yet certified; keep the bridge on a trusted network."
+      "surfaces": [
+        "TUI",
+        "Mobile"
+      ],
+      "limitations": "Shares the T-050 experimental status: cert-pinned Wi-Fi and closed-app push are not yet certified; keep the bridge on a trusted network.",
+      "one_liner": "A PIN-protected web surface over the governed runtime.",
+      "command": "axym web --pin",
+      "tab": "mobile-remote",
+      "story_chapter": 4
     },
     {
       "id": "feat-detach-and-attach",
@@ -1291,17 +1829,25 @@
       "group": "collab",
       "icon": "monitor",
       "summary": "Close the laptop; the work continues. Reattach from anywhere.",
-      "commands": ["/detach", "axym attach"],
+      "commands": [
+        "/detach",
+        "axym attach"
+      ],
       "search": "detach attach ssh close terminal keep running redraw size",
       "maturity": "stable",
-      "outcomes": ["mobile-remote", "context-runtime"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Free the terminal while the session keeps running, then return from any terminal or SSH login with the transcript redrawn at the new size.",
       "why_it_matters": "Close the terminal or lose SSH and the work continues; reattach from anywhere with the transcript redrawn at that size.",
       "use_it": "/detach · axym attach · axym -c",
-      "surfaces": ["TUI"],
-      "limitations": "The session lives on the machine that started it; attaching happens there, not from another host."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "The session lives on the machine that started it; attaching happens there, not from another host.",
+      "one_liner": "Close the laptop; the work continues. Reattach from anywhere.",
+      "command": "/detach",
+      "tab": "mobile-remote",
+      "story_chapter": 1
     },
     {
       "id": "feat-push-notifications",
@@ -1309,17 +1855,25 @@
       "group": "collab",
       "icon": "alert",
       "summary": "Told when a turn finishes, fails or stalls — stop polling the terminal.",
-      "commands": ["/notify on"],
+      "commands": [
+        "/notify on"
+      ],
       "search": "notify push notification ntfy turn finished failed cooling topic self-hosted",
       "maturity": "stable",
-      "outcomes": ["mobile-remote"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Send a push when a turn finishes, fails, or every provider is cooling, through ntfy.sh or a self-hosted topic.",
       "why_it_matters": "Long runs tell you when they finish, fail or stall, so you are not polling a terminal for news.",
       "use_it": "/notify · ~/.axym/tui/notify.json",
-      "surfaces": ["TUI", "Mobile"],
-      "limitations": "Delivery uses ntfy or a self-hosted topic; closed-app Web Push on iOS is part of the uncertified T-050 hardware journey."
+      "surfaces": [
+        "TUI",
+        "Mobile"
+      ],
+      "limitations": "Delivery uses ntfy or a self-hosted topic; closed-app Web Push on iOS is part of the uncertified T-050 hardware journey.",
+      "one_liner": "Told when a turn finishes, fails or stalls — stop polling the terminal.",
+      "command": "/notify on",
+      "tab": "mobile-remote",
+      "story_chapter": 1
     },
     {
       "id": "feat-session-and-run-handoff",
@@ -1327,17 +1881,24 @@
       "group": "collab",
       "icon": "arrow-up-right",
       "summary": "Move work between machines with explicit offer, accept and retract steps.",
-      "commands": ["/handoff"],
+      "commands": [
+        "/handoff"
+      ],
       "search": "handoff session run checkpoint export import offer accept retract machine",
       "maturity": "stable",
-      "outcomes": ["mobile-remote"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Export or import a session, or move a multi-machine run checkpoint with offer, export, accept, status and retract actions.",
       "why_it_matters": "Work moves between surfaces and machines with explicit offer, accept and retract steps instead of copy-pasted state.",
       "use_it": "/handoff · /run-handoff",
-      "surfaces": ["TUI"],
-      "limitations": "Handoff moves explicit checkpoints; unrecorded scratch state is not transferred."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Handoff moves explicit checkpoints; unrecorded scratch state is not transferred.",
+      "one_liner": "Move work between machines with explicit offer, accept and retract steps.",
+      "command": "/handoff",
+      "tab": "mobile-remote",
+      "story_chapter": 4
     },
     {
       "id": "tui-device-bridge",
@@ -1345,18 +1906,31 @@
       "group": "collab",
       "icon": "phone",
       "summary": "Simulators, journeys, screenshots and design diffs — store-grade mobile QA from the terminal.",
-      "commands": ["/sim", "/device", "/qa --maestro", "/security --masvs", "/bg"],
+      "commands": [
+        "/sim",
+        "/device",
+        "/qa --maestro",
+        "/security --masvs",
+        "/bg"
+      ],
       "search": "device bridge mobile simulator journey screenshot design diff pair termcaps ios android maestro masvs bg background passport proof visual axym/mobile.json",
       "maturity": "experimental",
-      "outcomes": ["mobile-remote", "build-verify"],
       "featured_top12": true,
       "introduced_in": "0.24.0",
       "problem": "Mobile verification means manual simulator dances and \"it looked fine on my device\" claims that no one can inspect later.",
       "what_it_is": "A device platform driven from the terminal: /devices and /device inventory simulators and connected hardware with a unified driver, /sim drives a simulator session, /mobile runs multi-turn journeys with crash/ANR harvesting, /mobile-proof captures screenshot, hierarchy and schema-v2 visual diff evidence, /qa --maestro adds Maestro store-grade QA and /security --masvs the MASVS pass, while /bg keeps work running in the background and axym doctor --mobile reports readiness.",
       "why_it_matters": "A visual change is proven with captures and a design diff — not a claim — and store submission is gated, not hoped for.",
       "use_it": "/devices · /device <id> · /sim · /mobile · /mobile-proof · /qa --maestro · /security --masvs · /bg",
-      "surfaces": ["TUI", "Mobile"],
-      "limitations": "Certified today on iOS/Android simulators; the real-phone journey (cert-pinned Wi-Fi, closed-app push, physical-device visual diff fidelity) is partial under T-050 and stated as experimental, not GA."
+      "surfaces": [
+        "TUI",
+        "Mobile"
+      ],
+      "limitations": "Certified today on iOS/Android simulators; the real-phone journey (cert-pinned Wi-Fi, closed-app push, physical-device visual diff fidelity) is partial under T-050 and stated as experimental, not GA.",
+      "one_liner": "Simulators, journeys, screenshots and design diffs — store-grade mobile QA from the terminal.",
+      "command": "/sim",
+      "tab": "mobile-remote",
+      "story_chapter": 4,
+      "flagship_id": "flagship-03-mobile-platform"
     },
     {
       "id": "feat-team-collaboration",
@@ -1364,17 +1938,25 @@
       "group": "collab",
       "icon": "users",
       "summary": "Team keys, shared templates and encrypted relay messages.",
-      "commands": ["/team", "/relay"],
+      "commands": [
+        "/team",
+        "/relay"
+      ],
       "search": "team peers relay signing keys templates profiles encrypted deployments",
       "maturity": "stable",
-      "outcomes": ["mobile-remote"],
       "featured_top12": false,
       "introduced_in": "0.24.0",
       "what_it_is": "/team [status|key|peers|templates|profiles|deployments|settings], /peers and /relay <message> manage team signing keys, discover peers, share templates, profiles and settings, and send encrypted relay messages.",
       "why_it_matters": "A team can share working conventions and coordinate across sessions without moving the run or handing out blanket write authority.",
       "use_it": "/team status · /peers · /relay <message>",
-      "surfaces": ["TUI"],
-      "limitations": "Relay is message-scoped; it never grants write authority to another member's session."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Relay is message-scoped; it never grants write authority to another member's session.",
+      "one_liner": "Team keys, shared templates and encrypted relay messages.",
+      "command": "/team",
+      "tab": "mobile-remote",
+      "story_chapter": 4
     },
     {
       "id": "feat-governed-runtime-connection",
@@ -1382,17 +1964,25 @@
       "group": "runtime",
       "icon": "cpu",
       "summary": "Durable runs, evidence and approvals in a daemon — the TUI is the control surface.",
-      "commands": ["axym --provider axym-runtime"],
+      "commands": [
+        "axym --provider axym-runtime"
+      ],
       "search": "runtime daemon durable runs evidence approvals replay control surface serve",
       "maturity": "stable",
-      "outcomes": ["context-runtime", "parallel-runs"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Use axym-runtime for durable runs, evidence, approvals, fleet views and run replay while keeping the same terminal interface.",
       "why_it_matters": "Durable runs, evidence and approvals live in the runtime, so long work survives terminal restarts.",
       "use_it": "axym --provider axym-runtime · axym serve · /attach · /pipeline",
-      "surfaces": ["TUI", "Desktop"],
-      "limitations": "Daemon-backed features degrade to local-session behaviour when no runtime is connected; the error is shown, not hidden."
+      "surfaces": [
+        "TUI",
+        "Desktop"
+      ],
+      "limitations": "Daemon-backed features degrade to local-session behaviour when no runtime is connected; the error is shown, not hidden.",
+      "one_liner": "Durable runs, evidence and approvals in a daemon — the TUI is the control surface.",
+      "command": "axym --provider axym-runtime",
+      "tab": "runtime-flow",
+      "story_chapter": 1
     },
     {
       "id": "feat-ship-governed-pipeline",
@@ -1400,18 +1990,29 @@
       "group": "runtime",
       "icon": "layers",
       "summary": "One command runs the full governed pipeline — nothing reaches the repo without an explicit, reversible apply.",
-      "commands": ["/ship \"<goal>\"", "/ship apply", "axym ship"],
+      "commands": [
+        "/ship \"<goal>\"",
+        "/ship apply",
+        "axym ship"
+      ],
       "search": "ship governed pipeline plan design code security review qa apply staging checkpoint undo approve revise reject hash-chained receipts result ledger po",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": true,
       "introduced_in": "0.24.0",
       "problem": "A fuzzy request usually goes straight to an edit; you want it scoped, staged, verified and reversible before it touches the repo.",
       "what_it_is": "/ship \"<goal>\" (with /po scoping up front) submits a plan → design → code → security → review → qa run to the axym serve daemon with journaled human gate decisions (/approve, /revise, /reject, /cancel). Changes stage in .axym/edit-staging/run-<id> and reach your project only through /ship apply, which is checkpointed so /undo covers it. Speculative shadow evidence is gathered while gates hold, and each closed run leaves a hash-chained verification receipt trail.",
       "why_it_matters": "The whole governed pipeline is one command, and nothing touches your project without an explicit, reversible apply — with receipts you can re-verify offline.",
       "use_it": "/po \"<problem>\" · /ship \"<goal>\" · /ship apply · /approve · /undo",
-      "surfaces": ["TUI", "Desktop"],
-      "limitations": "Requires the axym serve daemon; hash-chained receipts record what ran — they certify verification, not product correctness."
+      "surfaces": [
+        "TUI",
+        "Desktop"
+      ],
+      "limitations": "Requires the axym serve daemon; hash-chained receipts record what ran — they certify verification, not product correctness.",
+      "one_liner": "One command runs the full governed pipeline — nothing reaches the repo without an explicit, reversible apply.",
+      "command": "/ship \"<goal>\"",
+      "tab": "core-workflow",
+      "story_chapter": 5,
+      "flagship_id": "flagship-05-ship-proof"
     },
     {
       "id": "feat-laya-decisions-and-vibe-mode",
@@ -1419,17 +2020,25 @@
       "group": "runtime",
       "icon": "sparkles",
       "summary": "Low-risk calls get classified and recorded, not asked. Ask for the smallest honest pipeline.",
-      "commands": ["/laya", "/vibe"],
+      "commands": [
+        "/laya",
+        "/vibe"
+      ],
       "search": "laya vibe decisions classify low-risk announce record smallest honest pipeline",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Classify low-risk decisions, announce and record them, or ask the runtime for the smallest honest pipeline it can justify.",
       "why_it_matters": "Low-risk decisions are classified and recorded, and you can ask for the smallest honest pipeline instead of a default heavy one.",
       "use_it": "/laya on|off|status · /vibe on|off|status",
-      "surfaces": ["TUI"],
-      "limitations": "/vibe may decline with a reason; it never silently downgrades a governed run."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "/vibe may decline with a reason; it never silently downgrades a governed run.",
+      "one_liner": "Low-risk calls get classified and recorded, not asked. Ask for the smallest honest pipeline.",
+      "command": "/laya",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-provider-priority",
@@ -1437,17 +2046,24 @@
       "group": "runtime",
       "icon": "git-branch",
       "summary": "See exactly how the default provider was chosen — failover stops being mysterious.",
-      "commands": ["/priority"],
+      "commands": [
+        "/priority"
+      ],
       "search": "priority resolution order default provider environment config manifest",
       "maturity": "stable",
-      "outcomes": ["context-runtime"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Show how the default provider was resolved across environment variables, config and provider manifests.",
       "why_it_matters": "You can see exactly how the default provider was chosen, which makes failover predictable instead of mysterious.",
       "use_it": "/priority",
-      "surfaces": ["TUI"],
-      "limitations": "Priority explains the resolution; changing it is a config change, not a runtime override."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Priority explains the resolution; changing it is a config change, not a runtime override.",
+      "one_liner": "See exactly how the default provider was chosen — failover stops being mysterious.",
+      "command": "/priority",
+      "tab": "runtime-flow",
+      "story_chapter": 1
     },
     {
       "id": "feat-self-update-with-checksum-verification",
@@ -1455,17 +2071,24 @@
       "group": "runtime",
       "icon": "download",
       "summary": "Updates verify SHA-256 before touching the binary, and install atomically.",
-      "commands": ["/update"],
+      "commands": [
+        "/update"
+      ],
       "search": "update self checksum sha-256 atomic channel asset verify",
       "maturity": "stable",
-      "outcomes": ["build-verify"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Checks the release channel, downloads the platform asset, verifies its SHA-256 against SHA256SUMS.txt and installs atomically.",
       "why_it_matters": "Updates verify SHA-256 before installing atomically, so a corrupted or substituted asset cannot be silently installed.",
       "use_it": "/update · axym --update · --update-force",
-      "surfaces": ["TUI"],
-      "limitations": "Update channels point at published GitHub releases only; unsigned or third-party channels are refused."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Update channels point at published GitHub releases only; unsigned or third-party channels are refused.",
+      "one_liner": "Updates verify SHA-256 before touching the binary, and install atomically.",
+      "command": "/update",
+      "tab": "core-workflow",
+      "story_chapter": 1
     },
     {
       "id": "feat-keep-awake-during-long-runs",
@@ -1473,17 +2096,24 @@
       "group": "runtime",
       "icon": "bolt",
       "summary": "Idle sleep cannot suspend a long run — released the moment the turn ends.",
-      "commands": ["Automatic"],
+      "commands": [
+        "Automatic"
+      ],
       "search": "keep awake power assertion idle sleep suspend opt out",
       "maturity": "stable",
-      "outcomes": ["context-runtime"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Holds a power assertion while a turn runs so idle sleep cannot suspend the work; opt out with a marker file.",
       "why_it_matters": "Idle sleep cannot suspend long work; the assertion is released when the turn ends and can be opted out.",
       "use_it": "Automatic · ~/.axym/tui/no-keep-awake to disable",
-      "surfaces": ["TUI"],
-      "limitations": "Applies to OS idle sleep; explicit shutdowns or battery-kill policies still interrupt work."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Applies to OS idle sleep; explicit shutdowns or battery-kill policies still interrupt work.",
+      "one_liner": "Idle sleep cannot suspend a long run — released the moment the turn ends.",
+      "command": "Automatic",
+      "tab": "runtime-flow",
+      "story_chapter": 2
     },
     {
       "id": "feat-atomic-local-state",
@@ -1491,17 +2121,24 @@
       "group": "runtime",
       "icon": "lock",
       "summary": "A crash cannot leave half-written sessions or history.",
-      "commands": ["Automatic"],
+      "commands": [
+        "Automatic"
+      ],
       "search": "atomic state fsync rename temp file crash half-written sessions history",
       "maturity": "stable",
-      "outcomes": ["context-runtime"],
       "featured_top12": false,
       "introduced_in": null,
       "what_it_is": "Sessions, history and allow-lists are written with a temp-file, fsync and rename sequence, so a crash cannot leave half-written state.",
       "why_it_matters": "A crash cannot leave half-written sessions, history or allow-lists because writes use a temp-file, fsync and rename sequence.",
       "use_it": "Automatic",
-      "surfaces": ["TUI"],
-      "limitations": "Atomicity covers completed writes; an in-flight write at the exact crash moment falls back to the last good state."
+      "surfaces": [
+        "TUI"
+      ],
+      "limitations": "Atomicity covers completed writes; an in-flight write at the exact crash moment falls back to the last good state.",
+      "one_liner": "A crash cannot leave half-written sessions or history.",
+      "command": "Automatic",
+      "tab": "runtime-flow",
+      "story_chapter": 1
     },
     {
       "id": "feat-aide-run-diagnosis-and-event-inspection",
@@ -1509,18 +2146,27 @@
       "group": "runtime",
       "icon": "search",
       "summary": "Inspect a misbehaving run — events, integrity, replay — without destroying it.",
-      "commands": ["/debug [run-id]"],
+      "commands": [
+        "/debug [run-id]"
+      ],
       "search": "debug aide diagnosis event integrity replay inspect pause resume evidence sentinel adversarial fitness require-context ci gate",
       "maturity": "stable",
-      "outcomes": ["security-firewall", "context-runtime"],
       "featured_top12": true,
       "introduced_in": null,
       "problem": "When a run misbehaves, the usual fix is to kill it and lose the evidence — you need adversarial inspection and a CI gate that refuses vacuous passes.",
       "what_it_is": "On a connected runtime run, inspect failure evidence, event integrity, bounded pipeline replay and run-scoped effect counts; pause, investigate or resume diagnosis while retaining the original run and its permissions. The same evidence discipline backs the headless axym fitness [--json] [--require-context] gate, which exits non-zero on a blocker and treats an absent context as a failure — never a vacuous pass.",
       "why_it_matters": "You can interrogate a misbehaving run without destroying it, and CI can require real, present evidence instead of trusting a green check.",
       "use_it": "/debug [run-id] · /debug [run-id] inspect · axym fitness --json --require-context",
-      "surfaces": ["TUI", "Desktop"],
-      "limitations": "Observations do not certify a repair — retest stays a separate, explicit step; the fitness gate needs the committed engineering context (.axym/engineering/architecture.json) to be present."
+      "surfaces": [
+        "TUI",
+        "Desktop"
+      ],
+      "limitations": "Observations do not certify a repair — retest stays a separate, explicit step; the fitness gate needs the committed engineering context (.axym/engineering/architecture.json) to be present.",
+      "one_liner": "Inspect a misbehaving run — events, integrity, replay — without destroying it.",
+      "command": "/debug [run-id]",
+      "tab": "security-proof",
+      "story_chapter": 5,
+      "flagship_id": "flagship-09-aide-debugging"
     },
     {
       "id": "feat-zero-trust-mcp-tool-access",
@@ -1528,18 +2174,27 @@
       "group": "runtime",
       "icon": "lock",
       "summary": "Local stdio/HTTP MCP firewall with capability-lattice admission and taint tracking.",
-      "commands": ["/mcp"],
+      "commands": [
+        "/mcp"
+      ],
       "search": "mcp firewall capability lattice taint stdio http audited tool zero-trust delegated read edit write grep",
       "maturity": "stable",
-      "outcomes": ["security-firewall"],
       "featured_top12": true,
       "introduced_in": "0.24.0",
       "problem": "MCP tools run with whatever power your session has — a hostile or over-scoped server can read, write or exfiltrate far beyond its job.",
       "what_it_is": "A local MCP stdio/HTTP firewall with scoped capability-lattice admission and untrusted-output tainting; delegated file tools (Read/Edit/Write/Grep) stay behind the audited route, and /mcp shows tool scopes plus the admission ledger.",
       "why_it_matters": "External MCP tools operate under least privilege with every call audited — untrusted output is tainted, not trusted because a tool produced it.",
       "use_it": "/mcp · /activity · /footprint",
-      "surfaces": ["TUI", "Desktop"],
-      "limitations": "The firewall governs MCP traffic through Axym; tools configured inside another CLI's own MCP setup are outside this boundary."
+      "surfaces": [
+        "TUI",
+        "Desktop"
+      ],
+      "limitations": "The firewall governs MCP traffic through Axym; tools configured inside another CLI's own MCP setup are outside this boundary.",
+      "one_liner": "Local stdio/HTTP MCP firewall with capability-lattice admission and taint tracking.",
+      "command": "/mcp",
+      "tab": "security-proof",
+      "story_chapter": 3,
+      "flagship_id": "flagship-04-mcp-firewall"
     },
     {
       "id": "tui-run-controls",
@@ -1547,17 +2202,35 @@
       "group": "runtime",
       "icon": "sliders",
       "summary": "One inbox for every decision; drift review before anything ships.",
-      "commands": ["/inbox", "/goldfish", "/mission", "/preview"],
+      "commands": [
+        "/inbox",
+        "/goldfish",
+        "/mission",
+        "/preview"
+      ],
       "search": "inbox mission preview goldfish revise cancel drift decision elephant review quota-reset parking warm handoff",
       "maturity": "stable",
-      "outcomes": ["parallel-runs", "context-runtime"],
       "featured_top12": false,
       "introduced_in": "0.24.0",
       "what_it_is": "The human-loop controls for governed runs: /inbox collects approvals, revisions and rejections across gates into one queue; /mission shows the objective and constraints; /preview shows the proposed plan with per-provider badges before execution; /goldfish reviews drift between the agreed spec and the produced change; /revise reopens a run with new instructions and /cancel stops it with the reason recorded.",
       "why_it_matters": "You decide from a single queue instead of hunting through transcripts, and drift is reviewed before anything ships rather than discovered after.",
       "use_it": "/inbox · /mission · /preview · /goldfish · /revise · /cancel",
-      "surfaces": ["TUI", "Desktop"],
-      "limitations": "Runtime-backed decisions queue in the daemon; without axym-runtime the inbox covers local gates only."
+      "surfaces": [
+        "TUI",
+        "Desktop"
+      ],
+      "limitations": "Runtime-backed decisions queue in the daemon; without axym-runtime the inbox covers local gates only.",
+      "one_liner": "One inbox for every decision; drift review before anything ships.",
+      "command": "/inbox",
+      "tab": "parallel-worktrees",
+      "story_chapter": 1
     }
-  ]
+  ],
+  "tabs": {
+    "core-workflow": "Core Workflow",
+    "parallel-worktrees": "Parallel & Worktrees",
+    "mobile-remote": "Mobile & Remote",
+    "security-proof": "Security & Proof",
+    "runtime-flow": "Runtime & Flow"
+  }
 }

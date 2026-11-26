@@ -504,7 +504,7 @@
     a.setAttribute('data-fx-search', (cap.search || '') + ' ' + cap.name);
     if (cap.featured_top12) a.setAttribute('data-fx-featured', 'true');
     a.setAttribute('data-fx-maturity', cap.maturity);
-    a.setAttribute('data-fx-outcomes', (cap.outcomes || []).join(' '));
+    a.setAttribute('data-fx-outcomes', cap.tab || '');
     var currentVersionForCard = ((releases && releases.tui && releases.tui.version) || (CAP_MANIFEST.release || '')).replace(/^v/, '');
     if (currentVersionForCard && cap.introduced_in === currentVersionForCard) a.setAttribute('data-fx-new', 'true');
 
@@ -592,12 +592,14 @@
     var lensRow = document.getElementById('fx-lenses');
     if (lensRow) {
       lensRow.innerHTML = '';
-      var lenses = CAP_MANIFEST.outcomes || {};
+      /* REV3 interim: the five index tabs drive the lens row until the
+         hairline index replaces it (SW3-S1). */
+      var lenses = CAP_MANIFEST.tabs || {};
       var lensDescriptions = CAP_MANIFEST.outcomeDescriptions || {};
       var lensCounts = {};
       var maturityCounts = {};
       CAPABILITIES.forEach(function (c) {
-        (c.outcomes || []).forEach(function (o) { lensCounts[o] = (lensCounts[o] || 0) + 1; });
+        if (c.tab) lensCounts[c.tab] = (lensCounts[c.tab] || 0) + 1;
         maturityCounts[c.maturity] = (maturityCounts[c.maturity] || 0) + 1;
       });
       var lead = document.createElement('span');
@@ -1162,7 +1164,7 @@
       var scope = '';
       if (mode.kind === 'featured') scope = ' among the featured twelve';
       else if (mode.kind === 'new') scope = ' among capabilities new in this release';
-      else if (mode.kind === 'lens') scope = ' through the "' + ((CAP_MANIFEST && CAP_MANIFEST.outcomes && CAP_MANIFEST.outcomes[mode.value]) || mode.value) + '" lens';
+      else if (mode.kind === 'lens') scope = ' through the "' + ((CAP_MANIFEST && CAP_MANIFEST.tabs && CAP_MANIFEST.tabs[mode.value]) || mode.value) + '" tab';
       else if (mode.kind === 'mat') scope = ' with ' + mode.value + ' maturity';
       else if (mode.kind !== 'all') scope = ' in the selected group';
       if (!fxFilter.query && mode.kind === 'all') {

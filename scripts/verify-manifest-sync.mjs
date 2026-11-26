@@ -64,7 +64,24 @@ const FLAGSHIP_TOP12 = [
   'tui-flow-os',
 ];
 
-const REQUIRED_OUTCOMES = ['build-verify', 'parallel-runs', 'mobile-remote', 'security-firewall', 'context-runtime'];
+const REV3_TABS = ['core-workflow', 'parallel-worktrees', 'mobile-remote', 'security-proof', 'runtime-flow'];
+
+/* REV3 Contract A: flagship pillar -> the story chapter (01–05) that teaches it. */
+const FLAGSHIP_CHAPTERS = {
+  'feat-one-session-any-agent-cli': 1,
+  'feat-parallel-isolated-runs': 2,
+  'tui-device-bridge': 4,
+  'feat-zero-trust-mcp-tool-access': 3,
+  'feat-ship-governed-pipeline': 5,
+  'feat-council-mode': 2,
+  'feat-living-repo-brain-and-memory': 1,
+  'feat-anti-hang-guard': 3,
+  'feat-aide-run-diagnosis-and-event-inspection': 5,
+  'feat-security-review': 5,
+  'feat-proof-carrying-races-and-offline-verification': 5,
+  'tui-flow-os': 5,
+};
+
 const VALID_MATURITY = ['stable', 'experimental', 'roadmap'];
 const VALID_SURFACES = ['TUI', 'Desktop', 'Mobile'];
 
@@ -88,24 +105,27 @@ const caps = Array.isArray(manifest.capabilities) ? manifest.capabilities : [];
 const total = caps.length;
 check('manifest declares at least 80 capabilities', total >= 80, `found ${total}`);
 check('capability ids are unique', new Set(caps.map((c) => c.id)).size === total);
-check('outcome lenses are exactly the five developer lenses',
-  JSON.stringify(Object.keys(manifest.outcomes || {}).sort()) === JSON.stringify([...REQUIRED_OUTCOMES].sort()));
+check('the five REV3 index tabs are declared exactly',
+  JSON.stringify(Object.keys(manifest.tabs || {})) === JSON.stringify(REV3_TABS),
+  `found ${JSON.stringify(Object.keys(manifest.tabs || {}))}`);
 
-const requiredFields = ['id', 'name', 'group', 'summary', 'commands', 'search', 'maturity', 'outcomes', 'featured_top12', 'what_it_is', 'why_it_matters', 'use_it', 'surfaces', 'limitations'];
+const requiredFields = ['id', 'name', 'group', 'summary', 'commands', 'search', 'maturity', 'one_liner', 'command', 'tab', 'story_chapter', 'featured_top12', 'what_it_is', 'why_it_matters', 'use_it', 'surfaces', 'limitations'];
 let schemaOk = true;
 const schemaIssues = [];
 for (const c of caps) {
   const missing = requiredFields.filter((f) => c[f] === undefined || c[f] === null || (typeof c[f] === 'string' && !c[f].trim()));
   const maturityOk = VALID_MATURITY.includes(c.maturity);
-  const outcomesOk = Array.isArray(c.outcomes) && c.outcomes.length > 0 && c.outcomes.every((o) => REQUIRED_OUTCOMES.includes(o));
+  const tabOk = REV3_TABS.includes(c.tab);
+  const chapterOk = Number.isInteger(c.story_chapter) && c.story_chapter >= 1 && c.story_chapter <= 5;
+  const linerOk = typeof c.one_liner === 'string' && c.one_liner.length >= 1 && c.one_liner.length <= 110;
   const commandsOk = Array.isArray(c.commands) && c.commands.length > 0;
   const surfacesOk = Array.isArray(c.surfaces) && c.surfaces.length > 0 && c.surfaces.every((s) => VALID_SURFACES.includes(s));
-  if (missing.length || !maturityOk || !outcomesOk || !commandsOk || !surfacesOk) {
+  if (missing.length || !maturityOk || !tabOk || !chapterOk || !linerOk || !commandsOk || !surfacesOk) {
     schemaOk = false;
-    schemaIssues.push(`${c.id || '(no id)'}${missing.length ? ` missing:${missing.join(',')}` : ''}${!maturityOk ? ' bad:maturity' : ''}${!outcomesOk ? ' bad:outcomes' : ''}${!commandsOk ? ' bad:commands' : ''}${!surfacesOk ? ' bad:surfaces' : ''}`);
+    schemaIssues.push(`${c.id || '(no id)'}${missing.length ? ` missing:${missing.join(',')}` : ''}${!maturityOk ? ' bad:maturity' : ''}${!tabOk ? ' bad:tab' : ''}${!chapterOk ? ' bad:story_chapter' : ''}${!linerOk ? ' bad:one_liner(<=110)' : ''}${!commandsOk ? ' bad:commands' : ''}${!surfacesOk ? ' bad:surfaces' : ''}`);
   }
 }
-check('every capability carries complete Contract A metadata', schemaOk, schemaIssues.slice(0, 4).join(' | '));
+check('every capability carries complete REV3 Contract A metadata', schemaOk, schemaIssues.slice(0, 4).join(' | '));
 check('every capability group is declared', caps.every((c) => (manifest.groups || {})[c.group]));
 
 /* Reference anchors: every id must resolve to a heading in the full reference. */
@@ -126,15 +146,51 @@ const flagshipMeta = featured
   .filter((c) => !c.what_it_is || !c.why_it_matters || !c.use_it || !c.maturity || !c.limitations || !c.problem)
   .map((c) => c.id);
 check('flagships carry what/why/use/maturity/limitations/problem', flagshipMeta.length === 0, flagshipMeta.join(', '));
-check('every flagship covers at least one outcome lens', featured.every((c) => Array.isArray(c.outcomes) && c.outcomes.length > 0));
-check('the flagship spread covers all five developer lenses',
-  REQUIRED_OUTCOMES.every((lens) => featured.some((c) => (c.outcomes || []).includes(lens))),
-  REQUIRED_OUTCOMES.filter((lens) => !featured.some((c) => (c.outcomes || []).includes(lens))).join(', '));
+const badFlagshipIds = featured.filter((c) => !c.flagship_id || new Set(featured.map((f) => f.flagship_id)).size !== 12);
+check('each flagship carries a unique flagship_id', badFlagshipIds.length === 0, badFlagshipIds.map((c) => c.id).join(', '));
+const badChapters = featured.filter((c) => FLAGSHIP_CHAPTERS[c.id] !== c.story_chapter);
+check('flagship story_chapter values match the pinned Contract A mapping', badChapters.length === 0, badChapters.map((c) => `${c.id}=${c.story_chapter}`).join(', '));
+const chaptersCovered = new Set(featured.map((c) => c.story_chapter));
+check('the flagship spread covers all five story chapters (01–05)',
+  [1, 2, 3, 4, 5].every((n) => chaptersCovered.has(n)),
+  `missing chapters: ${[1, 2, 3, 4, 5].filter((n) => !chaptersCovered.has(n)).join(', ')}`);
 
 /* Catalog UX is generated from the manifest — no parallel static copy. */
 check('content.js no longer ships a static catalog grid', !/id="fx-catalog">\s*<a class="fx-card"/.test(content));
 check('content.js no longer ships static group pills', !/data-fx-pill="(sessions|chat|editor|modes|workspaces|verification|skills|fleet|collab|runtime)"/.test(content));
 check('app.js renders the catalog from the canonical manifest', app.includes("fetch('./data/capabilities.manifest.json')"));
+
+/* -------------------------------------------- Contract A2 — story stages -- */
+process.stdout.write('\n[a2] Contract A — story-stages.json (five-chapter walkthrough)\n');
+const story = readJson('site/data/story-stages.json');
+check('story-stages.json exists and parses', !!story && !story.__parseError, story && story.__parseError);
+if (story && !story.__parseError) {
+  const chapters = Array.isArray(story.chapters) ? story.chapters : [];
+  const capIds = new Set(caps.map((c) => c.id));
+  const chapterIds = chapters.map((c) => c.id);
+  check('the story declares exactly five chapters numbered 01–05',
+    chapters.length === 5 && JSON.stringify(chapterIds) === JSON.stringify(['chapter-01', 'chapter-02', 'chapter-03', 'chapter-04', 'chapter-05']),
+    `found ${JSON.stringify(chapterIds)}`);
+  const storyIssues = [];
+  for (const ch of chapters) {
+    if (!ch.num || !ch.title || !ch.lede) storyIssues.push(`${ch.id}: missing num/title/lede`);
+    if (!Array.isArray(ch.commands) || ch.commands.length < 2) storyIssues.push(`${ch.id}: fewer than two command pills`);
+    for (const ref of [...(ch.capabilities || []), ...((ch.commands || []).map((p) => p.cap))]) {
+      if (!capIds.has(ref)) storyIssues.push(`${ch.id}: unknown capability ref ${ref}`);
+    }
+    const st = ch.stage || {};
+    if (!Array.isArray(st.session) || st.session.length < 3) storyIssues.push(`${ch.id}: stage.session too thin`);
+    if (!st.diff || !(st.diff.kind === 'text' ? Array.isArray(st.diff.lines) : Array.isArray(st.diff.items))) storyIssues.push(`${ch.id}: stage.diff malformed`);
+    if (!st.receipt || typeof st.receipt !== 'object') storyIssues.push(`${ch.id}: stage.receipt missing`);
+  }
+  check('every chapter is complete, honest and references real capabilities', storyIssues.length === 0, storyIssues.slice(0, 4).join(' | '));
+  check('the 60-second try-flow bar lists copyable commands', Array.isArray(story.try_flow) && story.try_flow.length >= 3);
+  const proofsEarly = readJson('site/data/proofs.manifest.json');
+  if (proofsEarly && !proofsEarly.__parseError && Array.isArray(proofsEarly.chapters)) {
+    const proofIds = proofsEarly.chapters.map((p) => p.id);
+    check('proofs.manifest.json binds the same five chapter ids', JSON.stringify(proofIds) === JSON.stringify(chapterIds), proofIds.join(', '));
+  }
+}
 
 /* ------------------------------------------- (a) stale hardcoded counts -- */
 process.stdout.write('\n[c] Stale capability-count drift (the 61/67/77 era)\n');
@@ -227,6 +283,30 @@ if (!proofs) {
   check('uncaptured proof entries declare an honest illustrative caption',
     uncaptured.every((s) => typeof s.caption === 'string' && s.caption.length > 10),
     uncaptured.filter((s) => !s.caption).map((s) => s.id).join(', '));
+
+  /* REV3: per-story-chapter proof bindings (Contract C). */
+  const chapterProofs = Array.isArray(proofs.chapters) ? proofs.chapters : [];
+  check('proofs manifest binds all five story chapters', chapterProofs.length === 5, `found ${chapterProofs.length}`);
+  let chapOk = true;
+  const chapIssues = [];
+  for (const cp of chapterProofs) {
+    const base = ['id', 'chapter', 'title', 'captured', 'limitations'].filter((f) => cp[f] === undefined);
+    if (base.length) { chapOk = false; chapIssues.push(`${cp.id || '?'} missing:${base.join(',')}`); }
+    if (cp.captured === true) {
+      for (const field of ['recording_path', 'diff_path', 'receipt_path']) {
+        const p = cp[field];
+        if (!p) { chapOk = false; chapIssues.push(`${cp.id}: captured=true but ${field} unset`); continue; }
+        const full = join(SITE, p);
+        if (!existsSync(full) || statSync(full).size === 0) {
+          chapOk = false;
+          chapIssues.push(`${cp.id}: captured=true but ${field} (${p}) is missing or empty on disk`);
+        }
+      }
+      if (!cp.captured_version) { chapOk = false; chapIssues.push(`${cp.id}: captured=true but captured_version unset`); }
+      if (!cp.captured_at) { chapOk = false; chapIssues.push(`${cp.id}: captured=true but captured_at unset`); }
+    }
+  }
+  check('captured:true story chapters reference non-empty files on disk', chapOk, chapIssues.slice(0, 4).join(' | '));
 }
 
 /* ---------------------------------------------------------------- summary -- */

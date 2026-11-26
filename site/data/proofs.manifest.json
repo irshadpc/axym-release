@@ -8,6 +8,68 @@
     "axym fitness --json",
     "axym bench --reproduce"
   ],
+  "chapters": [
+    {
+      "id": "chapter-01",
+      "chapter": 1,
+      "title": "Keep your CLIs. Add a living brain.",
+      "captured": false,
+      "captured_version": null,
+      "captured_at": null,
+      "recording_path": null,
+      "diff_path": null,
+      "receipt_path": null,
+      "limitations": "Provider coverage depends on the CLIs installed on your PATH; axym doctor lists a missing provider as 'not found'. Prompt-cache reuse figures are schematic until captured."
+    },
+    {
+      "id": "chapter-02",
+      "chapter": 2,
+      "title": "Run agents in parallel without collisions.",
+      "captured": false,
+      "captured_version": null,
+      "captured_at": null,
+      "recording_path": null,
+      "diff_path": null,
+      "receipt_path": null,
+      "limitations": "Windows native JobObject certification (VL-7) is tracked separately; psmux is supported as an opt-in pane viewer."
+    },
+    {
+      "id": "chapter-03",
+      "chapter": 3,
+      "title": "Firewall tools, stop hangs, control spend.",
+      "captured": false,
+      "captured_version": null,
+      "captured_at": null,
+      "recording_path": null,
+      "diff_path": null,
+      "receipt_path": null,
+      "limitations": "Cost estimates come from a dated local rate card, not live pricing; shadow evidence is labelled speculative and never scored as proof."
+    },
+    {
+      "id": "chapter-04",
+      "chapter": 4,
+      "title": "Build, diff, and test mobile apps natively.",
+      "captured": false,
+      "captured_version": null,
+      "captured_at": null,
+      "recording_path": null,
+      "diff_path": null,
+      "receipt_path": null,
+      "limitations": "Simulator journeys are the certified surface. Real-phone Wi-Fi cert-pinning and closed-app Web Push are part of the T-050 hardware journey, which is partial."
+    },
+    {
+      "id": "chapter-05",
+      "chapter": 5,
+      "title": "Ship only what passes independent proof.",
+      "captured": false,
+      "captured_version": null,
+      "captured_at": null,
+      "recording_path": null,
+      "diff_path": null,
+      "receipt_path": null,
+      "limitations": "Review independence is labelled, not certified; cassette replay proves the recorded run reproduces, not that future runs will."
+    }
+  ],
   "sequences": [
     {
       "id": "idea-to-verified-code",
@@ -38,28 +100,81 @@
         "kind": "text",
         "meta": "git diff — 3 files changed, 18 insertions(+), 2 deletions(-)",
         "lines": [
-          { "t": "hunk", "s": "src/app.ts" },
-          { "t": "add", "ln": 41, "s": "+ const limiter = createLimiter({ windowMs: 60_000, max: 120 });" },
-          { "t": "add", "ln": 42, "s": "+ app.use(\"/api\", limiter.middleware);" },
-          { "t": "add", "ln": 43, "s": "+ export const _limiterTestHooks = limiter;" },
-          { "t": "del", "ln": 18, "s": "- app.use(\"/api\", legacyThrottle);" },
-          { "t": "hunk", "s": "src/rate.test.ts" },
-          { "t": "add", "ln": 7, "s": "+ it(\"returns 429 past the window budget\", async () => {" },
-          { "t": "add", "ln": 8, "s": "+   await expect(flood(api, 121)).rejects.toMatchObject({ status: 429 });" },
-          { "t": "add", "ln": 9, "s": "+ });" }
+          {
+            "t": "hunk",
+            "s": "src/app.ts"
+          },
+          {
+            "t": "add",
+            "ln": 41,
+            "s": "+ const limiter = createLimiter({ windowMs: 60_000, max: 120 });"
+          },
+          {
+            "t": "add",
+            "ln": 42,
+            "s": "+ app.use(\"/api\", limiter.middleware);"
+          },
+          {
+            "t": "add",
+            "ln": 43,
+            "s": "+ export const _limiterTestHooks = limiter;"
+          },
+          {
+            "t": "del",
+            "ln": 18,
+            "s": "- app.use(\"/api\", legacyThrottle);"
+          },
+          {
+            "t": "hunk",
+            "s": "src/rate.test.ts"
+          },
+          {
+            "t": "add",
+            "ln": 7,
+            "s": "+ it(\"returns 429 past the window budget\", async () => {"
+          },
+          {
+            "t": "add",
+            "ln": 8,
+            "s": "+   await expect(flood(api, 121)).rejects.toMatchObject({ status: 429 });"
+          },
+          {
+            "t": "add",
+            "ln": 9,
+            "s": "+ });"
+          }
         ]
       },
       "receipt": {
         "outcome": "OK · VER",
         "files_changed": 2,
         "checks": [
-          { "name": "typecheck", "result": "pass", "exit": 0 },
-          { "name": "tests", "result": "pass", "exit": 0, "detail": "18 passed · 2 new" },
-          { "name": "build", "result": "pass", "exit": 0 },
-          { "name": "review", "result": "awaiting-approval", "independence": "labelled — different provider from the coder" }
+          {
+            "name": "typecheck",
+            "result": "pass",
+            "exit": 0
+          },
+          {
+            "name": "tests",
+            "result": "pass",
+            "exit": 0,
+            "detail": "18 passed · 2 new"
+          },
+          {
+            "name": "build",
+            "result": "pass",
+            "exit": 0
+          },
+          {
+            "name": "review",
+            "result": "awaiting-approval",
+            "independence": "labelled — different provider from the coder"
+          }
         ],
         "blockers": 0,
-        "unverified": ["performance under sustained load marked UNV — not measured this turn"],
+        "unverified": [
+          "performance under sustained load marked UNV — not measured this turn"
+        ],
         "evidence": "hash-chained event trail · staged in .axym/edit-staging/run-<id> · reaches the repo only through /ship apply"
       }
     },
@@ -93,15 +208,42 @@
         "kind": "text",
         "meta": "per-run isolation — staged files never mix across worktrees",
         "lines": [
-          { "t": "hunk", "s": "run 4f2a → wt-parallel-1 (staged)" },
-          { "t": "add", "s": "src/rate.ts            | 18 +++" },
-          { "t": "add", "s": "src/rate.test.ts       |  9 ++" },
-          { "t": "hunk", "s": "run 9c11 → wt-parallel-2 (staged)" },
-          { "t": "add", "s": "src/cache/keys.ts      | 42 +++" },
-          { "t": "del", "s": "src/cache/legacy.ts    | 30 ---" },
-          { "t": "hunk", "s": "integration" },
-          { "t": "note", "s": "/runs integrate 9c11        # preview only" },
-          { "t": "note", "s": "/runs integrate 9c11 --apply # explicit, checkpointed merge" }
+          {
+            "t": "hunk",
+            "s": "run 4f2a → wt-parallel-1 (staged)"
+          },
+          {
+            "t": "add",
+            "s": "src/rate.ts            | 18 +++"
+          },
+          {
+            "t": "add",
+            "s": "src/rate.test.ts       |  9 ++"
+          },
+          {
+            "t": "hunk",
+            "s": "run 9c11 → wt-parallel-2 (staged)"
+          },
+          {
+            "t": "add",
+            "s": "src/cache/keys.ts      | 42 +++"
+          },
+          {
+            "t": "del",
+            "s": "src/cache/legacy.ts    | 30 ---"
+          },
+          {
+            "t": "hunk",
+            "s": "integration"
+          },
+          {
+            "t": "note",
+            "s": "/runs integrate 9c11        # preview only"
+          },
+          {
+            "t": "note",
+            "s": "/runs integrate 9c11 --apply # explicit, checkpointed merge"
+          }
         ]
       },
       "receipt": {
@@ -153,9 +295,18 @@
         "kind": "visual",
         "meta": "schema v2 visual proof — capture, hierarchy and design diff",
         "items": [
-          { "label": "Receipt screen · before", "detail": "cart badge missing after checkout" },
-          { "label": "Receipt screen · after", "detail": "cart badge resets · button state settled" },
-          { "label": "Visual diff", "detail": "1 region changed · hierarchy delta: CartBadge.count 1 → 0" }
+          {
+            "label": "Receipt screen · before",
+            "detail": "cart badge missing after checkout"
+          },
+          {
+            "label": "Receipt screen · after",
+            "detail": "cart badge resets · button state settled"
+          },
+          {
+            "label": "Visual diff",
+            "detail": "1 region changed · hierarchy delta: CartBadge.count 1 → 0"
+          }
         ],
         "boundary": "Captures shown here come from simulators. Real-device visual-diff fidelity, cert-pinned Wi-Fi and closed-app Web Push are part of the T-050 hardware journey, which is partial — the badge stays illustrative until a real capture is committed."
       },
@@ -167,7 +318,9 @@
         "qa": "maestro — 12 flows · 0 failures",
         "security": "MASVS pass · 0 blockers · store preflight ready",
         "blockers": 0,
-        "unverified": ["real-device (hardware) certification — T-050, not GA"],
+        "unverified": [
+          "real-device (hardware) certification — T-050, not GA"
+        ],
         "evidence": "captures and diffs stored locally · nothing uploaded"
       }
     }
