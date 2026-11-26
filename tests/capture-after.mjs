@@ -15,6 +15,9 @@ const shots = [
   { name: 'quickstart-dark', route: 'quickstart', theme: 'dark', width: 1440, height: 1000, full: true },
   { name: 'quickstart-light', route: 'quickstart', theme: 'light', width: 1440, height: 1000, full: true },
   { name: 'releases-dark', route: 'releases', theme: 'dark', width: 1440, height: 1000, full: true },
+  { name: 'features-dark', route: 'features', theme: 'dark', width: 1440, height: 1000, full: true },
+  { name: 'features-light', route: 'features', theme: 'light', width: 1440, height: 1000, full: true },
+  { name: 'features-mobile', route: 'features', theme: 'dark', width: 390, height: 844, full: true },
   { name: 'home-mobile', route: 'home', theme: 'light', width: 390, height: 844, full: true },
   { name: 'home-tablet', route: 'home', theme: 'light', width: 768, height: 1024, full: true },
   { name: 'quickstart-mobile', route: 'quickstart', theme: 'dark', width: 390, height: 844, full: true },
@@ -35,7 +38,7 @@ for (const shot of shots) {
   page.on('pageerror', (err) => errors.push(String(err)));
   await page.goto(`${BASE}#${shot.route}`, { waitUntil: 'networkidle' });
   await page.waitForTimeout(500);
-  await page.screenshot({ path: join(OUT, `${shot.name}.png`), fullPage: shot.full });
+  await page.screenshot({ path: join(OUT, `${shot.name}.png`), fullPage: shot.full, animations: 'disabled', timeout: 120000 });
   const axe = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']).analyze();
   results.push({
     shot: shot.name,

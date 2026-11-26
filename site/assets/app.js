@@ -360,6 +360,7 @@
     }
 
     enhanceCodeRegions();
+    enhanceFx();
 
     var inactivePanels = app.querySelectorAll('.tab-panel:not(.active)');
     for (var p = 0; p < inactivePanels.length; p++) inactivePanels[p].hidden = true;
@@ -410,6 +411,88 @@
     var hash = '#' + route + (anchor ? '/' + anchor : '');
     if (window.location.hash === hash) { pendingScroll = anchor; render(); }
     else window.location.hash = hash;
+  }
+
+  /* ====================================================== features showcase ==
+     Catalog filter (search input + group pills), scroll-reveal and the
+     local-nav scrollspy for the features page. All behaviour is progressive:
+     without JS the page renders fully expanded and statically visible. */
+  var fxFilter = { query: '', raw: '', group: 'all' };
+  var fxObserver = null;
+  var fxSpyObserver = null;
+
+  function applyFxFilter() {
+    var grid = document.getElementById('fx-catalog');
+    if (!grid) return;
+    var cards = grid.querySelectorAll('.fx-card');
+    var visible = 0;
+    for (var i = 0; i < cards.length; i++) {
+      var card = cards[i];
+      var inGroup = fxFilter.group === 'all' || card.getAttribute('data-fx-group') === fxFilter.group;
+      var hay = (card.textContent + ' ' + (card.getAttribute('data-fx-search') || '')).toLowerCase();
+      var matches = inGroup && (!fxFilter.query || hay.indexOf(fxFilter.query) !== -1);
+      card.classList.toggle('filter-hidden', !matches);
+      if (matches) visible++;
+    }
+    var count = document.getElementById('fx-count');
+    if (count) {
+      var total = cards.length;
+      if (!fxFilter.query && fxFilter.group === 'all') {
+        count.textContent = 'Showing all ' + total + ' capabilities';
+      } else {
+        var parts = ['Showing ' + visible + ' of ' + total + ' capabilities'];
+        if (fxFilter.query) parts.push('matching "' + fxFilter.raw + '"');
+        if (fxFilter.group !== 'all') parts.push('in the selected group');
+        count.textContent = parts.join(' ') + '.';
+      }
+    }
+  }
+
+  function enhanceFx() {
+    var page = app.querySelector('.fx-page');
+    if (fxObserver) { fxObserver.disconnect(); fxObserver = null; }
+    if (fxSpyObserver) { fxSpyObserver.disconnect(); fxSpyObserver = null; }
+    fxFilter.query = '';
+    fxFilter.raw = '';
+    fxFilter.group = 'all';
+    if (!page) return;
+
+    var reduced = false;
+    try { reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (err) { reduced = true; }
+
+    var targets = page.querySelectorAll('[data-fx-reveal]');
+    if (!('IntersectionObserver' in window) || reduced) {
+      for (var i = 0; i < targets.length; i++) targets[i].classList.add('in');
+    } else {
+      fxObserver = new IntersectionObserver(function (entries) {
+        for (var j = 0; j < entries.length; j++) {
+          if (entries[j].isIntersecting) {
+            entries[j].target.classList.add('in');
+            fxObserver.unobserve(entries[j].target);
+          }
+        }
+      }, { rootMargin: '0px 0px -7% 0px', threshold: 0.06 });
+      for (var k = 0; k < targets.length; k++) fxObserver.observe(targets[k]);
+    }
+
+    var links = page.querySelectorAll('.fx-localnav a[data-fx-spy]');
+    if (links.length && 'IntersectionObserver' in window) {
+      var byId = {};
+      for (var m = 0; m < links.length; m++) byId[links[m].getAttribute('data-fx-spy')] = links[m];
+      fxSpyObserver = new IntersectionObserver(function (entries) {
+        for (var n = 0; n < entries.length; n++) {
+          if (!entries[n].isIntersecting) continue;
+          var link = byId[entries[n].target.id];
+          if (!link || link.classList.contains('active')) continue;
+          for (var q = 0; q < links.length; q++) links[q].classList.remove('active');
+          link.classList.add('active');
+        }
+      }, { rootMargin: '-35% 0px -55% 0px', threshold: 0 });
+      for (var p = 0; p < links.length; p++) {
+        var section = document.getElementById(links[p].getAttribute('data-fx-spy'));
+        if (section) fxSpyObserver.observe(section);
+      }
+    }
   }
 
   /* ------------------------------------------------------ release hydration -- */
@@ -776,6 +859,17 @@
      ====================================================================== */
   function wireComponents() {
     document.addEventListener('click', function (e) {
+      var pill = e.target.closest('[data-fx-pill]');
+      if (pill) {
+        fxFilter.group = pill.getAttribute('data-fx-pill');
+        var pills = pill.parentNode.querySelectorAll('[data-fx-pill]');
+        for (var pi = 0; pi < pills.length; pi++) {
+          pills[pi].setAttribute('aria-pressed', String(pills[pi] === pill));
+        }
+        applyFxFilter();
+        return;
+      }
+
       var tab = e.target.closest('[data-tab]');
       if (tab && tab.closest('[data-tabs]')) {
         var groupEl = tab.closest('[data-tabs]');
@@ -884,6 +978,13 @@
     });
 
     document.addEventListener('input', function (e) {
+      var gridInput = e.target.closest('[data-filter-grid]');
+      if (gridInput) {
+        fxFilter.raw = gridInput.value.trim();
+        fxFilter.query = fxFilter.raw.toLowerCase();
+        applyFxFilter();
+        return;
+      }
       var input = e.target.closest('[data-filter-table]');
       if (!input) return;
       var query = input.value.trim().toLowerCase();

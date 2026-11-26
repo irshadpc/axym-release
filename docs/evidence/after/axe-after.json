@@ -35,6 +35,21 @@
     "consoleErrors": []
   },
   {
+    "shot": "features-dark",
+    "violations": [],
+    "consoleErrors": []
+  },
+  {
+    "shot": "features-light",
+    "violations": [],
+    "consoleErrors": []
+  },
+  {
+    "shot": "features-mobile",
+    "violations": [],
+    "consoleErrors": []
+  },
+  {
     "shot": "home-mobile",
     "violations": [],
     "consoleErrors": []
