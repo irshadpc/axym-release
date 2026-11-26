@@ -337,11 +337,57 @@
     el.textContent = page.title + ' page loaded';
   }
 
+  function scrollToAnchor(target) {
+    window.requestAnimationFrame(function () {
+      var el = document.getElementById(target);
+      if (el) {
+        el.scrollIntoView({ block: 'start' });
+        if (target === 'app') {
+          el.setAttribute('tabindex', '-1');
+          el.focus({ preventScroll: true });
+        } else {
+          var heading = el.querySelector('h1, h2, h3') || (el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'H3' ? el : null);
+          if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus({ preventScroll: true }); }
+          else { el.setAttribute('tabindex', '-1'); el.focus({ preventScroll: true }); }
+        }
+      } else {
+        window.scrollTo(0, 0);
+      }
+    });
+  }
+
+  /* In-page hash change (same route): drive the capability drawer or scroll
+     to the anchor WITHOUT rebuilding the page, so filter pills, the search
+     query and scroll position survive. `#features/feat-<id>` opens the
+     drawer; any other anchor scrolls. A pendingScroll set before the hash
+     change (e.g. the drawer's "View in full Reference" jump) always wins. */
+  function handleAnchorState(state) {
+    var cap = state.anchor && CAPABILITY_INDEX[state.anchor];
+    if (cap && !pendingScroll) {
+      var trigger = app.querySelector('.fx-card[data-fx-id="' + cap.id + '"]');
+      openDrawer(cap, trigger);
+      lastHash = window.location.hash;
+      return;
+    }
+    var target = state.anchor || pendingScroll;
+    pendingScroll = null;
+    closeDrawer(false, true);
+    if (target) scrollToAnchor(target);
+    lastHash = window.location.hash;
+  }
+
   function render() {
     var state = parseHash();
     var page = PAGES[state.route] || PAGES.home;
     var routeChanged = currentRoute !== state.route;
     currentRoute = state.route;
+
+    if (!routeChanged) {
+      handleAnchorState(state);
+      return;
+    }
+
+    closeDrawer(false, true);
     var layout = page.layout === 'docs' ? 'docs' : 'marketing';
 
     if (layout === 'docs') {
@@ -389,28 +435,19 @@
       app.focus({ preventScroll: true });
     }
 
+    var anchorCap = !pendingScroll && state.anchor && CAPABILITY_INDEX[state.anchor];
+    if (anchorCap) {
+      var trigger = app.querySelector('.fx-card[data-fx-id="' + anchorCap.id + '"]');
+      openDrawer(anchorCap, trigger);
+      lastHash = window.location.hash;
+      return;
+    }
+
     var target = state.anchor || pendingScroll;
     pendingScroll = null;
-    if (target) {
-      window.requestAnimationFrame(function () {
-        var el = document.getElementById(target);
-        if (el) {
-          el.scrollIntoView({ block: 'start' });
-          if (target === 'app') {
-            el.setAttribute('tabindex', '-1');
-            el.focus({ preventScroll: true });
-          } else {
-            var heading = el.querySelector('h1, h2, h3') || (el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'H3' ? el : null);
-            if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus({ preventScroll: true }); }
-            else { el.setAttribute('tabindex', '-1'); el.focus({ preventScroll: true }); }
-          }
-        } else {
-          window.scrollTo(0, 0);
-        }
-      });
-    } else {
-      window.scrollTo(0, 0);
-    }
+    if (target) scrollToAnchor(target);
+    else window.scrollTo(0, 0);
+    lastHash = window.location.hash;
   }
 
   function navigate(route, anchor) {
@@ -431,6 +468,7 @@
   var fxBootTimer = null;
   var fxTheaterTimer = null;
   var fxTheaterStopped = false;
+  var lastHash = null;
 
   /* --------------------------------------------- capability catalog (A) -- */
   /* The catalog grid, filter pills and counts are generated from the
@@ -458,6 +496,8 @@
     a.setAttribute('data-fx-id', cap.id);
     a.setAttribute('data-fx-search', (cap.search || '') + ' ' + cap.name);
     if (cap.featured_top12) a.setAttribute('data-fx-featured', 'true');
+    var currentVersionForCard = ((releases && releases.tui && releases.tui.version) || (CAP_MANIFEST.release || '')).replace(/^v/, '');
+    if (currentVersionForCard && cap.introduced_in === currentVersionForCard) a.setAttribute('data-fx-new', 'true');
 
     if (cap.maturity && cap.maturity !== 'stable') {
       var mat = document.createElement('span');
@@ -525,7 +565,16 @@
       pillsHost.innerHTML = '';
       var groups = CAP_MANIFEST.groups || {};
       var counts = {};
-      CAPABILITIES.forEach(function (c) { counts[c.group] = (counts[c.group] || 0) + 1; });
+      var featuredCount = 0;
+      var newCount = 0;
+      var currentVersion = ((releases && releases.tui && releases.tui.version) || (CAP_MANIFEST.release || '')).replace(/^v/, '');
+      CAPABILITIES.forEach(function (c) {
+        counts[c.group] = (counts[c.group] || 0) + 1;
+        if (c.featured_top12) featuredCount++;
+        if (currentVersion && c.introduced_in === currentVersion) newCount++;
+      });
+      pillsHost.appendChild(fxPillEl('featured', 'Featured', featuredCount, false));
+      pillsHost.appendChild(fxPillEl('new', 'New in ' + currentVersion, newCount, false));
       pillsHost.appendChild(fxPillEl('all', 'All', CAPABILITIES.length, true));
       Object.keys(groups).forEach(function (g) {
         pillsHost.appendChild(fxPillEl(g, groups[g], counts[g] || 0, false));
@@ -549,6 +598,199 @@
       var value = kind === 'groups' ? String(Object.keys((CAP_MANIFEST && CAP_MANIFEST.groups) || {}).length) : total;
       el.setAttribute('data-count', value);
       el.textContent = value;
+    }
+  }
+
+  /* ------------------------------------------------------ detail drawer -- */
+  /* Accessible right-hand slide-over for one capability. Opening is driven by
+     the #features/<id> hash (so browser Back/Forward and deep links work);
+     closing restores focus to the triggering card. All drawer text is set
+     through DOM text nodes. */
+  var drawerEl = null;
+  var drawerBackdrop = null;
+  var drawerOpen = false;
+  var drawerCap = null;
+  var drawerTrigger = null;
+  var drawerViaHistory = false;
+
+  function ensureDrawer() {
+    if (drawerEl) return;
+    drawerBackdrop = document.createElement('div');
+    drawerBackdrop.className = 'fx-drawer-backdrop';
+    drawerBackdrop.id = 'fx-drawer-backdrop';
+    drawerBackdrop.hidden = true;
+    drawerEl = document.createElement('aside');
+    drawerEl.className = 'fx-drawer';
+    drawerEl.id = 'fx-drawer';
+    drawerEl.setAttribute('role', 'dialog');
+    drawerEl.setAttribute('aria-modal', 'true');
+    drawerEl.setAttribute('aria-labelledby', 'fx-drawer-title');
+    drawerEl.hidden = true;
+    drawerEl.innerHTML =
+      '<div class="fx-drawer-head">' +
+        '<div class="fx-drawer-head-copy">' +
+          '<p class="fx-drawer-kicker" id="fx-drawer-kicker"></p>' +
+          '<h2 class="fx-drawer-title" id="fx-drawer-title"></h2>' +
+        '</div>' +
+        '<button type="button" class="icon-btn" id="fx-drawer-close" aria-label="Close capability details"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>' +
+      '</div>' +
+      '<div class="fx-drawer-body" id="fx-drawer-body"></div>';
+    document.body.appendChild(drawerBackdrop);
+    document.body.appendChild(drawerEl);
+
+    drawerBackdrop.addEventListener('click', function () { closeDrawer(true); });
+    drawerEl.querySelector('#fx-drawer-close').addEventListener('click', function () { closeDrawer(true); });
+    drawerEl.addEventListener('keydown', function (e) { if (e.key === 'Tab') trapFocus(drawerEl, e); });
+  }
+
+  function drawerSection(kicker, text) {
+    var sec = document.createElement('section');
+    sec.className = 'fx-drawer-sec';
+    var k = document.createElement('p');
+    k.className = 'fx-drawer-kicker2';
+    k.textContent = kicker;
+    sec.appendChild(k);
+    var p = document.createElement('p');
+    p.className = 'fx-drawer-text';
+    p.textContent = text;
+    sec.appendChild(p);
+    return sec;
+  }
+
+  function openDrawer(cap, trigger) {
+    ensureDrawer();
+    drawerCap = cap;
+    drawerTrigger = trigger && trigger.focus ? trigger : null;
+    drawerViaHistory = !!(lastHash && lastHash.charAt(0) === '#' && lastHash !== window.location.hash);
+    drawerOpen = true;
+
+    var kicker = drawerEl.querySelector('#fx-drawer-kicker');
+    kicker.textContent = (CAP_MANIFEST.groups[cap.group] || cap.group) + ' · ' + ((CAP_MANIFEST.maturity && CAP_MANIFEST.maturity[cap.maturity]) || cap.maturity);
+    drawerEl.querySelector('#fx-drawer-title').textContent = cap.name;
+
+    var body = drawerEl.querySelector('#fx-drawer-body');
+    body.innerHTML = '';
+
+    var badges = document.createElement('div');
+    badges.className = 'fx-drawer-badges';
+    var mat = document.createElement('span');
+    mat.className = 'fx-mat fx-mat-inline';
+    mat.setAttribute('data-mat', cap.maturity);
+    mat.textContent = (CAP_MANIFEST.maturity && CAP_MANIFEST.maturity[cap.maturity]) || cap.maturity;
+    badges.appendChild(mat);
+    var currentVersion = ((releases && releases.tui && releases.tui.version) || (CAP_MANIFEST.release || '')).replace(/^v/, '');
+    if (cap.introduced_in === currentVersion) {
+      var nb = document.createElement('span');
+      nb.className = 'fx-new fx-new-inline';
+      nb.textContent = 'new · ' + cap.introduced_in;
+      badges.appendChild(nb);
+    }
+    if (cap.featured_top12) {
+      var fb = document.createElement('span');
+      fb.className = 'fx-flag';
+      fb.textContent = 'Featured pillar';
+      badges.appendChild(fb);
+    }
+    body.appendChild(badges);
+
+    if (cap.problem) body.appendChild(drawerSection('User problem', cap.problem));
+    body.appendChild(drawerSection('What it is', cap.what_it_is));
+    body.appendChild(drawerSection('Why it matters', cap.why_it_matters));
+
+    var use = document.createElement('section');
+    use.className = 'fx-drawer-sec';
+    var uk = document.createElement('p');
+    uk.className = 'fx-drawer-kicker2';
+    uk.textContent = 'Use it';
+    use.appendChild(uk);
+    var list = document.createElement('div');
+    list.className = 'fx-drawer-cmds';
+    (cap.commands || []).forEach(function (c) {
+      var row = document.createElement('div');
+      row.className = 'fx-drawer-cmd';
+      var code = document.createElement('code');
+      code.textContent = c;
+      row.appendChild(code);
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'fx-cmd-copy';
+      btn.setAttribute('data-copy-text', c);
+      btn.setAttribute('aria-label', 'Copy command: ' + c);
+      btn.innerHTML = icon('copy', 'icon-sm');
+      row.appendChild(btn);
+      list.appendChild(row);
+    });
+    use.appendChild(list);
+    body.appendChild(use);
+
+    var meta = document.createElement('dl');
+    meta.className = 'fx-drawer-meta';
+    function metaRow(dt, dd) {
+      var row = document.createElement('div');
+      var t = document.createElement('dt');
+      t.textContent = dt;
+      var d = document.createElement('dd');
+      d.textContent = dd;
+      row.appendChild(t); row.appendChild(d);
+      meta.appendChild(row);
+    }
+    metaRow('Available in', (cap.surfaces || []).join(' · '));
+    metaRow('Group', CAP_MANIFEST.groups[cap.group] || cap.group);
+    if (cap.introduced_in) metaRow('Introduced in', 'v' + cap.introduced_in);
+    else metaRow('Introduced in', 'before v0.24.0');
+    body.appendChild(meta);
+
+    if (cap.limitations) {
+      var lim = document.createElement('section');
+      lim.className = 'fx-drawer-limit';
+      var lk = document.createElement('p');
+      lk.className = 'fx-drawer-kicker2';
+      lk.innerHTML = icon('alert', 'icon-sm') + ' Limitations';
+      lim.appendChild(lk);
+      var lp = document.createElement('p');
+      lp.className = 'fx-drawer-text';
+      lp.textContent = cap.limitations;
+      lim.appendChild(lp);
+      body.appendChild(lim);
+    }
+
+    var foot = document.createElement('div');
+    foot.className = 'fx-drawer-foot';
+    var ref = document.createElement('a');
+    ref.href = '#features/' + cap.id;
+    ref.setAttribute('data-fx-refjump', cap.id);
+    ref.innerHTML = 'View in full Reference <svg class="icon icon-sm" aria-hidden="true"><use href="#i-arrow-right"/></svg>';
+    foot.appendChild(ref);
+    body.appendChild(foot);
+
+    drawerBackdrop.hidden = false;
+    drawerEl.hidden = false;
+    document.body.style.overflow = 'hidden';
+    var closeBtn = drawerEl.querySelector('#fx-drawer-close');
+    if (closeBtn) closeBtn.focus();
+  }
+
+  function closeDrawer(returnFocus, viaHistoryNavigation) {
+    if (!drawerOpen) return;
+    drawerOpen = false;
+    var cap = drawerCap;
+    drawerCap = null;
+    if (drawerEl) drawerEl.hidden = true;
+    if (drawerBackdrop) drawerBackdrop.hidden = true;
+    document.body.style.overflow = '';
+    if (returnFocus && drawerTrigger && drawerTrigger.focus) drawerTrigger.focus();
+    drawerTrigger = null;
+    if (cap && !viaHistoryNavigation) {
+      var capHash = '#features/' + cap.id;
+      if (window.location.hash === capHash) {
+        if (drawerViaHistory && window.history && window.history.length > 1) {
+          window.history.back(); /* hashchange → render → anchor scroll */
+        } else {
+          window.history.replaceState(null, '', '#features/catalog');
+          pendingScroll = null;
+          handleAnchorState(parseHash());
+        }
+      }
     }
   }
 
@@ -598,9 +840,17 @@
     var visible = 0;
     for (var i = 0; i < cards.length; i++) {
       var card = cards[i];
-      var inGroup = fxFilter.group === 'all' || card.getAttribute('data-fx-group') === fxFilter.group;
+      var mode = fxFilter.group;
+      var inMode;
+      if (mode === 'all') inMode = true;
+      else if (mode === 'featured') inMode = card.getAttribute('data-fx-featured') === 'true';
+      else if (mode === 'new') inMode = card.getAttribute('data-fx-new') === 'true';
+      else inMode = card.getAttribute('data-fx-group') === mode;
+      /* Anti-lockout: a typed query always searches every capability —
+         matches are never hidden behind the featured cap. */
+      if (fxFilter.query) inMode = true;
       var hay = (card.textContent + ' ' + (card.getAttribute('data-fx-search') || '')).toLowerCase();
-      var matches = inGroup && (!fxFilter.query || hay.indexOf(fxFilter.query) !== -1);
+      var matches = inMode && (!fxFilter.query || hay.indexOf(fxFilter.query) !== -1);
       card.classList.toggle('filter-hidden', !matches);
       if (matches) visible++;
     }
@@ -612,7 +862,9 @@
       } else {
         var parts = ['Showing ' + visible + ' of ' + total + ' capabilities'];
         if (fxFilter.query) parts.push('matching "' + fxFilter.raw + '"');
-        if (fxFilter.group !== 'all') parts.push('in the selected group');
+        if (fxFilter.group === 'featured') parts.push('among the featured twelve');
+        else if (fxFilter.group === 'new') parts.push('among capabilities new in this release');
+        else if (fxFilter.group !== 'all') parts.push('in the selected group');
         count.textContent = parts.join(' ') + '.';
       }
     }
@@ -1090,6 +1342,7 @@
         e.preventDefault();
         if (searchOverlay.hidden) openSearch(); else closeSearch(true);
       } else if (e.key === 'Escape') {
+        closeDrawer(true);
         closeSearch(true);
         closeThemeMenu(true);
         closeMobileNav(true);
@@ -1134,6 +1387,18 @@
     });
     mobileNav.addEventListener('keydown', function (e) {
       if (e.key === 'Tab') trapFocus(mobileNav.querySelector('.mobile-nav-panel'), e);
+    });
+
+    // "View in full Reference" inside the drawer: close it and scroll to the
+    // capability's reference entry instead of reopening the drawer.
+    document.addEventListener('click', function (e) {
+      var ref = e.target.closest('[data-fx-refjump]');
+      if (!ref) return;
+      e.preventDefault();
+      var anchor = ref.getAttribute('data-fx-refjump');
+      pendingScroll = anchor;
+      closeDrawer(false, true);
+      navigate('features', anchor);
     });
 
     document.addEventListener('click', function (e) {
@@ -1408,6 +1673,7 @@
       themeMode = saved === 'light' || saved === 'dark' || saved === 'system' ? saved : 'system';
     } catch (e) { themeMode = 'system'; }
     applyThemeMode(themeMode, false);
+    ensureDrawer();
     wireGlobalEvents();
     loadCapabilities().then(function () {
       searchItems = buildSearchIndex();

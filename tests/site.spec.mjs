@@ -262,6 +262,137 @@ test.describe('release data', () => {
   });
 });
 
+test.describe('capability drawer and catalog filters', () => {
+  // The features page renders 84 manifest-driven cards; these tests share a
+  // single-threaded static server with every other worker, so give each the
+  // slow multiplier like the axe suite does.
+  test.slow();
+
+  test('clicking a card opens the drawer with the deep-link hash and full metadata', async ({ page }) => {
+    await open(page, 'features', 'dark');
+    await page.locator('#fx-catalog .fx-card').first().waitFor();
+    await page.locator('[data-fx-id="feat-council-mode"]').click();
+
+    await expect(page).toHaveURL(/#features\/feat-council-mode$/);
+    const drawer = page.locator('#fx-drawer');
+    await expect(drawer).toBeVisible();
+    await expect(drawer).toHaveAttribute('role', 'dialog');
+    await expect(drawer).toHaveAttribute('aria-modal', 'true');
+    await expect(page.locator('#fx-drawer-title')).toHaveText('Council mode');
+    await expect(drawer).toContainText('User problem');
+    await expect(drawer).toContainText('What it is');
+    await expect(drawer).toContainText('Why it matters');
+    await expect(drawer).toContainText('Use it');
+    await expect(drawer).toContainText('Limitations');
+    await expect(drawer).toContainText('View in full Reference');
+  });
+
+  test('drawer closes on Escape, restores the hash and refocuses the card', async ({ page }) => {
+    await open(page, 'features', 'dark');
+    await page.locator('#fx-catalog .fx-card').first().waitFor();
+    const card = page.locator('[data-fx-id="feat-council-mode"]');
+    await card.click();
+    await expect(page.locator('#fx-drawer')).toBeVisible();
+    await expect(page.locator('#fx-drawer-close')).toBeFocused();
+
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#fx-drawer')).toBeHidden();
+    await expect(page.locator('#fx-drawer-backdrop')).toBeHidden();
+    await expect(card).toBeFocused();
+    await expect(page).toHaveURL(/#features(#catalog)?$/);
+  });
+
+  test('drawer closes on backdrop click', async ({ page }) => {
+    await open(page, 'features', 'dark');
+    await page.locator('#fx-catalog .fx-card').first().waitFor();
+    await page.locator('[data-fx-id="feat-council-mode"]').click();
+    await expect(page.locator('#fx-drawer')).toBeVisible();
+    await page.locator('#fx-drawer-backdrop').click({ position: { x: 10, y: 10 } });
+    await expect(page.locator('#fx-drawer')).toBeHidden();
+  });
+
+  test('browser Back closes the drawer and keeps the page state', async ({ page }) => {
+    await open(page, 'features', 'dark');
+    await page.locator('#fx-catalog .fx-card').first().waitFor();
+    await page.locator('[data-fx-id="feat-result-ledger"]').click();
+    await expect(page.locator('#fx-drawer')).toBeVisible();
+
+    await page.goBack();
+    await expect(page.locator('#fx-drawer')).toBeHidden();
+    await expect(page.locator('#app h1')).toContainText('Every capability');
+  });
+
+  test('a deep link straight into a capability opens the drawer', async ({ page }) => {
+    await page.goto('/axym-release/#features/feat-zero-trust-mcp-tool-access', { waitUntil: 'networkidle' });
+    await expect(page.locator('#fx-drawer')).toBeVisible();
+    await expect(page.locator('#fx-drawer-title')).toHaveText('Zero-trust MCP firewall');
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#fx-drawer')).toBeHidden();
+    await expect(page).toHaveURL(/#features\/catalog$/);
+  });
+
+  test('drawer reference link scrolls to the full reference entry', async ({ page }) => {
+    await open(page, 'features', 'dark');
+    await page.locator('#fx-catalog .fx-card').first().waitFor();
+    await page.locator('[data-fx-id="feat-result-ledger"]').click();
+    await expect(page.locator('#fx-drawer')).toBeVisible();
+    await page.locator('#fx-drawer [data-fx-refjump]').click();
+
+    await expect(page.locator('#fx-drawer')).toBeHidden();
+    await expect(page).toHaveURL(/#features\/feat-result-ledger$/);
+    await expect(page.locator('h3#feat-result-ledger')).toBeInViewport();
+  });
+
+  test('card command copy button copies without navigating', async ({ page }) => {
+    await open(page, 'features', 'dark');
+    await page.locator('#fx-catalog .fx-card').first().waitFor();
+    const before = page.url();
+    await page.locator('[data-fx-id="feat-council-mode"] .fx-cmd-copy').click();
+    await expect(page.locator('#toast')).toHaveClass(/show/);
+    await expect(page.locator('#toast')).toContainText(/copied/i);
+    expect(page.url()).toBe(before);
+    await expect(page.locator('#fx-drawer')).toBeHidden();
+  });
+
+  test('Featured and New in 0.24 pills filter the catalog with live counts', async ({ page }) => {
+    await open(page, 'features', 'dark');
+    await page.locator('#fx-catalog .fx-card').first().waitFor();
+
+    const featured = page.locator('[data-fx-pill="featured"]');
+    await expect(featured).toContainText('Featured');
+    await featured.click();
+    await expect(featured).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('#fx-catalog .fx-card:not(.filter-hidden)')).toHaveCount(12);
+    await expect(page.locator('#fx-count')).toContainText('featured twelve');
+
+    const fresh = page.locator('[data-fx-pill="new"]');
+    await expect(fresh).toContainText('New in 0.24');
+    await fresh.click();
+    await expect(fresh).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('#fx-catalog .fx-card:not(.filter-hidden)')).toHaveCount(19);
+    await expect(page.locator('#fx-count')).toContainText('new in this release');
+
+    await page.locator('[data-fx-pill="all"]').click();
+    await expect(page.locator('#fx-catalog .fx-card:not(.filter-hidden)')).toHaveCount(84);
+  });
+
+  test('searching while a capped pill is active searches every capability', async ({ page }) => {
+    await open(page, 'features', 'dark');
+    await page.locator('#fx-catalog .fx-card').first().waitFor();
+    await page.locator('[data-fx-pill="featured"]').click();
+    await expect(page.locator('#fx-catalog .fx-card:not(.filter-hidden)')).toHaveCount(12);
+
+    await page.locator('#feature-filter').fill('maestro');
+    const visible = page.locator('#fx-catalog .fx-card:not(.filter-hidden)');
+    await expect(visible.first()).toBeVisible();
+    const count = await visible.count();
+    expect(count).toBeGreaterThan(0);
+    expect(count).toBeLessThan(84);
+    await expect(page.locator('#fx-count')).toContainText('matching "maestro"');
+    await expect(page.locator('#fx-catalog [data-fx-id="tui-device-bridge"]')).toBeVisible();
+  });
+});
+
 test.describe('responsive layout', () => {
   const widths = [320, 390, 768, 1024, 1440];
   for (const width of widths) {
