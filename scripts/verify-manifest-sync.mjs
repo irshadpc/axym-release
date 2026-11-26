@@ -128,9 +128,11 @@ for (const c of caps) {
 check('every capability carries complete REV3 Contract A metadata', schemaOk, schemaIssues.slice(0, 4).join(' | '));
 check('every capability group is declared', caps.every((c) => (manifest.groups || {})[c.group]));
 
-/* Reference anchors: every id must resolve to a heading in the full reference. */
-const missingAnchors = caps.filter((c) => !new RegExp(`id="${c.id}"`).test(content)).map((c) => c.id);
-check('every capability id has a matching reference anchor in content.js', missingAnchors.length === 0, missingAnchors.join(', '));
+/* REV3: the reference prose wall is replaced by the manifest + detail drawer. */
+check('content.js no longer ships a static reference prose wall (drawer replaces it)',
+  !/class="fx-prose" id="reference"/.test(content));
+check('capability details come from the manifest-driven drawer, not static copy',
+  app.includes('function openDrawer') && app.includes("fetch('./data/capabilities.manifest.json')"));
 
 /* ------------------------------------------------------- Contract B (12) -- */
 process.stdout.write('\n[b] Contract B — the twelve flagship pillars\n');

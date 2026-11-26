@@ -97,14 +97,22 @@ test.describe('routing and content', () => {
     await expect(page.locator('.docs-toc')).toBeVisible();
   });
 
-  test('features capability tour switches chapters accessibly', async ({ page }) => {
+  test('features page renders the calm three-band skeleton (REV3)', async ({ page }) => {
     await open(page, 'features', 'dark');
-    const tab = page.locator('#ft-tab-parallel');
-    await expect(tab).toBeVisible();
-    await tab.click();
-    await expect(tab).toHaveAttribute('aria-selected', 'true');
-    await expect(page.locator('#ft-panel-parallel')).toBeVisible();
-    await expect(page.locator('#ft-panel-turn')).toBeHidden();
+    await expect(page.locator('.fx-hero-calm')).toBeVisible();
+    await expect(page.locator('.fx-hero-calm h1')).toContainText('Build with autonomy.');
+    await expect(page.locator('#install-command')).toContainText('curl -fLO');
+    await expect(page.locator('#story-root')).toBeVisible();
+    await expect(page.locator('.fx-localnav a[data-fx-spy="how-it-works"]')).toContainText('How it works');
+    await expect(page.locator('.fx-localnav a[data-fx-spy="catalog"]')).toContainText('Command index');
+    await expect(page.locator('.fx-localnav a[data-fx-spy="start-here"]')).toContainText('Start here');
+    await expect(page.locator('.fx-meta-line')).toContainText('TELEMETRY · NONE');
+  });
+
+  test('features page ships zero box grids (REV3 anti-box rule)', async ({ page }) => {
+    await open(page, 'features', 'dark');
+    await expect(page.locator('.fx-bento, .ba-grid, .fx-bento-card, .ba-card')).toHaveCount(0);
+    await expect(page.locator('#reference.fx-prose, .fx-prose')).toHaveCount(0);
   });
 
   test('architecture shows the docs side navigation and on-this-page TOC', async ({ page }) => {
@@ -186,9 +194,9 @@ test.describe('navigation and interaction', () => {
     const overlay = page.locator('#search-overlay');
     await expect(overlay).toBeVisible();
 
-    await page.locator('#search-input').fill('cache');
+    await page.locator('#search-input').fill('council');
     await expect(page.locator('#search-results .search-result').first()).toBeVisible();
-    await expect(page.locator('#search-results')).toContainText(/cache/i);
+    await expect(page.locator('#search-results')).toContainText(/council/i);
 
     await page.keyboard.press('Escape');
     await expect(overlay).toBeHidden();
@@ -285,7 +293,7 @@ test.describe('capability drawer and catalog filters', () => {
     await expect(drawer).toContainText('Why it matters');
     await expect(drawer).toContainText('Use it');
     await expect(drawer).toContainText('Limitations');
-    await expect(drawer).toContainText('View in full Reference');
+    await expect(drawer).toContainText('Featured pillar');
   });
 
   test('drawer closes on Escape, restores the hash and refocuses the card', async ({ page }) => {
@@ -323,7 +331,7 @@ test.describe('capability drawer and catalog filters', () => {
 
     await page.goBack();
     await expect(page.locator('#fx-drawer')).toBeHidden();
-    await expect(page.locator('#app h1')).toContainText('Every capability');
+    await expect(page.locator('#app h1')).toContainText('Build with autonomy');
   });
 
   test('a deep link straight into a capability opens the drawer', async ({ page }) => {
@@ -335,17 +343,15 @@ test.describe('capability drawer and catalog filters', () => {
     await expect(page).toHaveURL(/#features\/catalog$/);
   });
 
-  test('drawer reference link scrolls to the full reference entry', async ({ page }) => {
+  test('drawer keeps search state and scroll position after closing', async ({ page }) => {
     await open(page, 'features', 'dark');
     await page.locator('#fx-catalog .fx-card').first().waitFor();
     await page.locator('[data-fx-pill="all"]').click();
     await page.locator('[data-fx-id="feat-result-ledger"]').click();
     await expect(page.locator('#fx-drawer')).toBeVisible();
-    await page.locator('#fx-drawer [data-fx-refjump]').click();
-
+    await page.keyboard.press('Escape');
     await expect(page.locator('#fx-drawer')).toBeHidden();
-    await expect(page).toHaveURL(/#features\/feat-result-ledger$/);
-    await expect(page.locator('h3#feat-result-ledger')).toBeInViewport();
+    await expect(page.locator('#feature-filter')).toHaveCount(1);
   });
 
   test('card command copy button copies without navigating', async ({ page }) => {
@@ -415,19 +421,12 @@ test.describe('hero positioning and failure-mode strip', () => {
     await expect(page.locator('[data-release-version="desktop-cross"]')).toHaveText('v12.16.0');
   });
 
-  test('four before/after failure-mode cards link into capability drawers', async ({ page }) => {
+  test('start here is a plain numbered list with a copyable first session', async ({ page }) => {
     await open(page, 'features', 'dark');
-    const cards = page.locator('.ba-card');
-    await expect(cards).toHaveCount(4);
-    await expect(cards.nth(0)).toContainText('Silent hangs');
-    await expect(cards.nth(0)).toContainText('Calm-UX anti-hang guard');
-    await expect(cards.nth(3)).toContainText('Blind mobile builds');
-
-    await cards.nth(2).click();
-    await expect(page).toHaveURL(/#features\/feat-zero-trust-mcp-tool-access$/);
-    await expect(page.locator('#fx-drawer-title')).toHaveText('Zero-trust MCP firewall');
-    await page.keyboard.press('Escape');
-    await expect(page.locator('#fx-drawer')).toBeHidden();
+    const steps = page.locator('.steps-plain li');
+    await expect(steps).toHaveCount(5);
+    await expect(steps.nth(0)).toContainText('Confirm your tools');
+    await expect(page.locator('#feat-first-session')).toContainText('axym doctor');
   });
 });
 
@@ -455,8 +454,8 @@ test.describe('outcome lenses and featured-default view', () => {
     await open(page, 'features/catalog', 'dark');
     await page.locator('#fx-catalog .fx-card').first().waitFor();
 
-    for (const lens of ['build-verify', 'parallel-runs', 'mobile-remote', 'security-firewall', 'context-runtime']) {
-      await expect(page.locator(`[data-fx-pill="lens:${lens}"]`)).toBeVisible();
+    for (const tab of ['core-workflow', 'parallel-worktrees', 'mobile-remote', 'security-proof', 'runtime-flow']) {
+      await expect(page.locator(`[data-fx-pill="lens:${tab}"]`)).toBeVisible();
     }
 
     await page.locator('[data-fx-pill="lens:mobile-remote"]').click();
@@ -465,9 +464,9 @@ test.describe('outcome lenses and featured-default view', () => {
     const visible = page.locator('#fx-catalog .fx-card:not(.filter-hidden)');
     await expect(visible.first()).toBeVisible();
     await expect(page.locator('#fx-catalog [data-fx-id="tui-device-bridge"]')).not.toHaveClass(/filter-hidden/);
-    await expect(page.locator('#fx-count')).toContainText('Mobile Dev Platform & Remote');
+    await expect(page.locator('#fx-count')).toContainText('Mobile & Remote');
 
-    await page.locator('[data-fx-pill="lens:security-firewall"]').click();
+    await page.locator('[data-fx-pill="lens:security-proof"]').click();
     await expect(page.locator('#fx-catalog [data-fx-id="feat-zero-trust-mcp-tool-access"]')).not.toHaveClass(/filter-hidden/);
   });
 

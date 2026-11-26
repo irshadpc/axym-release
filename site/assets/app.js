@@ -473,8 +473,6 @@
   var fxObserver = null;
   var fxSpyObserver = null;
   var fxBootTimer = null;
-  var fxTheaterTimer = null;
-  var fxTheaterStopped = false;
   var lastHash = null;
 
   /* --------------------------------------------- capability catalog (A) -- */
@@ -1045,15 +1043,6 @@
       body.appendChild(lim);
     }
 
-    var foot = document.createElement('div');
-    foot.className = 'fx-drawer-foot';
-    var ref = document.createElement('a');
-    ref.href = '#features/' + cap.id;
-    ref.setAttribute('data-fx-refjump', cap.id);
-    ref.innerHTML = 'View in full Reference <svg class="icon icon-sm" aria-hidden="true"><use href="#i-arrow-right"/></svg>';
-    foot.appendChild(ref);
-    body.appendChild(foot);
-
     drawerBackdrop.hidden = false;
     drawerEl.hidden = false;
     document.body.style.overflow = 'hidden';
@@ -1121,7 +1110,6 @@
 
   function fxClearTimers() {
     if (fxBootTimer) { clearInterval(fxBootTimer); fxBootTimer = null; }
-    if (fxTheaterTimer) { clearInterval(fxTheaterTimer); fxTheaterTimer = null; }
   }
 
   /* The catalog defaults to the twelve flagship pillars; everything else is
@@ -1260,7 +1248,6 @@
     fxClearTimers();
     if (fxObserver) { fxObserver.disconnect(); fxObserver = null; }
     if (fxSpyObserver) { fxSpyObserver.disconnect(); fxSpyObserver = null; }
-    fxTheaterStopped = false;
     fxFilter.query = '';
     fxFilter.raw = '';
     fxFilter.group = FX_DEFAULT_GROUP;
@@ -1293,35 +1280,6 @@
       for (var k = 0; k < targets.length; k++) fxObserver.observe(targets[k]);
     }
 
-    // Theater auto-advance: rotate chapters while visible; the first pointer
-    // or keyboard interaction inside the theater stops it for good.
-    var rail = page.querySelector('[data-tabs="feature-theater"]');
-    if (rail && !reduced && 'IntersectionObserver' in window) {
-      var theaterObserver = new IntersectionObserver(function (entries) {
-        for (var n = 0; n < entries.length; n++) {
-          if (entries[n].isIntersecting && !fxTheaterStopped && !fxTheaterTimer) {
-            rail.classList.add('fx-auto');
-            fxTheaterTimer = setInterval(function () {
-              if (fxTheaterStopped || !rail.isConnected) { clearInterval(fxTheaterTimer); fxTheaterTimer = null; rail.classList.remove('fx-auto'); return; }
-              var tabs = rail.querySelectorAll('[data-tab]');
-              var next = null;
-              for (var t = 0; t < tabs.length; t++) {
-                if (tabs[t].getAttribute('aria-selected') === 'true') {
-                  next = tabs[(t + 1) % tabs.length];
-                  break;
-                }
-              }
-              if (next) next.click();
-            }, 6500);
-          } else if (!entries[n].isIntersecting && fxTheaterTimer) {
-            clearInterval(fxTheaterTimer);
-            fxTheaterTimer = null;
-            rail.classList.remove('fx-auto');
-          }
-        }
-      }, { threshold: 0.25 });
-      theaterObserver.observe(rail);
-    }
 
     var links = page.querySelectorAll('.fx-localnav a[data-fx-spy]');
     if (links.length && 'IntersectionObserver' in window) {
@@ -1725,18 +1683,6 @@
       if (e.key === 'Tab') trapFocus(mobileNav.querySelector('.mobile-nav-panel'), e);
     });
 
-    // "View in full Reference" inside the drawer: close it and scroll to the
-    // capability's reference entry instead of reopening the drawer.
-    document.addEventListener('click', function (e) {
-      var ref = e.target.closest('[data-fx-refjump]');
-      if (!ref) return;
-      e.preventDefault();
-      var anchor = ref.getAttribute('data-fx-refjump');
-      pendingScroll = anchor;
-      closeDrawer(false, true);
-      navigate('features', anchor);
-    });
-
     document.addEventListener('click', function (e) {
       var docsBtn = e.target.closest('#docs-menu-btn');
       if (docsBtn) { openMobileNav(); return; }
@@ -1788,17 +1734,6 @@
       copyText(cmdCopy.getAttribute('data-copy-text') || '', 'Command copied', cmdCopy);
     });
 
-    // Any pointer or keyboard interaction inside the capability theater
-    // permanently stops its auto-advance; the visitor takes over.
-    function fxStopTheater(e) {
-      if (e.target.closest && e.target.closest('[data-tabs="feature-theater"]')) {
-        fxTheaterStopped = true;
-        var rail = document.querySelector('[data-tabs="feature-theater"]');
-        if (rail) rail.classList.remove('fx-auto');
-      }
-    }
-    document.addEventListener('pointerdown', fxStopTheater, true);
-    document.addEventListener('keydown', fxStopTheater, true);
 
     // Reading progress for the showcase page: one rAF-throttled scroll write.
     var fxProgressTicking = false;
