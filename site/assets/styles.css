@@ -718,6 +718,17 @@ html[data-theme="dark"] .btn-danger { color: var(--p-graphite-1000); }
   margin-bottom: 1.8rem;
 }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.9rem; }
+.hero-strip {
+  margin: 0 0 0.55rem;
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.hero-strip-lead { color: var(--brand); font-weight: 700; }
+.hero-meta-versions { margin-top: 0.55rem; }
+.hero-meta-versions li { color: var(--text-muted); }
+.hero-meta-versions li:first-child { color: var(--text-secondary); }
 .hero-meta {
   display: flex;
   flex-wrap: wrap;
@@ -2780,6 +2791,58 @@ tr.filter-hidden { display: none; }
 .fx-proof-verify-cmd code { color: var(--brand); font-family: var(--font-mono); font-size: 0.72rem; white-space: nowrap; }
 .fx-proof-verify-cmd .fx-cmd-copy { color: var(--text-muted); }
 .fx-proof-verify-cmd .fx-cmd-copy:hover { color: var(--brand); }
+
+/* ------------------------------------------------- before/after strip -- */
+.ba-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+.ba-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  overflow: hidden;
+  transition: border-color var(--dur-hover) var(--ease-out), transform var(--dur-hover) var(--ease-out);
+}
+.ba-card:hover { border-color: var(--border-interactive); transform: translateY(-2px); }
+.ba-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.ba-before, .ba-after { padding: 1rem 1.15rem; }
+.ba-before { background: var(--canvas-alt); }
+.ba-after {
+  border-top: 1px solid var(--border-subtle);
+  background: color-mix(in srgb, var(--brand) 4%, var(--surface));
+  flex: 1;
+}
+.ba-kicker {
+  margin: 0 0 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.ba-before .ba-kicker { color: var(--text-muted); }
+.ba-after .ba-kicker { color: var(--brand); }
+.ba-before b, .ba-after b {
+  display: block;
+  margin-bottom: 0.3rem;
+  color: var(--text);
+  font-size: 0.895rem;
+  font-weight: 620;
+  letter-spacing: -0.015em;
+}
+.ba-before p:not(.ba-kicker), .ba-after p:not(.ba-kicker) {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.775rem;
+  line-height: 1.55;
+}
+@media (max-width: 900px) {
+  .ba-grid { grid-template-columns: minmax(0, 1fr); }
+}
 
 /* ------------------------------------------------ capability drawer -- */
 .fx-drawer-backdrop {

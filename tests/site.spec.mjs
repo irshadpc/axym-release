@@ -393,6 +393,39 @@ test.describe('capability drawer and catalog filters', () => {
   });
 });
 
+test.describe('hero positioning and failure-mode strip', () => {
+  test.slow();
+
+  test('home hero demotes the count into the stat strip and keeps versions hydrated', async ({ page }) => {
+    await open(page, 'home', 'dark');
+    await expect(page.locator('.hero-strip')).toContainText('Keep your CLIs.');
+    const strip = page.locator('.hero-meta').first();
+    await expect(strip).toContainText('0 API keys');
+    await expect(strip).toContainText('Parallel worktrees');
+    await expect(strip).toContainText('Local MCP firewall');
+    await expect(strip).toContainText('Hash-chained proof');
+    await expect(strip).toContainText('84 capabilities');
+    await expect(page.locator('[data-release-version="tui"]')).toHaveText('v0.24.0');
+    await expect(page.locator('[data-release-version="desktop"]')).toHaveText('v12.17.0');
+    await expect(page.locator('[data-release-version="desktop-cross"]')).toHaveText('v12.16.0');
+  });
+
+  test('four before/after failure-mode cards link into capability drawers', async ({ page }) => {
+    await open(page, 'features', 'dark');
+    const cards = page.locator('.ba-card');
+    await expect(cards).toHaveCount(4);
+    await expect(cards.nth(0)).toContainText('Silent hangs');
+    await expect(cards.nth(0)).toContainText('Calm-UX anti-hang guard');
+    await expect(cards.nth(3)).toContainText('Blind mobile builds');
+
+    await cards.nth(2).click();
+    await expect(page).toHaveURL(/#features\/feat-zero-trust-mcp-tool-access$/);
+    await expect(page.locator('#fx-drawer-title')).toHaveText('Zero-trust MCP firewall');
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#fx-drawer')).toBeHidden();
+  });
+});
+
 test.describe('responsive layout', () => {
   const widths = [320, 390, 768, 1024, 1440];
   for (const width of widths) {

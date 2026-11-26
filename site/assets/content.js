@@ -16,13 +16,21 @@ window.AXYM_PAGES = {
     <div class="hero-copy">
       <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Local-first autonomous engineering</p>
       <h1>Build with autonomy.<br><em>Ship with confidence.</em></h1>
-      <p class="hero-lead">Local-first intelligence. Governed execution. Give Axym a goal in plain English and it plans, implements, reviews, secures and tests the work — with human approval gates and an evidence trail for every decision.</p>
+      <p class="hero-lead">Keep the agent CLIs you already use — Axym adds the engineering system around them: governed pipelines and parallel worktrees, an iOS/Android development platform, a zero-trust MCP firewall and a context-and-cost brain that never stops learning. Every claim is backed by evidence on your machine.</p>
       <div class="hero-actions">
         <a class="btn btn-primary btn-lg" href="#releases">Download Axym <svg class="icon" aria-hidden="true"><use href="#i-download"/></svg></a>
         <a class="btn btn-secondary btn-lg" href="#quickstart">Read the docs <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
         <a class="btn btn-tertiary btn-lg" href="#architecture">View architecture</a>
       </div>
+      <p class="hero-strip"><span class="hero-strip-lead">Keep your CLIs.</span> Add proof:</p>
       <ul class="hero-meta">
+        <li>0 API keys</li>
+        <li>Parallel worktrees</li>
+        <li>Local MCP firewall</li>
+        <li>Hash-chained proof</li>
+        <li><span data-capability-count>84</span> capabilities</li>
+      </ul>
+      <ul class="hero-meta hero-meta-versions">
         <li><span class="ok" aria-hidden="true">●</span> TUI <span class="mono" data-release-version="tui">v0.24.0</span></li>
         <li>Desktop <span class="mono" data-release-version="desktop">v12.17.0</span> macOS · <span class="mono" data-release-version="desktop-cross">v12.16.0</span> Linux/Windows</li>
         <li>MIT licensed</li>
@@ -1239,6 +1247,34 @@ policy:
           <p class="fx-proof-verify-title">Verify it yourself in 60 seconds</p>
           <div class="fx-proof-verify-cmds" id="fx-proof-verify-cmds"><p class="muted small">Loading verify commands…</p></div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="failure-modes">
+    <div class="container">
+      <div class="section-head" data-fx-reveal>
+        <p class="section-kicker">Four failure modes, answered</p>
+        <h2>What goes wrong without it. What Axym does instead.</h2>
+        <p>Each card is a failure mode every team knows, paired with the capability that answers it — click through to the drawer for the honest version, limitations included.</p>
+      </div>
+      <div class="ba-grid" data-fx-reveal>
+        <a class="ba-card" href="#features/feat-anti-hang-guard">
+          <div class="ba-before"><p class="ba-kicker">Without Axym</p><b>Silent hangs &amp; runaway retry loops</b><p>The session looks alive while a tool call wedges; the same failing command burns tokens in a loop.</p></div>
+          <div class="ba-after"><p class="ba-kicker">With Axym</p><b>Calm-UX anti-hang guard + LinUCB failover</b><p>The hang is classified, drained and escalated as a typed error; identical failures hit a visible circuit breaker; a stalling provider is benched while cost-aware routing moves on.</p></div>
+        </a>
+        <a class="ba-card" href="#features/feat-parallel-isolated-runs">
+          <div class="ba-before"><p class="ba-kicker">Without Axym</p><b>Branch collisions across parallel agents</b><p>Two agents, one working tree: staged files mix, events interleave, closing a terminal orphans live panes.</p></div>
+          <div class="ba-after"><p class="ba-kicker">With Axym</p><b>Isolated /runs worktrees + mux panes</b><p>Each run gets a linked worktree and live tmux/zellij/wezterm panes with kill-before-close semantics; integration stays a separate, explicit apply.</p></div>
+        </a>
+        <a class="ba-card" href="#features/feat-zero-trust-mcp-tool-access">
+          <div class="ba-before"><p class="ba-kicker">Without Axym</p><b>Hallucinated “tests passed” &amp; untrusted MCP tools</b><p>A model asserts success nobody measured, while MCP servers read and write far beyond their job.</p></div>
+          <div class="ba-after"><p class="ba-kicker">With Axym</p><b>Fail-closed Result Ledger + local MCP firewall</b><p>Turns end with what actually ran — unverified work is marked UNV, never scored perfect — and MCP tools run under capability-lattice admission with taint tracking and a full audit trail.</p></div>
+        </a>
+        <a class="ba-card" href="#features/tui-device-bridge">
+          <div class="ba-before"><p class="ba-kicker">Without Axym</p><b>Blind mobile builds &amp; manual UI regressions</b><p>“It looked fine on my device” ships; nobody can inspect what the build actually rendered.</p></div>
+          <div class="ba-after"><p class="ba-kicker">With Axym</p><b>/sim + /device visual diff + Maestro + MASVS</b><p>Simulator journeys capture screenshot, hierarchy and schema-v2 design diffs; /qa --maestro and /security --masvs gate store submission instead of hoping.</p></div>
+        </a>
       </div>
     </div>
   </section>
