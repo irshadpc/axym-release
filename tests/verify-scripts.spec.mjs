@@ -69,3 +69,81 @@ test.describe('manifest-sync guardrails (build-level, ADR-0016)', () => {
     await expect(page.locator('#story-root')).toBeAttached();
   });
 });
+
+test.describe('story walkthrough (REV3 Band 2, ADR-0016)', () => {
+  test.slow();
+
+  test('all five chapters start with the honest Illustrative Schematic badge', async ({ page }) => {
+    await page.goto('/axym-release/#features/how-it-works', { waitUntil: 'networkidle' });
+    const chapters = page.locator('.story-rail .story-chapter');
+    await expect(chapters).toHaveCount(5);
+    for (let i = 0; i < 5; i++) {
+      await chapters.nth(i).click();
+      await expect(page.locator('.story-stage .fx-proof-badge')).toHaveText('Illustrative Schematic');
+      await expect(page.locator('.story-stage .fx-proof-badge')).not.toContainText('Verified Recording');
+    }
+  });
+
+  test('chapters switch via the rail and the stage content follows', async ({ page }) => {
+    await page.goto('/axym-release/#features/how-it-works', { waitUntil: 'networkidle' });
+    const rail = page.locator('.story-rail .story-chapter');
+    await expect(rail.nth(0)).toHaveAttribute('aria-current', 'true');
+    await expect(page.locator('.story-stage-body')).toContainText('living repo brain');
+    await rail.nth(1).click();
+    await expect(rail.nth(1)).toHaveAttribute('aria-current', 'true');
+    await expect(rail.nth(0)).toHaveAttribute('aria-current', 'false');
+    await expect(page.locator('.story-stage-body')).toContainText('Two linked worktrees');
+    await rail.nth(3).click();
+    await expect(page.locator('.story-stage-body')).toContainText('simulator journey');
+  });
+
+  test('stage tabs switch Session / Diff / Receipt without a layout jump', async ({ page }) => {
+    await page.goto('/axym-release/#features/how-it-works', { waitUntil: 'networkidle' });
+    const session = page.locator('[data-story-panel="session"]');
+    await expect(session).toBeVisible();
+    await expect(session).toContainText('axym --provider claude');
+    await page.locator('[data-story-view="receipt"]').click();
+    await expect(page.locator('[data-story-panel="receipt"]')).toBeVisible();
+    await expect(session).toBeHidden();
+    await expect(page.locator('[data-story-view="receipt"]')).toHaveAttribute('aria-selected', 'true');
+    await page.locator('[data-story-view="diff"]').click();
+    await expect(page.locator('[data-story-panel="diff"]')).toBeVisible();
+  });
+
+  test('the mobile chapter labels the simulator vs real-device boundary honestly', async ({ page }) => {
+    await page.goto('/axym-release/#features/how-it-works', { waitUntil: 'networkidle' });
+    await page.locator('.story-rail .story-chapter').nth(3).click();
+    await expect(page.locator('.story-stage-body')).toContainText('T-050 hardware journey, which is partial');
+    await page.locator('[data-story-view="receipt"]').click();
+    await expect(page.locator('.story-stage-body')).toContainText('UNV · real-device (hardware) certification');
+  });
+
+  test('chapter command pills open the capability drawer', async ({ page }) => {
+    await page.goto('/axym-release/#features/how-it-works', { waitUntil: 'networkidle' });
+    await page.locator('.story-rail .story-chapter').first().locator('.story-pill').first().click();
+    await expect(page.locator('#fx-drawer')).toBeVisible();
+    await expect(page.locator('#fx-drawer-title')).toHaveText('One session, any agent CLI');
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#fx-drawer')).toBeHidden();
+  });
+
+  test('the try-flow bar exposes copyable commands', async ({ page }) => {
+    await page.goto('/axym-release/#features/how-it-works', { waitUntil: 'networkidle' });
+    const cmds = page.locator('.story-tryflow-cmds .fx-proof-verify-cmd');
+    await expect(cmds).toHaveCount(4);
+    await expect(cmds.nth(0)).toContainText('axym doctor');
+    await expect(cmds.nth(2)).toContainText('axym fitness --json');
+    await expect(cmds.nth(3)).toContainText('axym bench --reproduce');
+    const before = page.url();
+    await cmds.nth(0).locator('.fx-cmd-copy').click();
+    await expect(page.locator('#toast')).toContainText(/copied/i);
+    expect(page.url()).toBe(before);
+  });
+
+  test('scroll-sync activates chapters as the rail scrolls past', async ({ page }) => {
+    await page.goto('/axym-release/#features/how-it-works', { waitUntil: 'networkidle' });
+    await page.locator('.story-rail .story-chapter').nth(4).evaluate((el) => el.scrollIntoView({ block: 'center' }));
+    await page.waitForTimeout(700);
+    await expect(page.locator('.story-rail .story-chapter').nth(4)).toHaveAttribute('aria-current', 'true');
+  });
+});

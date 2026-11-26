@@ -102,7 +102,9 @@ test.describe('routing and content', () => {
     await expect(page.locator('.fx-hero-calm')).toBeVisible();
     await expect(page.locator('.fx-hero-calm h1')).toContainText('Build with autonomy.');
     await expect(page.locator('#install-command')).toContainText('curl -fLO');
-    await expect(page.locator('#story-root')).toBeVisible();
+    await expect(page.locator('#story-root .story-split')).toBeVisible();
+    await expect(page.locator('.story-rail .story-chapter')).toHaveCount(5);
+    await expect(page.locator('.story-stage')).toBeVisible();
     await expect(page.locator('.fx-localnav a[data-fx-spy="how-it-works"]')).toContainText('How it works');
     await expect(page.locator('.fx-localnav a[data-fx-spy="catalog"]')).toContainText('Command index');
     await expect(page.locator('.fx-localnav a[data-fx-spy="start-here"]')).toContainText('Start here');

@@ -635,15 +635,34 @@
     }
   }
 
-  /* ------------------------------------------------------- proof theater -- */
-  /* Tabbed viewer over the three flagship sequences. Every text node from
-     the proofs manifest is set with textContent — nothing from the data
-     files passes through innerHTML. */
-  function proofBadge(seq) {
+/* ============================================================= REV3 story ==
+   "One session, end to end" — sticky split-screen walkthrough (SW2-S1).
+   Left rail: five plain-text chapters. Right: ONE sticky stage with
+   Session | Diff / Visual | Receipt tabs and an honest ADR-0016 badge.
+   Data: story-stages.json + proofs.manifest.json. Every string is set with
+   textContent — nothing from the data files passes through innerHTML. */
+
+  var STORY_MANIFEST = null;
+  var storyChapter = null;
+  var storyObserver = null;
+  var storyLockUntil = 0;   /* a click wins over the scroll-spy for a grace period */
+
+  function loadStory() {
+    return fetch('./data/story-stages.json')
+      .then(function (r) { if (!r.ok) throw new Error('story HTTP ' + r.status); return r.json(); })
+      .then(function (data) { STORY_MANIFEST = data; })
+      .catch(function () { STORY_MANIFEST = null; });
+  }
+
+  function storyClearObservers() {
+    if (storyObserver) { storyObserver.disconnect(); storyObserver = null; }
+  }
+
+  function storyBadgeEl(proof) {
     var badge = document.createElement('span');
-    if (seq.captured === true && seq.captured_version) {
+    if (proof && proof.captured === true && proof.captured_version) {
       badge.className = 'fx-proof-badge verified';
-      badge.textContent = 'Verified Recording · ' + seq.captured_version;
+      badge.textContent = 'Verified Recording · ' + proof.captured_version;
     } else {
       badge.className = 'fx-proof-badge illustrative';
       badge.textContent = 'Illustrative Schematic';
@@ -651,81 +670,16 @@
     return badge;
   }
 
-  function proofSeqPanel(seq, first) {
-    var panel = document.createElement('div');
-    panel.className = 'tab-panel' + (first ? ' active' : '');
-    panel.setAttribute('role', 'tabpanel');
-    panel.setAttribute('data-panel', seq.id);
-    if (!first) panel.setAttribute('hidden', '');
-
-    var top = document.createElement('div');
-    top.className = 'fx-proof-seqhead';
-    top.appendChild(proofBadge(seq));
-    if (seq.summary) {
-      var sum = document.createElement('p');
-      sum.className = 'fx-proof-summary';
-      sum.textContent = seq.summary;
-      top.appendChild(sum);
-    }
-    panel.appendChild(top);
-
-    /* sub-tabs: Session / Diff & Artifacts / Verification Receipt */
-    var groupId = 'proof-' + seq.id;
-    var subTabs = document.createElement('div');
-    subTabs.className = 'fx-proof-subtabs';
-    subTabs.setAttribute('data-tabs', groupId);
-    subTabs.setAttribute('role', 'tablist');
-    subTabs.setAttribute('aria-label', seq.title + ' artifacts');
-    var subPanels = document.createElement('div');
-    subPanels.setAttribute('data-panels', groupId);
-
-    var defs = [
-      { key: 'session', label: 'Session' },
-      { key: 'diff', label: 'Diff / Artifacts' },
-      { key: 'receipt', label: 'Verification Receipt' }
-    ];
-    defs.forEach(function (def, di) {
-      var tb = document.createElement('button');
-      tb.type = 'button';
-      tb.className = 'fx-proof-subtab' + (di === 0 ? ' active' : '');
-      tb.setAttribute('data-tab', def.key);
-      tb.setAttribute('role', 'tab');
-      tb.setAttribute('aria-selected', String(di === 0));
-      tb.textContent = def.label;
-      if (di !== 0) tb.setAttribute('tabindex', '-1');
-      subTabs.appendChild(tb);
-
-      var sp = document.createElement('div');
-      sp.className = 'fx-proof-subpanel' + (di === 0 ? ' active' : '');
-      sp.setAttribute('role', 'tabpanel');
-      sp.setAttribute('data-panel', def.key);
-      if (di !== 0) sp.setAttribute('hidden', '');
-      if (def.key === 'session') {
-        var term = document.createElement('div');
-        term.className = 'fx-proof-terminal';
-        var pre = document.createElement('pre');
-        pre.textContent = (seq.session || []).join('\n');
-        term.appendChild(pre);
-        sp.appendChild(term);
-      } else if (def.key === 'diff') {
-        sp.appendChild(renderProofDiff(seq.diff || {}));
-      } else {
-        sp.appendChild(renderProofReceipt(seq.receipt || {}));
-      }
-      subPanels.appendChild(sp);
-    });
-
-    panel.appendChild(subTabs);
-    panel.appendChild(subPanels);
-
-    var cap = document.createElement('p');
-    cap.className = 'fx-proof-caption';
-    cap.textContent = seq.caption || '';
-    panel.appendChild(cap);
-    return panel;
+  function storySessionPanel(lines) {
+    var wrap = document.createElement('div');
+    wrap.className = 'fx-proof-terminal';
+    var pre = document.createElement('pre');
+    pre.textContent = (lines || []).join('\n');
+    wrap.appendChild(pre);
+    return wrap;
   }
 
-  function renderProofDiff(diff) {
+  function storyDiffPanel(diff) {
     var wrap = document.createElement('div');
     wrap.className = 'fx-proof-diff';
     if (diff.meta) {
@@ -771,7 +725,7 @@
     return wrap;
   }
 
-  function renderProofReceipt(receipt) {
+  function storyReceiptPanel(receipt) {
     var wrap = document.createElement('div');
     wrap.className = 'fx-proof-receipt';
     var scalars = Object.keys(receipt).filter(function (k) {
@@ -809,6 +763,11 @@
           d.textContent = c.detail;
           row.appendChild(d);
         }
+        if (c.independence) {
+          var ind = document.createElement('small');
+          ind.textContent = c.independence;
+          row.appendChild(ind);
+        }
         tbl.appendChild(row);
       });
       wrap.appendChild(tbl);
@@ -821,74 +780,262 @@
         wrap.appendChild(row);
       });
     }
-    var pre = document.createElement('pre');
-    pre.className = 'fx-proof-json';
-    pre.textContent = JSON.stringify(receipt, null, 2);
-    wrap.appendChild(pre);
+    if (receipt.evidence) {
+      var ev = document.createElement('p');
+      ev.className = 'fx-proof-caption';
+      ev.textContent = receipt.evidence;
+      wrap.appendChild(ev);
+    }
     return wrap;
   }
 
-  function renderProofTheater() {
-    var root = document.getElementById('fx-proof-root');
-    if (!root) return;
-    var verifyHost = document.getElementById('fx-proof-verify-cmds');
-    if (verifyHost) {
-      verifyHost.innerHTML = '';
-      var cmds = (PROOF_MANIFEST && PROOF_MANIFEST.verify_commands) || [];
-      if (cmds.length) {
-        cmds.forEach(function (c) {
-          var row = document.createElement('div');
-          row.className = 'fx-proof-verify-cmd';
-          var code = document.createElement('code');
-          code.textContent = c;
-          row.appendChild(code);
-          var btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'fx-cmd-copy';
-          btn.setAttribute('data-copy-text', c);
-          btn.setAttribute('aria-label', 'Copy command: ' + c);
-          btn.innerHTML = icon('copy', 'icon-sm');
-          row.appendChild(btn);
-          verifyHost.appendChild(row);
-        });
-      } else {
-        var p = document.createElement('p');
-        p.className = 'muted small';
-        p.textContent = 'Verify commands load with the proof manifest.';
-        verifyHost.appendChild(p);
-      }
-    }
-    if (!root) return;
-    root.innerHTML = '';
-    if (!PROOF_MANIFEST || !Array.isArray(PROOF_MANIFEST.sequences) || !PROOF_MANIFEST.sequences.length) {
-      var err = document.createElement('p');
-      err.className = 'muted small';
-      err.textContent = 'Proof sequences could not be loaded. No verified or illustrative claim is shown in their place.';
-      root.appendChild(err);
-      return;
-    }
-    var tabs = document.createElement('div');
-    tabs.className = 'fx-proof-tabs';
-    tabs.setAttribute('data-tabs', 'proof');
-    tabs.setAttribute('role', 'tablist');
-    tabs.setAttribute('aria-label', 'Flagship proof sequences');
+  function storyStageBody(ch, proof) {
+    var frag = document.createDocumentFragment();
+
+    var summary = document.createElement('p');
+    summary.className = 'fx-proof-summary';
+    summary.textContent = (ch.stage && ch.stage.summary) || '';
+    frag.appendChild(summary);
+
+    var subtabs = document.createElement('div');
+    subtabs.className = 'fx-proof-subtabs';
+    subtabs.setAttribute('role', 'tablist');
+    subtabs.setAttribute('aria-label', 'Stage views');
     var panels = document.createElement('div');
-    panels.setAttribute('data-panels', 'proof');
-    PROOF_MANIFEST.sequences.forEach(function (seq, i) {
-      var tb = document.createElement('button');
-      tb.type = 'button';
-      tb.className = 'fx-proof-tab' + (i === 0 ? ' active' : '');
-      tb.setAttribute('data-tab', seq.id);
-      tb.setAttribute('role', 'tab');
-      tb.setAttribute('aria-selected', String(i === 0));
-      tb.textContent = (i + 1) + ' · ' + seq.title;
-      if (i !== 0) tb.setAttribute('tabindex', '-1');
-      tabs.appendChild(tb);
-      panels.appendChild(proofSeqPanel(seq, i === 0));
+
+    var views = [
+      { id: 'session', label: 'Session', build: function () { return storySessionPanel(ch.stage && ch.stage.session); } },
+      { id: 'diff', label: 'Diff / Visual', build: function () { return storyDiffPanel((ch.stage && ch.stage.diff) || {}); } },
+      { id: 'receipt', label: 'Receipt', build: function () { return storyReceiptPanel((ch.stage && ch.stage.receipt) || {}); } },
+    ];
+    views.forEach(function (v, vi) {
+      var t = document.createElement('button');
+      t.type = 'button';
+      t.className = 'fx-proof-subtab' + (vi === 0 ? ' active' : '');
+      t.setAttribute('role', 'tab');
+      t.setAttribute('aria-selected', vi === 0 ? 'true' : 'false');
+      t.setAttribute('data-story-view', v.id);
+      t.textContent = v.label;
+      var panel = document.createElement('div');
+      panel.className = 'fx-proof-subpanel';
+      panel.setAttribute('role', 'tabpanel');
+      panel.setAttribute('data-story-panel', v.id);
+      if (vi > 0) panel.hidden = true;
+      panel.appendChild(v.build());
+      subtabs.appendChild(t);
+      panels.appendChild(panel);
+      t.addEventListener('click', function () {
+        var all = subtabs.querySelectorAll('[data-story-view]');
+        for (var i = 0; i < all.length; i++) {
+          var on = all[i] === t;
+          all[i].classList.toggle('active', on);
+          all[i].setAttribute('aria-selected', on ? 'true' : 'false');
+        }
+        var ps = panels.querySelectorAll('[data-story-panel]');
+        for (var j = 0; j < ps.length; j++) ps[j].hidden = ps[j] !== panel;
+      });
     });
-    root.appendChild(tabs);
-    root.appendChild(panels);
+
+    frag.appendChild(subtabs);
+    frag.appendChild(panels);
+
+    if (proof && proof.limitations && proof.captured !== true) {
+      var lim = document.createElement('p');
+      lim.className = 'fx-proof-boundary';
+      lim.textContent = proof.limitations;
+      frag.appendChild(lim);
+    }
+    return frag;
   }
+
+  function proofByChapter() {
+    var map = {};
+    if (PROOF_MANIFEST && Array.isArray(PROOF_MANIFEST.chapters)) {
+      PROOF_MANIFEST.chapters.forEach(function (p) { map[p.id] = p; });
+    }
+    return map;
+  }
+
+  function setStoryChapter(id) {
+    var root = document.getElementById('story-root');
+    if (!root || !STORY_MANIFEST) return;
+    var ch = null;
+    STORY_MANIFEST.chapters.forEach(function (c) { if (c.id === id) ch = c; });
+    if (!ch) return;
+    storyChapter = id;
+    var proofMap = proofByChapter();
+    root.querySelectorAll('[data-story-tab]').forEach(function (b) {
+      b.setAttribute('aria-current', b.getAttribute('data-story-tab') === id ? 'true' : 'false');
+    });
+    var stage = root.querySelector('.story-stage-body');
+    if (stage) {
+      stage.innerHTML = '';
+      stage.appendChild(storyStageBody(ch, proofMap[id]));
+    }
+  }
+
+  function renderStory() {
+    var root = document.getElementById('story-root');
+    storyClearObservers();
+    if (!root) return;
+    if (!STORY_MANIFEST || !Array.isArray(STORY_MANIFEST.chapters) || !STORY_MANIFEST.chapters.length) return;
+    root.innerHTML = '';
+    var chapters = STORY_MANIFEST.chapters;
+    var proofMap = proofByChapter();
+
+    var split = document.createElement('div');
+    split.className = 'story-split';
+
+    /* ---- left narrative rail (desktop) ---- */
+    var rail = document.createElement('div');
+    rail.className = 'story-rail';
+    rail.setAttribute('aria-label', 'Walkthrough chapters');
+    chapters.forEach(function (ch) {
+      var item = document.createElement('div');
+      item.className = 'story-chapter';
+      item.setAttribute('data-story-tab', ch.id);
+      item.setAttribute('aria-current', storyChapter === ch.id ? 'true' : 'false');
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'story-chapter-btn';
+
+      var num = document.createElement('span');
+      num.className = 'story-num';
+      num.textContent = ch.num;
+      btn.appendChild(num);
+
+      var copy = document.createElement('span');
+      copy.className = 'story-copy';
+      var title = document.createElement('b');
+      title.textContent = ch.title;
+      copy.appendChild(title);
+      var lede = document.createElement('span');
+      lede.className = 'story-lede';
+      lede.textContent = ch.lede;
+      copy.appendChild(lede);
+      btn.appendChild(copy);
+      item.appendChild(btn);
+
+      var pills = document.createElement('span');
+      pills.className = 'story-pills';
+      (ch.commands || []).forEach(function (p) {
+        var pill = document.createElement('button');
+        pill.type = 'button';
+        pill.className = 'story-pill';
+        pill.setAttribute('data-story-pill', p.cap || '');
+        var code = document.createElement('code');
+        code.textContent = p.cmd;
+        pill.appendChild(code);
+        pill.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var cap = CAPABILITY_INDEX[p.cap];
+          if (cap) openDrawer(cap, pill);
+        });
+        pills.appendChild(pill);
+      });
+      item.appendChild(pills);
+      item.addEventListener('click', function (e) {
+        if (e.target.closest && e.target.closest('.story-pill')) return;
+        storyLockUntil = Date.now() + 900;
+        setStoryChapter(ch.id);
+      });
+      rail.appendChild(item);
+    });
+    split.appendChild(rail);
+
+    /* ---- right sticky stage ---- */
+    var stagewrap = document.createElement('div');
+    stagewrap.className = 'story-stagewrap';
+    var stage = document.createElement('div');
+    stage.className = 'story-stage';
+    stage.setAttribute('role', 'region');
+    stage.setAttribute('aria-label', 'Walkthrough stage');
+
+    var head = document.createElement('div');
+    head.className = 'story-stage-head';
+    head.appendChild(storyBadgeEl(proofMap[chapters[0].id]));
+    var label = document.createElement('span');
+    label.className = 'story-stage-label';
+    label.textContent = 'One session, end to end';
+    head.appendChild(label);
+    stage.appendChild(head);
+
+    var body = document.createElement('div');
+    body.className = 'story-stage-body';
+    stage.appendChild(body);
+    stagewrap.appendChild(stage);
+    split.appendChild(stagewrap);
+
+    /* ---- try-flow bar (own grid row: the sticky stage must never cover it) -- */
+    var tryflow = document.createElement('div');
+    tryflow.className = 'story-tryflow';
+    var tftitle = document.createElement('p');
+    tftitle.className = 'story-tryflow-title';
+    tftitle.textContent = 'Try this flow in 60 seconds';
+    tryflow.appendChild(tftitle);
+    var tfcmds = document.createElement('div');
+    tfcmds.className = 'story-tryflow-cmds';
+    (STORY_MANIFEST.try_flow || []).forEach(function (c) {
+      var row = document.createElement('div');
+      row.className = 'fx-proof-verify-cmd';
+      var code = document.createElement('code');
+      code.textContent = c;
+      row.appendChild(code);
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'fx-cmd-copy';
+      btn.setAttribute('data-copy-text', c);
+      btn.setAttribute('aria-label', 'Copy command: ' + c);
+      btn.innerHTML = icon('copy', 'icon-sm');
+      row.appendChild(btn);
+      tfcmds.appendChild(row);
+    });
+    tryflow.appendChild(tfcmds);
+    split.appendChild(tryflow);
+    root.appendChild(split);
+
+    /* ---- mobile chapter chips ---- */
+    var chips = document.createElement('div');
+    chips.className = 'story-chips';
+    chips.setAttribute('role', 'group');
+    chips.setAttribute('aria-label', 'Walkthrough chapters');
+    chapters.forEach(function (ch) {
+      var chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'story-chip';
+      chip.setAttribute('data-story-tab', ch.id);
+      chip.setAttribute('aria-current', storyChapter === ch.id ? 'true' : 'false');
+      chip.setAttribute('aria-label', 'Chapter ' + ch.num + ': ' + ch.title);
+      chip.textContent = ch.num;
+      chip.addEventListener('click', function () {
+        storyLockUntil = Date.now() + 900;
+        setStoryChapter(ch.id);
+      });
+      chips.appendChild(chip);
+    });
+    root.insertBefore(chips, split);
+
+    if (!storyChapter || !chapters.some(function (c) { return c.id === storyChapter; })) {
+      storyChapter = chapters[0].id;
+    }
+    setStoryChapter(storyChapter);
+
+    /* ---- scroll-sync: a rail chapter crossing the active band activates ---- */
+    if ('IntersectionObserver' in window) {
+      storyObserver = new IntersectionObserver(function (entries) {
+        if (Date.now() < storyLockUntil) return;
+        for (var i = 0; i < entries.length; i++) {
+          if (!entries[i].isIntersecting) continue;
+          var id = entries[i].target.getAttribute('data-story-tab');
+          if (id && id !== storyChapter) setStoryChapter(id);
+        }
+      }, { rootMargin: '-30% 0px -55% 0px', threshold: 0 });
+      var items = root.querySelectorAll('.story-chapter');
+      for (var k = 0; k < items.length; k++) storyObserver.observe(items[k]);
+    }
+  }
+
 
   /* ------------------------------------------------------ detail drawer -- */
   /* Accessible right-hand slide-over for one capability. Opening is driven by
@@ -1248,6 +1395,8 @@
     fxClearTimers();
     if (fxObserver) { fxObserver.disconnect(); fxObserver = null; }
     if (fxSpyObserver) { fxSpyObserver.disconnect(); fxSpyObserver = null; }
+    storyClearObservers();
+    storyChapter = null;
     fxFilter.query = '';
     fxFilter.raw = '';
     fxFilter.group = FX_DEFAULT_GROUP;
@@ -1255,7 +1404,7 @@
 
     renderCapabilityCatalog();
     fillCapabilityCounts();
-    renderProofTheater();
+    renderStory();
 
     var reduced = false;
     try { reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (err) { reduced = true; }
@@ -1958,9 +2107,11 @@
       render();
       fillCapabilityCounts();
     });
-    loadProofs().then(function () {
-      if (currentRoute === 'features') renderProofTheater();
-    });
+    loadProofs()
+      .then(loadStory)
+      .then(function () {
+        if (currentRoute === 'features') renderStory();
+      });
     loadReleases().then(function () {
       applyReleaseData();
     });
