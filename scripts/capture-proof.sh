@@ -3,7 +3,7 @@
 # AXYM PORTAL — real-proof capture workflow (ADR-0016)
 # =============================================================================
 # Guides a maintainer through replacing an "Illustrative Schematic" proof
-# sequence with a REAL captured artifact set:
+# chapter with a REAL captured artifact set:
 #
 #   1. records the real axym session   (asciinema rec, or script(1) fallback)
 #   2. exports the real git diff       (from the demo project you ran in)
@@ -14,14 +14,21 @@
 # Zero external dependencies beyond the repo toolchain: bash, git, node
 # (already required by the verifiers) and, optionally, asciinema.
 # NEVER pushes. Never invents a checksum, version or recording: if a step is
-# skipped, the sequence stays honestly captured:false.
+# skipped, the chapter stays honestly captured:false.
 #
 # Usage:
-#   scripts/capture-proof.sh --sequence <id> [--project <dir>] [--check] [--help]
+#   scripts/capture-proof.sh --chapter <id> [--project <dir>] [--check] [--help]
 #
 # Examples:
 #   scripts/capture-proof.sh --check
-#   scripts/capture-proof.sh --sequence idea-to-verified-code --project ~/src/payments
+#   scripts/capture-proof.sh --chapter chapter-02 --project ~/src/payments
+#
+# Chapters map 1:1 to the five-chapter walkthrough (site/data/story-stages.json):
+#   chapter-01  Keep your CLIs. Add a living brain.
+#   chapter-02  Run agents in parallel without collisions.
+#   chapter-03  Firewall tools, stop hangs, control spend.
+#   chapter-04  Build, diff, and test mobile apps natively.
+#   chapter-05  Ship only what passes independent proof.
 # =============================================================================
 
 set -euo pipefail
@@ -31,12 +38,12 @@ ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 PROOFS_MANIFEST="$ROOT/site/data/proofs.manifest.json"
 PROOFS_DIR="$ROOT/site/assets/proofs"
 
-SEQUENCE=""
+CHAPTER=""
 PROJECT_DIR="$(pwd)"
 DO_CHECK=0
 
 usage() {
-  sed -n '2,24p' "$0" | sed 's/^# \{0,1\}//'
+  sed -n '2,36p' "$0" | sed 's/^# \{0,1\}//'
   exit 0
 }
 
@@ -53,7 +60,8 @@ need_node() {
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --sequence) SEQUENCE="${2:-}"; shift 2 ;;
+    --chapter) CHAPTER="${2:-}"; shift 2 ;;
+    --sequence) echo "NOTE: --sequence is now --chapter (REV3 five-chapter walkthrough)." >&2; CHAPTER="${2:-}"; shift 2 ;;
     --project) PROJECT_DIR="${2:-}"; shift 2 ;;
     --check) DO_CHECK=1; shift ;;
     *) fail "unknown argument: $1 (try --help)" ;;
@@ -68,34 +76,34 @@ if [[ "$DO_CHECK" -eq 1 ]]; then
   echo "===================="
   node "$ROOT/scripts/verify-manifest-sync.mjs"
   echo ""
-  echo "Captured sequences and their artifacts:"
+  echo "Captured chapters and their artifacts:"
   node - "$PROOFS_MANIFEST" <<'NODE'
 const m = require(process.argv[2]);
-for (const s of m.sequences) {
-  const files = [s.recording_path, s.diff_path, s.receipt_path].filter(Boolean).join(', ');
-  const state = s.captured ? `captured ${s.captured_version} @ ${s.captured_at}` : 'illustrative (no capture committed)';
-  console.log(`- ${s.id}: ${state}${files ? ` [${files}]` : ''}`);
+for (const c of m.chapters) {
+  const files = [c.recording_path, c.diff_path, c.receipt_path].filter(Boolean).join(', ');
+  const state = c.captured ? `captured ${c.captured_version} @ ${c.captured_at}` : 'illustrative (no capture committed)';
+  console.log(`- ${c.id}: ${state}${files ? ` [${files}]` : ''}`);
 }
 NODE
   exit 0
 fi
 
-# ------------------------------------------------------------ sequence id --
-if [[ -z "$SEQUENCE" ]]; then
-  echo "Available sequences:"
+# ------------------------------------------------------------ chapter id --
+if [[ -z "$CHAPTER" ]]; then
+  echo "Available chapters:"
   node - "$PROOFS_MANIFEST" <<'NODE'
 const m = require(process.argv[2]);
-m.sequences.forEach((s, i) => console.log(`  ${i + 1}. ${s.id} — ${s.title} (${s.captured ? 'captured' : 'illustrative'})`));
+m.chapters.forEach((c, i) => console.log(`  ${i + 1}. ${c.id} — ${c.title} (${c.captured ? 'captured' : 'illustrative'})`));
 NODE
-  read -r -p "Sequence id to capture: " SEQUENCE
+  read -r -p "Chapter id to capture: " CHAPTER
 fi
 
-SEQ_EXISTS=$(node - "$PROOFS_MANIFEST" "$SEQUENCE" <<'NODE'
+CH_EXISTS=$(node - "$PROOFS_MANIFEST" "$CHAPTER" <<'NODE'
 const m = require(process.argv[2]);
-console.log(m.sequences.some((s) => s.id === process.argv[3]) ? "yes" : "no");
+console.log(m.chapters.some((c) => c.id === process.argv[3]) ? "yes" : "no");
 NODE
 )
-[[ "$SEQ_EXISTS" == "yes" ]] || fail "sequence '$SEQUENCE' is not in the proofs manifest."
+[[ "$CH_EXISTS" == "yes" ]] || fail "chapter '$CHAPTER' is not in the proofs manifest (try --check to list ids)."
 
 # ------------------------------------------------------------- axym build --
 AXYM_VERSION=""
@@ -111,11 +119,11 @@ mkdir -p "$PROOFS_DIR"
 
 # ------------------------------------------------------- 1. the recording --
 RECORDING_EXT="cast"
-RECORDING="$PROOFS_DIR/$SEQUENCE.cast"
+RECORDING="$PROOFS_DIR/$CHAPTER.cast"
 echo ""
 echo "Step 1 — record the real session"
 echo "--------------------------------"
-echo "Run the sequence against the released axym build. Speak the commands in"
+echo "Run the chapter against the released axym build. Speak the commands in"
 echo "the schematic, for real, in: $PROJECT_DIR"
 if command -v asciinema >/dev/null 2>&1; then
   read -r -p "Start asciinema recording now? [Y/n] " ANSWER
@@ -127,7 +135,7 @@ else
   echo "Install asciinema later for a richer .cast; a transcript is a real recording too."
   read -r -p "Start script(1) transcript now? [Y/n] " ANSWER
   if [[ ! "$ANSWER" =~ ^[Nn] ]]; then
-    RECORDING="$PROOFS_DIR/$SEQUENCE.transcript"
+    RECORDING="$PROOFS_DIR/$CHAPTER.transcript"
     SCRIPT_CMD=(script -q "$RECORDING")
     if script --help 2>&1 | grep -q "^\s*-c"; then
       SCRIPT_CMD=(script -q -c "bash -l" "$RECORDING")
@@ -137,7 +145,7 @@ else
 fi
 
 if [[ ! -s "$RECORDING" ]]; then
-  echo "No recording captured — leaving the sequence honestly captured:false."
+  echo "No recording captured — leaving the chapter honestly captured:false."
   exit 2
 fi
 info "recording: $RECORDING ($(wc -c < "$RECORDING" | tr -d ' ') bytes)"
@@ -147,7 +155,7 @@ echo ""
 echo "Step 2 — export the real git diff from $PROJECT_DIR"
 echo "----------------------------------------------------"
 [[ -d "$PROJECT_DIR/.git" ]] || fail "$PROJECT_DIR is not a git work tree."
-DIFF_OUT="$PROOFS_DIR/$SEQUENCE.diff"
+DIFF_OUT="$PROOFS_DIR/$CHAPTER.diff"
 {
   echo "# git -C $PROJECT_DIR diff HEAD --stat"
   git -C "$PROJECT_DIR" diff HEAD --stat
@@ -167,29 +175,29 @@ read -r -p "Path to the real receipt JSON: " RECEIPT_SRC
 [[ -n "$RECEIPT_SRC" && -s "$RECEIPT_SRC" ]] || fail "receipt file missing or empty: $RECEIPT_SRC"
 node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" "$RECEIPT_SRC" \
   || fail "receipt is not valid JSON."
-RECEIPT_OUT="$PROOFS_DIR/$SEQUENCE.receipt.json"
+RECEIPT_OUT="$PROOFS_DIR/$CHAPTER.receipt.json"
 cp "$RECEIPT_SRC" "$RECEIPT_OUT"
 info "receipt: $RECEIPT_OUT"
 
 # ------------------------------------------------------- 4. the manifest --
 echo ""
-echo "Step 4 — mark the sequence captured in the manifest"
+echo "Step 4 — mark the chapter captured in the manifest"
 echo "----------------------------------------------------"
-node - "$PROOFS_MANIFEST" "$SEQUENCE" "$AXYM_VERSION" "$RECORDING" "$DIFF_OUT" "$RECEIPT_OUT" <<'NODE'
+node - "$PROOFS_MANIFEST" "$CHAPTER" "$AXYM_VERSION" "$RECORDING" "$DIFF_OUT" "$RECEIPT_OUT" <<'NODE'
 const fs = require('fs');
 const [manifestPath, id, version, recording, diff, receipt] = process.argv.slice(2);
 const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-const seq = manifest.sequences.find((s) => s.id === id);
-if (!seq) { console.error(`sequence ${id} vanished mid-run`); process.exit(1); }
+const chap = manifest.chapters.find((c) => c.id === id);
+if (!chap) { console.error(`chapter ${id} vanished mid-run`); process.exit(1); }
 const rel = (p) => 'assets/proofs/' + require('path').basename(p);
-seq.captured = true;
-seq.captured_version = version;
-seq.captured_at = new Date().toISOString().slice(0, 10);
-seq.recording_path = rel(recording);
-seq.diff_path = rel(diff);
-seq.receipt_path = rel(receipt);
+chap.captured = true;
+chap.captured_version = version;
+chap.captured_at = new Date().toISOString().slice(0, 10);
+chap.recording_path = rel(recording);
+chap.diff_path = rel(diff);
+chap.receipt_path = rel(receipt);
 fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
-console.log(`  ${id}: captured=true · ${version} · ${seq.captured_at}`);
+console.log(`  ${id}: captured=true · ${version} · ${chap.captured_at}`);
 NODE
 
 # ------------------------------------------------------------- 5. verify --
@@ -197,8 +205,3 @@ echo ""
 echo "Step 5 — re-run the drift-prevention verifier"
 echo "----------------------------------------------"
 node "$ROOT/scripts/verify-manifest-sync.mjs"
-
-echo ""
-echo "Capture complete and verified. Commit it (never push from this script):"
-echo "  git add site/data/proofs.manifest.json site/assets/proofs/"
-echo "  git commit -m \"[proofs] real capture for $SEQUENCE ($AXYM_VERSION)\""
