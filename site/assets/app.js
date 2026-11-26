@@ -414,12 +414,56 @@
   }
 
   /* ====================================================== features showcase ==
-     Catalog filter (search input + group pills), scroll-reveal and the
-     local-nav scrollspy for the features page. All behaviour is progressive:
-     without JS the page renders fully expanded and statically visible. */
+     Catalog filter (search input + group pills), scroll-reveal, the
+     local-nav scrollspy and the mission-control motion layer (boot console,
+     count-ups, scroll progress, card spotlight, theater auto-advance) for
+     the features page. All behaviour is progressive: without JS, or under
+     prefers-reduced-motion, the page renders fully expanded and static. */
   var fxFilter = { query: '', raw: '', group: 'all' };
   var fxObserver = null;
   var fxSpyObserver = null;
+  var fxBootTimer = null;
+  var fxTheaterTimer = null;
+  var fxTheaterStopped = false;
+
+  /* Grounded in the v0.24.0 release notes and documented command output. */
+  var FX_BOOT_SCENES = [
+    {
+      cmd: 'axym doctor',
+      out: [
+        '  claude     detected   stream-json   preferred',
+        '  codex      detected   cli           available',
+        '  opencode   detected   cli           available',
+        '  keys 0 static · telemetry none',
+        '  ✓ runtime ready · trust zone: work',
+      ],
+    },
+    {
+      cmd: 'axym ship "add rate limiting to the public API"',
+      out: [
+        '  ● plan      scope + acceptance criteria',
+        '  ● design    contract first',
+        '  ● code      src/app.ts +18 −2',
+        '  ● security  threat model clean',
+        '  ◆ review    gate · awaiting human',
+        '  ✓ decision journaled · apply is reversible',
+      ],
+    },
+    {
+      cmd: 'axym runs start "migrate cache keys" --worktree',
+      out: [
+        '  run 9c11 · worktree wt-parallel-2',
+        '  axym council "pick the rate limiter design"',
+        '  3 providers · borda consensus · 1 decision record',
+        '  ✓ all stages verified',
+      ],
+    },
+  ];
+
+  function fxClearTimers() {
+    if (fxBootTimer) { clearInterval(fxBootTimer); fxBootTimer = null; }
+    if (fxTheaterTimer) { clearInterval(fxTheaterTimer); fxTheaterTimer = null; }
+  }
 
   function applyFxFilter() {
     var grid = document.getElementById('fx-catalog');
@@ -448,10 +492,69 @@
     }
   }
 
+  function startFxBoot(screen) {
+    if (fxBootTimer) { clearInterval(fxBootTimer); fxBootTimer = null; }
+    var state = { scene: 0, line: 0, char: 0, phase: 'cmd', wait: 0, text: '' };
+    var TICK = 26;
+
+    fxBootTimer = setInterval(function () {
+      if (!screen.isConnected) { clearInterval(fxBootTimer); fxBootTimer = null; return; }
+      var current = FX_BOOT_SCENES[state.scene];
+      if (state.phase === 'cmd') {
+        state.char++;
+        state.text = '$ ' + current.cmd.slice(0, state.char);
+        screen.textContent = state.text + '▋';
+        if (state.char >= current.cmd.length) { state.phase = 'pause'; state.wait = 7; }
+      } else if (state.phase === 'pause') {
+        if (--state.wait <= 0) { state.phase = 'out'; state.line = 0; }
+      } else if (state.phase === 'out') {
+        if (state.line < current.out.length) {
+          state.text += '\n' + current.out[state.line];
+          state.line++;
+          screen.textContent = state.text;
+        } else {
+          state.phase = 'hold';
+          state.wait = 64;
+          screen.textContent = state.text + '▋';
+        }
+      } else if (state.phase === 'hold') {
+        if (--state.wait <= 0) {
+          state.scene = (state.scene + 1) % FX_BOOT_SCENES.length;
+          state.text = '';
+          state.phase = 'cmd';
+          state.char = 0;
+          screen.textContent = '';
+        }
+      }
+    }, TICK);
+  }
+
+  function startFxCountUp(root) {
+    var nums = root.querySelectorAll('[data-count]');
+    for (var i = 0; i < nums.length; i++) {
+      (function (el) {
+        var target = parseInt(el.getAttribute('data-count'), 10) || 0;
+        if (!target) return;
+        var t0 = null;
+        var DURATION = 1100;
+        function step(ts) {
+          if (!t0) t0 = ts;
+          var k = Math.min((ts - t0) / DURATION, 1);
+          var eased = 1 - Math.pow(1 - k, 3);
+          el.textContent = String(Math.round(eased * target));
+          if (k < 1 && el.isConnected) window.requestAnimationFrame(step);
+        }
+        window.requestAnimationFrame(step);
+      })(nums[i]);
+    }
+  }
+
   function enhanceFx() {
     var page = app.querySelector('.fx-page');
+    fxClearTimers();
     if (fxObserver) { fxObserver.disconnect(); fxObserver = null; }
     if (fxSpyObserver) { fxSpyObserver.disconnect(); fxSpyObserver = null; }
+    fxTheaterStopped = false;
     fxFilter.query = '';
     fxFilter.raw = '';
     fxFilter.group = 'all';
@@ -466,13 +569,48 @@
     } else {
       fxObserver = new IntersectionObserver(function (entries) {
         for (var j = 0; j < entries.length; j++) {
-          if (entries[j].isIntersecting) {
-            entries[j].target.classList.add('in');
-            fxObserver.unobserve(entries[j].target);
+          if (!entries[j].isIntersecting) continue;
+          var el = entries[j].target;
+          el.classList.add('in');
+          fxObserver.unobserve(el);
+          if (el.classList.contains('fx-stats')) startFxCountUp(el);
+          if (el.classList.contains('fx-boot')) {
+            var screen = el.querySelector('.fx-boot-screen');
+            if (screen) startFxBoot(screen);
           }
         }
       }, { rootMargin: '0px 0px -7% 0px', threshold: 0.06 });
       for (var k = 0; k < targets.length; k++) fxObserver.observe(targets[k]);
+    }
+
+    // Theater auto-advance: rotate chapters while visible; the first pointer
+    // or keyboard interaction inside the theater stops it for good.
+    var rail = page.querySelector('[data-tabs="feature-theater"]');
+    if (rail && !reduced && 'IntersectionObserver' in window) {
+      var theaterObserver = new IntersectionObserver(function (entries) {
+        for (var n = 0; n < entries.length; n++) {
+          if (entries[n].isIntersecting && !fxTheaterStopped && !fxTheaterTimer) {
+            rail.classList.add('fx-auto');
+            fxTheaterTimer = setInterval(function () {
+              if (fxTheaterStopped || !rail.isConnected) { clearInterval(fxTheaterTimer); fxTheaterTimer = null; rail.classList.remove('fx-auto'); return; }
+              var tabs = rail.querySelectorAll('[data-tab]');
+              var next = null;
+              for (var t = 0; t < tabs.length; t++) {
+                if (tabs[t].getAttribute('aria-selected') === 'true') {
+                  next = tabs[(t + 1) % tabs.length];
+                  break;
+                }
+              }
+              if (next) next.click();
+            }, 6500);
+          } else if (!entries[n].isIntersecting && fxTheaterTimer) {
+            clearInterval(fxTheaterTimer);
+            fxTheaterTimer = null;
+            rail.classList.remove('fx-auto');
+          }
+        }
+      }, { threshold: 0.25 });
+      theaterObserver.observe(rail);
     }
 
     var links = page.querySelectorAll('.fx-localnav a[data-fx-spy]');
@@ -858,9 +996,47 @@
      accordions, filters, checksums.
      ====================================================================== */
   function wireComponents() {
+    // Cursor-tracking spotlight for showcase cards: one delegated, passive
+    // listener feeds CSS custom properties; the gradients live in CSS.
+    if (window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      document.addEventListener('pointermove', function (e) {
+        var t = e.target.closest ? e.target.closest('.fx-card, .fx-bento-card') : null;
+        if (!t) return;
+        var r = t.getBoundingClientRect();
+        t.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+        t.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      }, { passive: true });
+    }
+
+    // Any pointer or keyboard interaction inside the capability theater
+    // permanently stops its auto-advance; the visitor takes over.
+    function fxStopTheater(e) {
+      if (e.target.closest && e.target.closest('[data-tabs="feature-theater"]')) {
+        fxTheaterStopped = true;
+        var rail = document.querySelector('[data-tabs="feature-theater"]');
+        if (rail) rail.classList.remove('fx-auto');
+      }
+    }
+    document.addEventListener('pointerdown', fxStopTheater, true);
+    document.addEventListener('keydown', fxStopTheater, true);
+
+    // Reading progress for the showcase page: one rAF-throttled scroll write.
+    var fxProgressTicking = false;
+    window.addEventListener('scroll', function () {
+      if (fxProgressTicking) return;
+      fxProgressTicking = true;
+      window.requestAnimationFrame(function () {
+        fxProgressTicking = false;
+        var bar = document.querySelector('.fx-progress i');
+        if (!bar) return;
+        var max = document.documentElement.scrollHeight - window.innerHeight;
+        var k = max > 0 ? Math.min(window.scrollY / max, 1) : 0;
+        bar.style.transform = 'scaleX(' + k + ')';
+      });
+    }, { passive: true });
+
     document.addEventListener('click', function (e) {
-      var pill = e.target.closest('[data-fx-pill]');
-      if (pill) {
+      var pill = e.target.closest('[data-fx-pill]');      if (pill) {
         fxFilter.group = pill.getAttribute('data-fx-pill');
         var pills = pill.parentNode.querySelectorAll('[data-fx-pill]');
         for (var pi = 0; pi < pills.length; pi++) {
