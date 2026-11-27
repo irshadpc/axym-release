@@ -28,7 +28,7 @@ window.AXYM_PAGES = {
         <li>Parallel worktrees</li>
         <li>Local MCP firewall</li>
         <li>Hash-chained proof</li>
-        <li><span data-capability-count>84</span> capabilities</li>
+        <li><span data-capability-count></span> capabilities</li>
       </ul>
       <ul class="hero-meta hero-meta-versions">
         <li><span class="ok" aria-hidden="true">●</span> TUI <span class="mono" data-release-version="tui">v0.24.0</span></li>
@@ -286,7 +286,7 @@ $ /handoff export
         <div class="stat-cell"><dt>1</dt><dd>standalone executable</dd></div>
         <div class="stat-cell"><dt>0</dt><dd>static API keys</dd></div>
         <div class="stat-cell"><dt>0</dt><dd>telemetry egress</dd></div>
-        <div class="stat-cell"><dt data-capability-count>84</dt><dd>curated capabilities</dd></div>
+        <div class="stat-cell"><dt data-capability-count></dt><dd>curated capabilities</dd></div>
         <div class="stat-cell"><dt>121</dt><dd>declared slash commands</dd></div>
         <div class="stat-cell"><dt>10</dt><dd>feature groups</dd></div>
         <div class="stat-cell"><dt>91%</dt><dd>warm prompt-cache hit</dd></div>
@@ -510,7 +510,7 @@ $ /handoff export
       <a class="path-card" href="#features/feat-code-review-and-qa"><span class="path-card-kicker">Shipping a change</span><b>Prove it before you ship</b><span class="path-card-copy">Review, security, real test output and reversible edits.</span><span class="path-card-arrow" aria-hidden="true">→</span></a>
       <a class="path-card" href="#features/feat-agent-hub-and-fleet-overview"><span class="path-card-kicker">Working in parallel</span><b>Run more than one model</b><span class="path-card-copy">Council, isolated worktrees, headless runs and steering.</span><span class="path-card-arrow" aria-hidden="true">→</span></a>
       <a class="path-card" href="#features/feat-session-and-run-handoff"><span class="path-card-kicker">On call or pairing</span><b>Keep work in motion</b><span class="path-card-copy">Phone approvals, read-only viewers, notifications and handoff.</span><span class="path-card-arrow" aria-hidden="true">→</span></a>
-      <a class="path-card" href="#features/start-here"><span class="path-card-kicker">Going deeper</span><b>Read the full catalog</b><span class="path-card-copy"><span data-capability-count>84</span> curated capabilities in 10 groups, plus every extra command surface.</span><span class="path-card-arrow" aria-hidden="true">→</span></a>
+      <a class="path-card" href="#features/start-here"><span class="path-card-kicker">Going deeper</span><b>Read the full catalog</b><span class="path-card-copy"><span data-capability-count></span> curated capabilities in 10 groups, plus every extra command surface.</span><span class="path-card-arrow" aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>
@@ -1008,25 +1008,41 @@ policy:
       <p class="eyebrow" data-fx-reveal><span class="dot" aria-hidden="true"></span>Axym TUI <span class="mono" data-release-version="tui">v0.24.0</span> · wraps claude, codex, opencode · 0 API keys</p>
       <h1 data-fx-reveal style="--fx-i:1">Build with autonomy.<br><em>Ship with confidence.</em></h1>
       <p class="fx-hero-lead" data-fx-reveal style="--fx-i:2">Wrap <code>claude</code>, <code>codex</code> and <code>opencode</code> with zero extra API keys — adding parallel worktrees, live mux panes, a local MCP firewall, mobile QA and verifiable proof.</p>
-      <div class="fx-hero-install" data-fx-reveal style="--fx-i:3">
-        <div class="code-shell code-shell-slim">
-          <div class="code-head"><span class="code-lang">shell</span><span class="code-title">install · TUI</span><button type="button" class="copy-btn" data-copy="install-command"><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>Copy</button></div>
-          <div class="code-body"><pre id="install-command" data-install-output="macos_arm">curl -fLO https://github.com/irshadpc/axym-release/releases/download/tui-v0.24.0/axym-0.24.0-macos.tar.gz
-tar -xzf axym-0.24.0-macos.tar.gz && ./axym-macos-arm64 --install</pre></div>
+      <div class="fx-problem" data-fx-reveal style="--fx-i:3">
+        <form class="fx-problem-bar" id="fx-problem-form" role="search" aria-label="Ask a real problem">
+          <label class="visually-hidden" for="fx-problem-input">Describe the problem you need solved</label>
+          <input type="search" id="fx-problem-input" placeholder="What is slowing you down? Describe it in plain words…" autocomplete="off" spellcheck="false">
+          <button type="submit" class="btn btn-primary" id="fx-problem-submit">Find the layer <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></button>
+        </form>
+        <div class="fx-problem-chips" role="group" aria-label="Starter problems">
+          <button type="button" class="fx-chip" data-fx-problem="Run three agents in parallel without branch conflicts and dirty diffs">Run 3 agents without branch conflicts</button>
+          <button type="button" class="fx-chip" data-fx-problem="Test my iOS and Android app end to end with Maestro journeys">Test my iOS / Android app with Maestro</button>
+          <button type="button" class="fx-chip" data-fx-problem="Stop silent hangs and runaway retries burning tokens">Stop silent hangs &amp; runaway retries</button>
+          <button type="button" class="fx-chip" data-fx-problem="Block untrusted MCP tools and firewall what they may touch">Block untrusted MCP tools</button>
+          <button type="button" class="fx-chip" data-fx-problem="Ship a pull request with verifiable proof and an evidence receipt">Ship a PR with verifiable proof</button>
         </div>
-        <p class="small muted fx-install-note">Linux tarball and Windows zip ship in the same release — <a href="#quickstart">Quick Start</a> covers every platform.</p>
       </div>
-      <div class="fx-boot" data-fx-reveal style="--fx-i:4">
-        <div class="fx-vt-bar"><i></i><i></i><i></i><span>axym doctor — live console</span><em class="fx-live" aria-hidden="true">LIVE</em></div>
+      <div class="fx-hero-install" data-fx-reveal style="--fx-i:4">
+        <div class="code-shell code-shell-slim">
+          <div class="code-head"><span class="code-lang">shell</span><span class="code-title">verify your machine</span><button type="button" class="copy-btn" data-copy="fx-doctor-cmd"><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>Copy</button></div>
+          <div class="code-body"><pre id="fx-doctor-cmd">$ axym doctor
+  claude     detected   stream-json   preferred
+  keys       0 static · telemetry none</pre></div>
+        </div>
+        <p class="small muted fx-install-note">One governed turn, five layers: <a href="#features/how-it-works">walk the machine ↓</a> · <a href="#quickstart">install all platforms</a></p>
+      </div>
+      <div class="fx-boot" data-fx-reveal style="--fx-i:5">
+        <div class="fx-vt-bar"><i></i><i></i><i></i><span>axym — live console</span><em class="fx-live" aria-hidden="true">ILLUSTRATIVE</em></div>
         <p class="visually-hidden">Live console preview: axym doctor detects the agent CLIs you already have; axym ship runs the governed plan-to-approval pipeline; parallel runs and council merge results with recorded evidence.</p>
-        <pre class="fx-boot-screen" aria-hidden="true">axym doctor — live console</pre>
+        <pre class="fx-boot-screen" aria-hidden="true">axym — live console</pre>
+        <p class="fx-boot-caption small muted">Illustrative schematic · TUI v0.24.0 — every line mirrors documented behaviour; capture a real recording with <code>scripts/capture-proof.sh</code>.</p>
       </div>
-      <p class="fx-meta-line" data-fx-reveal style="--fx-i:5" role="list" aria-label="Runtime facts">
-        <span role="listitem"><span data-capability-count>84</span> curated capabilities</span>
+      <p class="fx-meta-line" data-fx-reveal style="--fx-i:6" role="list" aria-label="Runtime facts">
+        <span role="listitem"><span data-capability-count></span> curated capabilities</span>
+        <span role="listitem"><span data-anatomy-count></span> governed turn layers</span>
         <span role="listitem">0 API keys</span>
         <span role="listitem">TELEMETRY · NONE</span>
-        <span role="listitem">GATES · HUMAN</span>
-        <span role="listitem">EVIDENCE · HASH-CHAINED</span>
+        <span role="listitem">Desktop v12.17.0 · Linux &amp; Win v12.16.0</span>
       </p>
       <a class="fx-scrollcue" href="#features/how-it-works" aria-label="Scroll to how it works"><svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg></a>
     </div>
@@ -1034,9 +1050,9 @@ tar -xzf axym-0.24.0-macos.tar.gz && ./axym-macos-arm64 --install</pre></div>
 
   <nav class="fx-localnav" aria-label="Feature showcase sections">
     <div class="container fx-localnav-inner">
-      <a href="#features/how-it-works" data-fx-spy="how-it-works">How it works</a>
-      <a href="#features/catalog" data-fx-spy="catalog">Command index</a>
-      <a href="#features/start-here" data-fx-spy="start-here">Start here</a>
+      <a href="#features" data-fx-spy="altitude-1">1 · Ask a problem</a>
+      <a href="#features/how-it-works" data-fx-spy="how-it-works">2 · The machine</a>
+      <a href="#features/catalog" data-fx-spy="catalog">3 · Command index</a>
     </div>
   </nav>
 
@@ -1062,9 +1078,17 @@ tar -xzf axym-0.24.0-macos.tar.gz && ./axym-macos-arm64 --install</pre></div>
         <div class="fx-searchrow">
           <label class="visually-hidden" for="feature-filter">Search commands or outcomes</label>
           <input class="filter-input fx-search" id="feature-filter" data-filter-grid="fx-catalog" data-filter-noun="capabilities" type="search" placeholder="Search commands or outcomes — try “worktree”, “maestro”, “mcp”, “/ship”…" autocomplete="off" spellcheck="false">
-          <button type="button" class="fx-newtoggle" id="fx-newtoggle" aria-pressed="false">New in 0.24 <span class="fx-pill-n"></span></button>
         </div>
         <div class="fx-tabs" id="fx-tabs" role="group" aria-label="Capability index tabs"></div>
+        <div class="fx-surfaces" role="group" aria-label="Filter by surface">
+          <span class="fx-surfaces-label">Surface</span>
+          <button type="button" class="fx-surface-pill" data-fx-surface-pill="All" aria-pressed="true">All</button>
+          <button type="button" class="fx-surface-pill" data-fx-surface-pill="TUI" aria-pressed="false">TUI</button>
+          <button type="button" class="fx-surface-pill" data-fx-surface-pill="Mobile" aria-pressed="false">Mobile</button>
+          <button type="button" class="fx-surface-pill" data-fx-surface-pill="Desktop" aria-pressed="false">Desktop</button>
+          <button type="button" class="fx-surface-pill" data-fx-surface-pill="CLI / Runtime" aria-pressed="false">CLI / Runtime</button>
+          <span class="fx-kbd-hint" aria-hidden="true">↑ ↓ step · C copy · ⌘K jump</span>
+        </div>
         <p class="fx-count" id="fx-count" role="status">Loading the capability index…</p>
       </div>
       <div class="fx-index" id="fx-catalog" role="list" aria-label="Capability index"><p class="muted small">Loading the capability index…</p></div>

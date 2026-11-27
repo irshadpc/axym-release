@@ -469,7 +469,7 @@
      count-ups, scroll progress, card spotlight, theater auto-advance) for
      the features page. All behaviour is progressive: without JS, or under
      prefers-reduced-motion, the page renders fully expanded and static. */
-  var fxFilter = { query: '', raw: '', group: 'highlights', newOnly: false };
+  var fxFilter = { query: '', raw: '', group: 'highlights', surface: 'All' };
   var fxObserver = null;
   var fxSpyObserver = null;
   var fxBootTimer = null;
@@ -505,8 +505,10 @@
     row.setAttribute('data-fx-tab', cap.tab || '');
     row.setAttribute('data-fx-maturity', cap.maturity);
     row.setAttribute('data-fx-search', (cap.search || '') + ' ' + cap.name + ' ' + (cap.one_liner || '') + ' ' + (cap.command || ''));
-    if (cap.featured_top12) row.setAttribute('data-fx-featured', 'true');
-    if (currentVersion && cap.introduced_in === currentVersion) row.setAttribute('data-fx-new', 'true');
+    if (cap.flagship) row.setAttribute('data-fx-featured', 'true');
+    if (currentVersion && (cap.is_new_24 || cap.introduced_in === currentVersion)) row.setAttribute('data-fx-new', 'true');
+    row.setAttribute('data-fx-surface', (cap.surface || cap.surfaces || []).join(' '));
+    row.setAttribute('data-fx-node', String(cap.node_id || ''));
 
     var open = document.createElement('button');
     open.type = 'button';
@@ -529,10 +531,10 @@
     });
     row.appendChild(open);
 
-    if (currentVersion && cap.introduced_in === currentVersion) {
+    if (currentVersion && (cap.is_new_24 || cap.introduced_in === currentVersion)) {
       var isNew = document.createElement('span');
       isNew.className = 'fx-new';
-      isNew.textContent = 'new · ' + cap.introduced_in;
+      isNew.textContent = 'new · ' + (cap.introduced_in || '0.24');
       row.appendChild(isNew);
     }
     if (cap.maturity && cap.maturity !== 'stable') {
@@ -574,8 +576,7 @@
       return;
     }
     var currentVersion = ((releases && releases.tui && releases.tui.version) || CAP_MANIFEST.release || '').replace(/^v/, '');
-    if (tabsHost) {
-      tabsHost.innerHTML = '';
+    if (tabsHost) {      tabsHost.innerHTML = '';
       var tabs = CAP_MANIFEST.tabs || {};
       var counts = {};
       var newCount = 0;
@@ -584,19 +585,10 @@
         if (currentVersion && c.introduced_in === currentVersion) newCount++;
       });
       tabsHost.appendChild(fxTabEl('all', 'All', CAPABILITIES.length, fxFilter.group === 'all'));
+      tabsHost.appendChild(fxTabEl('new', 'New in 0.24', newCount, fxFilter.group === 'new'));
       Object.keys(tabs).forEach(function (k) {
         tabsHost.appendChild(fxTabEl(k, tabs[k], counts[k] || 0, fxFilter.group === k));
       });
-    }
-    var newToggle = document.getElementById('fx-newtoggle');
-    if (newToggle) {
-      var n = newToggle.querySelector('.fx-pill-n');
-      var nc = 0;
-      CAPABILITIES.forEach(function (c) {
-        if (currentVersion && c.introduced_in === currentVersion) nc++;
-      });
-      if (n) n.textContent = String(nc);
-      newToggle.setAttribute('aria-pressed', String(fxFilter.newOnly));
     }
     grid.innerHTML = '';
     /* All rows stay in the DOM: the highlights cap is a filter state, so any
@@ -620,27 +612,30 @@
     }
   }
 
-/* ============================================================= REV3 story ==
-   "One session, end to end" — sticky split-screen walkthrough (SW2-S1).
-   Left rail: five plain-text chapters. Right: ONE sticky stage with
-   Session | Diff / Visual | Receipt tabs and an honest ADR-0016 badge.
-   Data: story-stages.json + proofs.manifest.json. Every string is set with
+/* ============================================================= Contract A ==
+   "One session, end to end" — the five-node Turn Anatomy walkthrough.
+   Horizontal node rail (REV4 labels) + ONE sticky stage with
+   Session | Diff / Visual | Receipt tabs, Simulate ▶ streaming, a
+   Next layer → stepper and the honest ADR-0016 badge.
+   Data: anatomy-nodes.json + proofs.manifest.json. Every string is set with
    textContent — nothing from the data files passes through innerHTML. */
 
   var STORY_MANIFEST = null;
   var storyChapter = null;
   var storyObserver = null;
   var storyLockUntil = 0;   /* a click wins over the scroll-spy for a grace period */
+  var storySimTimer = null; /* Simulate ▶ streaming timer; cleared on every re-render */
 
   function loadStory() {
-    return fetch('./data/story-stages.json')
-      .then(function (r) { if (!r.ok) throw new Error('story HTTP ' + r.status); return r.json(); })
+    return fetch('./data/anatomy-nodes.json')
+      .then(function (r) { if (!r.ok) throw new Error('anatomy HTTP ' + r.status); return r.json(); })
       .then(function (data) { STORY_MANIFEST = data; })
       .catch(function () { STORY_MANIFEST = null; });
   }
 
   function storyClearObservers() {
     if (storyObserver) { storyObserver.disconnect(); storyObserver = null; }
+    if (storySimTimer) { clearInterval(storySimTimer); storySimTimer = null; }
   }
 
   function storyBadgeEl(proof) {
@@ -655,12 +650,33 @@
     return badge;
   }
 
-  function storySessionPanel(lines) {
+  function storySessionPanel(lines, simulateBtn) {
     var wrap = document.createElement('div');
     wrap.className = 'fx-proof-terminal';
     var pre = document.createElement('pre');
     pre.textContent = (lines || []).join('\n');
     wrap.appendChild(pre);
+    if (simulateBtn) {
+      /* Simulate ▶ replays the documented lines one by one. The timer lives
+         on the module and is cleared by storyClearObservers()/rerenders. */
+      simulateBtn.addEventListener('click', function () {
+        if (storySimTimer) { clearInterval(storySimTimer); storySimTimer = null; }
+        var shown = 0;
+        pre.textContent = '';
+        simulateBtn.setAttribute('aria-pressed', 'true');
+        storySimTimer = setInterval(function () {
+          if (!pre.isConnected) { clearInterval(storySimTimer); storySimTimer = null; return; }
+          if (shown >= (lines || []).length) {
+            clearInterval(storySimTimer);
+            storySimTimer = null;
+            simulateBtn.setAttribute('aria-pressed', 'false');
+            return;
+          }
+          pre.textContent += lines[shown] + '\n';
+          shown++;
+        }, 130);
+      });
+    }
     return wrap;
   }
 
@@ -774,8 +790,21 @@
     return wrap;
   }
 
-  function storyStageBody(ch, proof) {
+  function storyStageBody(ch, proof, chapters) {
     var frag = document.createDocumentFragment();
+
+    var head = document.createElement('div');
+    head.className = 'fx-proof-head';
+    var badge = storyBadgeEl(proof);
+    head.appendChild(badge);
+    var simulate = document.createElement('button');
+    simulate.type = 'button';
+    simulate.className = 'fx-simulate';
+    simulate.setAttribute('aria-pressed', 'false');
+    simulate.textContent = 'Simulate ▶';
+    simulate.setAttribute('aria-label', 'Simulate: replay the documented session lines for ' + (ch.label || ch.title));
+    head.appendChild(simulate);
+    frag.appendChild(head);
 
     var summary = document.createElement('p');
     summary.className = 'fx-proof-summary';
@@ -789,7 +818,7 @@
     var panels = document.createElement('div');
 
     var views = [
-      { id: 'session', label: 'Session', build: function () { return storySessionPanel(ch.stage && ch.stage.session); } },
+      { id: 'session', label: 'Session', build: function () { return storySessionPanel(ch.stage && ch.stage.session, simulate); } },
       { id: 'diff', label: 'Diff / Visual', build: function () { return storyDiffPanel((ch.stage && ch.stage.diff) || {}); } },
       { id: 'receipt', label: 'Receipt', build: function () { return storyReceiptPanel((ch.stage && ch.stage.receipt) || {}); } },
     ];
@@ -830,6 +859,23 @@
       lim.textContent = proof.limitations;
       frag.appendChild(lim);
     }
+
+    /* Next layer → stepper: walk the pipeline in order. */
+    if (chapters && chapters.length > 1) {
+      var idx = chapters.findIndex(function (c) { return c.id === ch.id; });
+      var next = chapters[idx + 1];
+      if (next) {
+        var foot = document.createElement('div');
+        foot.className = 'fx-proof-foot';
+        var step = document.createElement('button');
+        step.type = 'button';
+        step.className = 'fx-nextlayer';
+        step.textContent = 'Next layer → ' + next.num + ' ' + (next.label ? next.label.replace(/^\d+\s*·\s*/, '') : next.title);
+        step.addEventListener('click', function () { setStoryChapter(next.id); });
+        foot.appendChild(step);
+        frag.appendChild(foot);
+      }
+    }
     return frag;
   }
 
@@ -841,21 +887,32 @@
     return map;
   }
 
-  function setStoryChapter(id) {
+  function setStoryChapter(id, opts) {
     var root = document.getElementById('story-root');
     if (!root || !STORY_MANIFEST) return;
     var ch = null;
-    STORY_MANIFEST.chapters.forEach(function (c) { if (c.id === id) ch = c; });
+    STORY_MANIFEST.nodes.forEach(function (c) { if (c.id === id) ch = c; });
     if (!ch) return;
-    storyChapter = id;
     var proofMap = proofByChapter();
     root.querySelectorAll('[data-story-tab]').forEach(function (b) {
       b.setAttribute('aria-current', b.getAttribute('data-story-tab') === id ? 'true' : 'false');
     });
     var stage = root.querySelector('.story-stage-body');
+    /* A no-op switch (scroll-spy re-firing for the already-active node) must
+       not rebuild the stage: it would wipe a Session/Diff/Receipt choice. */
+    console.log('[SET] ' + id + ' locked=' + (Date.now() < storyLockUntil) + ' noop=' + (storyChapter === id));
+    if (storyChapter === id && opts !== 'force' && stage && stage.childElementCount) return;
+    storyChapter = id;
+    if (storySimTimer) { clearInterval(storySimTimer); storySimTimer = null; }
     if (stage) {
+      var activeView = stage.querySelector('[data-story-view].active');
+      var viewId = activeView ? activeView.getAttribute('data-story-view') : null;
       stage.innerHTML = '';
-      stage.appendChild(storyStageBody(ch, proofMap[id]));
+      stage.appendChild(storyStageBody(ch, proofMap[id], STORY_MANIFEST.nodes));
+      if (viewId && viewId !== 'session') {
+        var tab = stage.querySelector('[data-story-view="' + viewId + '"]');
+        if (tab) tab.click();
+      }
     }
   }
 
@@ -863,18 +920,18 @@
     var root = document.getElementById('story-root');
     storyClearObservers();
     if (!root) return;
-    if (!STORY_MANIFEST || !Array.isArray(STORY_MANIFEST.chapters) || !STORY_MANIFEST.chapters.length) return;
+    if (!STORY_MANIFEST || !Array.isArray(STORY_MANIFEST.nodes) || !STORY_MANIFEST.nodes.length) return;
     root.innerHTML = '';
-    var chapters = STORY_MANIFEST.chapters;
+    var chapters = STORY_MANIFEST.nodes;
     var proofMap = proofByChapter();
 
     var split = document.createElement('div');
     split.className = 'story-split';
 
-    /* ---- left narrative rail (desktop) ---- */
+    /* ---- node rail (REV4 labels; horizontal on desktop, chips on mobile) -- */
     var rail = document.createElement('div');
     rail.className = 'story-rail';
-    rail.setAttribute('aria-label', 'Walkthrough chapters');
+    rail.setAttribute('aria-label', 'Turn anatomy layers');
     chapters.forEach(function (ch) {
       var item = document.createElement('div');
       item.className = 'story-chapter';
@@ -892,7 +949,11 @@
 
       var copy = document.createElement('span');
       copy.className = 'story-copy';
-      var title = document.createElement('b');
+      var label = document.createElement('b');
+      label.textContent = ch.label || ch.num + ' · ' + ch.title;
+      copy.appendChild(label);
+      var title = document.createElement('span');
+      title.className = 'story-title';
       title.textContent = ch.title;
       copy.appendChild(title);
       var lede = document.createElement('span');
@@ -901,6 +962,27 @@
       copy.appendChild(lede);
       btn.appendChild(copy);
       item.appendChild(btn);
+
+      /* Flat clickable list of the capabilities anchored at this layer —
+         each routes through the hash so the drawer and deep links work. */
+      var caps = document.createElement('div');
+      caps.className = 'story-caps';
+      (ch.capability_ids || []).forEach(function (capId) {
+        var cap = null;
+        for (var ci = 0; ci < CAPABILITIES.length; ci++) {
+          if (CAPABILITIES[ci].id === capId) { cap = CAPABILITIES[ci]; break; }
+        }
+        if (!cap) return;
+        var chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'story-cap-chip';
+        chip.setAttribute('aria-haspopup', 'dialog');
+        if (cap.flagship) chip.setAttribute('data-fx-pillar', 'true');
+        chip.textContent = cap.name;
+        chip.addEventListener('click', function () { navigate('features', cap.id); });
+        caps.appendChild(chip);
+      });
+      item.appendChild(caps);
 
       var pills = document.createElement('span');
       pills.className = 'story-pills';
@@ -939,7 +1021,6 @@
 
     var head = document.createElement('div');
     head.className = 'story-stage-head';
-    head.appendChild(storyBadgeEl(proofMap[chapters[0].id]));
     var label = document.createElement('span');
     label.className = 'story-stage-label';
     label.textContent = 'One session, end to end';
@@ -991,8 +1072,9 @@
       chip.className = 'story-chip';
       chip.setAttribute('data-story-tab', ch.id);
       chip.setAttribute('aria-current', storyChapter === ch.id ? 'true' : 'false');
-      chip.setAttribute('aria-label', 'Chapter ' + ch.num + ': ' + ch.title);
+      chip.setAttribute('aria-label', 'Layer ' + ch.num + ': ' + (ch.label || ch.title));
       chip.textContent = ch.num;
+      chip.title = ch.label || ch.title;
       chip.addEventListener('click', function () {
         storyLockUntil = Date.now() + 900;
         setStoryChapter(ch.id);
@@ -1004,7 +1086,9 @@
     if (!storyChapter || !chapters.some(function (c) { return c.id === storyChapter; })) {
       storyChapter = chapters[0].id;
     }
-    setStoryChapter(storyChapter);
+    setStoryChapter(storyChapter, 'force');
+    var anatomySpots = document.querySelectorAll('[data-anatomy-count]');
+    for (var a = 0; a < anatomySpots.length; a++) anatomySpots[a].textContent = String(chapters.length);
 
     /* ---- scroll-sync: a rail chapter crossing the active band activates ---- */
     if ('IntersectionObserver' in window) {
@@ -1106,10 +1190,10 @@
       nb.textContent = 'new · ' + cap.introduced_in;
       badges.appendChild(nb);
     }
-    if (cap.featured_top12) {
+    if (cap.flagship) {
       var fb = document.createElement('span');
       fb.className = 'fx-flag';
-      fb.textContent = 'Featured pillar';
+      fb.textContent = 'Flagship pillar';
       badges.appendChild(fb);
     }
     body.appendChild(badges);
@@ -1182,8 +1266,8 @@
       jump.href = '#features/how-it-works';
       jump.setAttribute('data-fx-storyjump', 'chapter-0' + cap.story_chapter);
       var chTitle = '';
-      if (STORY_MANIFEST && Array.isArray(STORY_MANIFEST.chapters)) {
-        STORY_MANIFEST.chapters.forEach(function (c) {
+      if (STORY_MANIFEST && Array.isArray(STORY_MANIFEST.nodes)) {
+        STORY_MANIFEST.nodes.forEach(function (c) {
           if (c.id === 'chapter-0' + cap.story_chapter) chTitle = c.title;
         });
       }
@@ -1268,6 +1352,62 @@
      query always expands the search to every capability). */
   var FX_DEFAULT_GROUP = 'highlights'; /* Highlights (12) default; any search, tab or toggle queries all rows */
 
+  /* REV4 Altitude 1: "Ask a real problem" — score the intent against every
+     capability, then jump to the matching Turn Anatomy layer. Zero matches
+     falls through to the full command index with the query applied. */
+  function fxRouteProblem(text) {
+    var query = String(text || '').trim();
+    if (!query) return;
+    var tokens = query.toLowerCase().split(/[^a-z0-9]+/).filter(function (t) { return t.length > 2 && t !== 'the'; });
+    var best = null;
+    var bestScore = 0;
+    if (tokens.length) {
+      /* Distinctive words decide: a token that appears in many capability
+         blurbs ("test", "app") weighs far less than a rare one ("maestro",
+         "hangs"). Classic inverse document frequency, computed locally. */
+      var docFreq = {};
+      CAPABILITIES.forEach(function (cap) {
+        var hay = (cap.name + ' ' + (cap.one_liner || '') + ' ' + (cap.problem || cap.user_problem || '') + ' ' +
+          (cap.command || '') + ' ' + (cap.search || '') + ' ' + (cap.what_it_is || '')).toLowerCase();
+        tokens.forEach(function (t) { if (hay.indexOf(t) !== -1) docFreq[t] = (docFreq[t] || 0) + 1; });
+      });
+      CAPABILITIES.forEach(function (cap) {
+        var hay = (cap.name + ' ' + (cap.one_liner || '') + ' ' + (cap.problem || cap.user_problem || '') + ' ' +
+          (cap.command || '') + ' ' + (cap.search || '') + ' ' + (cap.what_it_is || '')).toLowerCase();
+        var score = 0;
+        tokens.forEach(function (t) {
+          if (hay.indexOf(t) === -1) return;
+          var df = docFreq[t] || 1;
+          score += 1 + (CAPABILITIES.length - df) / CAPABILITIES.length;
+        });
+        if (score > bestScore) { bestScore = score; best = cap; }
+      });
+    }
+    if (best) {
+      var node = Math.min(Math.max(best.node_id || 1, 1), 5);
+      storyChapter = 'chapter-0' + node;
+      /* Same-route hash changes skip render(), so the rail and stage are
+         driven directly — exactly how the drawer drives its own deep link. */
+      setStoryChapter(storyChapter, 'force');
+      /* The click lock also covers programmatic routes: without it the
+         scroll-spy re-fires after the anchor scroll and yanks the stage
+         back to whichever node happens to cross its band. */
+      storyLockUntil = Date.now() + 1400;
+      pendingScroll = 'how-it-works';
+      navigate('features', 'how-it-works');
+      return;
+    }
+    /* No intent match: filter the full index instead of dead-ending. */
+    fxFilter.group = 'all';
+    fxFilter.raw = query;
+    fxFilter.query = query.toLowerCase();
+    pendingScroll = 'catalog';
+    navigate('features', 'catalog');
+    var input = document.getElementById('feature-filter');
+    if (input) { input.value = query; }
+    applyFxFilter();
+  }
+
   function fxMode() {
     var mode = fxFilter.group;
     var sep = mode.indexOf(':');
@@ -1281,20 +1421,23 @@
     var rows = grid.querySelectorAll('.fx-row');
     var visible = 0;
     var mode = fxFilter.group;
-    var newToggle = document.getElementById('fx-newtoggle');
-    if (newToggle) newToggle.setAttribute('aria-pressed', String(fxFilter.newOnly));
     for (var i = 0; i < rows.length; i++) {
       var row = rows[i];
       var inMode = true;
       if (mode === 'highlights') inMode = row.getAttribute('data-fx-featured') === 'true';
+      else if (mode === 'new') inMode = row.getAttribute('data-fx-new') === 'true';
       else if (mode !== 'all') inMode = row.getAttribute('data-fx-tab') === mode;
-      if (fxFilter.newOnly) inMode = inMode && row.getAttribute('data-fx-new') === 'true';
+      /* REV4 surface strip: All | TUI | Mobile | Desktop | CLI / Runtime */
+      if (fxFilter.surface && fxFilter.surface !== 'All') {
+        inMode = inMode && (row.getAttribute('data-fx-surface') || '').indexOf(fxFilter.surface) !== -1;
+      }
       /* Anti-lockout: a typed query always searches every capability —
          matches are never hidden behind the highlights cap or a tab. */
       if (fxFilter.query) inMode = true;
       var hay = (row.textContent + ' ' + (row.getAttribute('data-fx-search') || '')).toLowerCase();
       var matches = inMode && (!fxFilter.query || hay.indexOf(fxFilter.query) !== -1);
       row.classList.toggle('filter-hidden', !matches);
+      fxHighlightRow(row, fxFilter.raw);
       if (matches) visible++;
     }
     var count = document.getElementById('fx-count');
@@ -1302,9 +1445,10 @@
       var total = rows.length;
       var scope = '';
       var tabs = (CAP_MANIFEST && CAP_MANIFEST.tabs) || {};
-      if (mode !== 'all' && mode !== FX_DEFAULT_GROUP) scope = ' in ' + (tabs[mode] || mode);
-      if (fxFilter.newOnly && !fxFilter.query) scope += ' new in this release';
-      if (!fxFilter.query && !fxFilter.newOnly && mode === 'all') {
+      if (mode === 'new') scope = ' new in ' + ((releases && releases.tui && releases.tui.version) || 'v0.24.0');
+      else if (mode !== 'all' && mode !== FX_DEFAULT_GROUP) scope = ' in ' + (tabs[mode] || mode);
+      if (fxFilter.surface && fxFilter.surface !== 'All') scope += ' on ' + fxFilter.surface;
+      if (!fxFilter.query && mode === 'all' && (!fxFilter.surface || fxFilter.surface === 'All')) {
         count.textContent = 'Showing all ' + total + ' capabilities';
       } else {
         var parts = ['Showing ' + visible + ' of ' + total + ' capabilities'];
@@ -1317,6 +1461,77 @@
     syncFxExpand();
   }
 
+  /* Inline search-match highlighting: the query is plain text matched
+     against the row's own text nodes, so every <mark> is built from
+     split text nodes — no manifest string ever passes through innerHTML. */
+  function fxHighlightRow(row, query) {
+    if (!query) {
+      row.querySelectorAll('mark[data-fx-mark]').forEach(function (m) {
+        var parent = m.parentNode;
+        parent.replaceChild(document.createTextNode(m.textContent), m);
+        parent.normalize();
+      });
+      return;
+    }
+    var targets = row.querySelectorAll('.fx-row-name, .fx-row-liner');
+    var q = query.toLowerCase();
+    targets.forEach(function (el) {
+      if (el.getAttribute('data-fx-marked') === query) return;
+      var original = el.getAttribute('data-fx-original');
+      if (original === null) {
+        original = el.textContent;
+        el.setAttribute('data-fx-original', original);
+      }
+      el.textContent = '';
+      var lower = original.toLowerCase();
+      var pos = 0;
+      var hit = lower.indexOf(q);
+      if (hit === -1) {
+        el.textContent = original;
+        return;
+      }
+      while (hit !== -1) {
+        if (hit > pos) el.appendChild(document.createTextNode(original.slice(pos, hit)));
+        var m = document.createElement('mark');
+        m.setAttribute('data-fx-mark', '');
+        m.textContent = original.slice(hit, hit + q.length);
+        el.appendChild(m);
+        pos = hit + q.length;
+        hit = lower.indexOf(q, pos);
+      }
+      if (pos < original.length) el.appendChild(document.createTextNode(original.slice(pos)));
+      el.setAttribute('data-fx-marked', query);
+    });
+  }
+
+  /* REV4 keyboard model: ↑ / ↓ step through visible rows, C copies the
+     active row's command. Ignored entirely while typing in an input. */
+  function fxIndexKeyboard(e) {
+    var section = document.getElementById('catalog');
+    if (!section || !section.contains(e.target)) return;
+    var tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea' || tag === 'select' || e.target.isContentEditable) return;
+    var rows = Array.prototype.filter.call(
+      section.querySelectorAll('.fx-row'),
+      function (r) { return !r.classList.contains('filter-hidden'); }
+    );
+    if (!rows.length) return;
+    var active = section.querySelector('.fx-row.fx-active');
+    var idx = rows.indexOf(active);
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      var next = rows[e.key === 'ArrowDown' ? Math.min(idx + 1, rows.length - 1) : Math.max(idx - 1, 0)];
+      if (idx === -1) next = rows[0];
+      rows.forEach(function (r) { r.classList.remove('fx-active'); });
+      next.classList.add('fx-active');
+      var btn = next.querySelector('.fx-row-open');
+      if (btn) btn.focus();
+    } else if ((e.key === 'c' || e.key === 'C') && active) {
+      var copy = active.querySelector('.fx-cmd-copy');
+      if (copy) copy.click();
+    }
+  }
+
   function syncFxTabs() {
     var tabs = document.querySelectorAll('#fx-tabs [data-fx-tab]');
     for (var i = 0; i < tabs.length; i++) {
@@ -1327,7 +1542,7 @@
   function syncFxExpand() {
     var host = document.getElementById('fx-expand');
     if (!host) return;
-    var show = fxFilter.group === FX_DEFAULT_GROUP && !fxFilter.query && !fxFilter.newOnly;
+    var show = fxFilter.group === FX_DEFAULT_GROUP && !fxFilter.query && (!fxFilter.surface || fxFilter.surface === 'All');
     host.hidden = !show;
     if (show) {
       var btn = host.querySelector('#fx-expand-btn');
@@ -1402,11 +1617,12 @@
     if (fxObserver) { fxObserver.disconnect(); fxObserver = null; }
     if (fxSpyObserver) { fxSpyObserver.disconnect(); fxSpyObserver = null; }
     storyClearObservers();
-    storyChapter = null;
+    /* storyChapter intentionally survives renders: the problem bar presets
+       it before navigating, and renderStory validates + falls back anyway. */
     fxFilter.query = '';
     fxFilter.raw = '';
     fxFilter.group = FX_DEFAULT_GROUP;
-    fxFilter.newOnly = false;
+    fxFilter.surface = 'All';
     if (!page) return;
 
     renderCapabilityCatalog();
@@ -1911,6 +2127,18 @@
       });
     }, { passive: true });
 
+    // REV4 Altitude 1: the problem bar routes on submit (Enter or button).
+    document.addEventListener('submit', function (e) {
+      if (e.target && e.target.id === 'fx-problem-form') {
+        e.preventDefault();
+        var bar = document.getElementById('fx-problem-input');
+        if (bar && bar.value.trim()) fxRouteProblem(bar.value);
+      }
+    });
+
+    // REV4 Altitude 3: ↑ / ↓ step visible rows, C copies the active command.
+    document.addEventListener('keydown', fxIndexKeyboard);
+
     document.addEventListener('click', function (e) {
       var tab = e.target.closest('[data-fx-tab]');
       if (tab && tab.closest('#fx-tabs')) {
@@ -1919,10 +2147,20 @@
         return;
       }
 
-      var newToggle = e.target.closest('#fx-newtoggle');
-      if (newToggle) {
-        fxFilter.newOnly = !fxFilter.newOnly;
+      var surf = e.target.closest('[data-fx-surface-pill]');
+      if (surf) {
+        fxFilter.surface = surf.getAttribute('data-fx-surface-pill');
+        document.querySelectorAll('[data-fx-surface-pill]').forEach(function (pill) {
+          pill.setAttribute('aria-pressed', String(pill === surf));
+        });
         applyFxFilter();
+        return;
+      }
+
+      /* REV4 "Ask a real problem" starter chips route intent to a layer. */
+      var painChip = e.target.closest('[data-fx-problem]');
+      if (painChip) {
+        fxRouteProblem(painChip.getAttribute('data-fx-problem'));
         return;
       }
 
@@ -1932,7 +2170,6 @@
         applyFxFilter();
         return;
       }
-
       var tab = e.target.closest('[data-tab]');
       if (tab && tab.closest('[data-tabs]')) {
         var groupEl = tab.closest('[data-tabs]');

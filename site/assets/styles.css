@@ -3154,3 +3154,206 @@ tr.filter-hidden { display: none; }
 }
 
 .section-story { padding-top: var(--space-9); }
+
+/* ============================================================================
+   REV4 — 3-ALTITUDE DISCOVERY LAYER
+   Problem bar (Altitude 1), horizontal Turn Anatomy rail + Simulate ▶ /
+   Next layer stepper (Altitude 2), surface strip + match highlighting +
+   keyboard affordances (Altitude 3). Decorative states only; reduced-motion
+   keeps everything static.
+   ========================================================================== */
+
+/* ---- Altitude 1: playable problem bar ---------------------------------- */
+.fx-problem { width: 100%; max-width: 46rem; }
+.fx-problem-bar {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.45rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  box-shadow: 0 14px 34px -26px color-mix(in srgb, var(--brand) 45%, transparent);
+}
+.fx-problem-bar:focus-within { border-color: color-mix(in srgb, var(--brand) 55%, transparent); }
+.fx-problem-bar input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 0.92rem;
+  padding: 0.4rem 0.6rem;
+}
+.fx-problem-bar input:focus { outline: none; }
+.fx-problem-bar input::placeholder { color: var(--text-muted); }
+.fx-problem-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 0.7rem;
+}
+.fx-chip {
+  padding: 0.36rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-size: 0.76rem;
+  font-weight: 550;
+  cursor: pointer;
+  transition: border-color var(--dur-hover), color var(--dur-hover), transform var(--dur-hover);
+}
+.fx-chip:hover {
+  border-color: color-mix(in srgb, var(--brand) 50%, transparent);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+.fx-chip:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.fx-boot-caption { margin: 0.5rem 0.85rem 0.7rem; }
+.fx-boot-caption code {
+  padding: 0.05em 0.3em;
+  border-radius: var(--radius-xs);
+  background: var(--canvas-alt);
+  font-size: 0.68rem;
+}
+
+/* ---- Altitude 2: horizontal node rail + stage chrome -------------------- */
+.fx-proof-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+.fx-simulate {
+  padding: 0.3rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--brand) 45%, transparent);
+  border-radius: var(--radius-pill);
+  background: var(--brand-subtle);
+  color: var(--brand);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  cursor: pointer;
+}
+.fx-simulate:hover { color: var(--text); }
+.fx-simulate[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--brand) 26%, transparent);
+  color: var(--text);
+}
+.fx-simulate:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.fx-proof-foot {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.7rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border-subtle);
+}
+.fx-nextlayer {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--brand);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.fx-nextlayer:hover { border-color: color-mix(in srgb, var(--brand) 50%, transparent); }
+.fx-nextlayer:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.story-title { color: var(--text-muted); font-size: 0.72rem; line-height: 1.35; }
+.story-caps { display: none; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.5rem; }
+.story-chapter[aria-current="true"] .story-caps { display: flex; }
+.story-cap-chip {
+  padding: 0.22rem 0.55rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--canvas-alt);
+  color: var(--text-secondary);
+  font-size: 0.66rem;
+  cursor: pointer;
+  text-align: left;
+}
+.story-cap-chip:hover { border-color: color-mix(in srgb, var(--brand) 50%, transparent); color: var(--text); }
+.story-cap-chip:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.story-cap-chip[data-fx-pillar="true"] {
+  border-color: color-mix(in srgb, var(--brand) 38%, transparent);
+  color: var(--brand);
+}
+
+/* the rail itself becomes a horizontal 5-node pipeline on desktop */
+@media (min-width: 1025px) {
+  .story-split { grid-template-columns: minmax(0, 1fr); }
+  .story-rail {
+    grid-column: 1;
+    grid-row: auto;
+    flex-direction: row;
+    gap: 0.6rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    scrollbar-width: thin;
+  }
+  .story-chapter { flex: 1 0 14.5rem; min-width: 0; }
+  .story-stagewrap { grid-column: 1; grid-row: auto; position: relative; }
+  .story-tryflow { grid-column: 1; grid-row: auto; }
+}
+
+/* ---- Altitude 3: surface strip + highlight + keyboard affordance -------- */
+.fx-surfaces {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.7rem;
+}
+.fx-surfaces-label {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  margin-right: 0.2rem;
+}
+.fx-surface-pill {
+  padding: 0.26rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  font-weight: 550;
+  cursor: pointer;
+}
+.fx-surface-pill:hover { border-color: var(--border-interactive); color: var(--text); }
+.fx-surface-pill[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--brand) 55%, transparent);
+  background: var(--brand-subtle);
+  color: var(--text);
+}
+.fx-surface-pill:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.fx-kbd-hint {
+  margin-left: auto;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+}
+.fx-row.fx-active {
+  border-left: 2px solid var(--brand);
+  background: var(--surface-elevated);
+}
+.fx-row-name mark, .fx-row-liner mark {
+  background: color-mix(in srgb, var(--brand) 26%, transparent);
+  color: inherit;
+  border-radius: 3px;
+  padding: 0 0.1em;
+}
+
+@media (max-width: 1024px) {
+  .fx-kbd-hint { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fx-chip:hover, .fx-surface-pill:hover { transform: none; }
+}
