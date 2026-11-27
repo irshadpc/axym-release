@@ -3,8 +3,11 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
+  /* The static dev server is single-threaded and every test walks the same
+     heavy pages; over-parallelising turns server contention into flakes. */
+  workers: 3,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 1 : 0,
+  retries: 1,
   reporter: [['list'], ['html', { open: 'never', outputFolder: 'tests/report' }]],
   use: {
     baseURL: 'http://127.0.0.1:4173/axym-release/',

@@ -46,7 +46,19 @@
   },
   {
     "shot": "features-mobile",
-    "violations": [],
+    "violations": [
+      {
+        "id": "scrollable-region-focusable",
+        "impact": "serious",
+        "nodes": 1,
+        "help": "Scrollable region must have keyboard access",
+        "targets": [
+          [
+            ".fx-proof-terminal"
+          ]
+        ]
+      }
+    ],
     "consoleErrors": []
   },
   {

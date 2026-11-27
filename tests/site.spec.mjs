@@ -101,13 +101,13 @@ test.describe('routing and content', () => {
     await open(page, 'features', 'dark');
     await expect(page.locator('.fx-hero-calm')).toBeVisible();
     await expect(page.locator('.fx-hero-calm h1')).toContainText('Build with autonomy.');
-    await expect(page.locator('#install-command')).toContainText('curl -fLO');
+    await expect(page.locator('#fx-doctor-cmd')).toContainText('$ axym doctor');
     await expect(page.locator('#story-root .story-split')).toBeVisible();
     await expect(page.locator('.story-rail .story-chapter')).toHaveCount(5);
     await expect(page.locator('.story-stage')).toBeVisible();
-    await expect(page.locator('.fx-localnav a[data-fx-spy="how-it-works"]')).toContainText('How it works');
-    await expect(page.locator('.fx-localnav a[data-fx-spy="catalog"]')).toContainText('Command index');
-    await expect(page.locator('.fx-localnav a[data-fx-spy="start-here"]')).toContainText('Start here');
+    await expect(page.locator('.fx-localnav a[data-fx-spy="how-it-works"]')).toContainText('2 · The machine');
+    await expect(page.locator('.fx-localnav a[data-fx-spy="catalog"]')).toContainText('3 · Command index');
+    await expect(page.locator('.fx-localnav a[data-fx-spy="altitude-1"]')).toContainText('1 · Ask a problem');
     await expect(page.locator('.fx-meta-line')).toContainText('TELEMETRY · NONE');
   });
 
@@ -273,7 +273,7 @@ test.describe('release data', () => {
 });
 
 test.describe('capability drawer and catalog filters', () => {
-  // The features page renders 84 manifest-driven cards; these tests share a
+  // The features page renders 90 manifest-driven rows; these tests share a
   // single-threaded static server with every other worker, so give each the
   // slow multiplier like the axe suite does.
   test.slow();
@@ -294,7 +294,7 @@ test.describe('capability drawer and catalog filters', () => {
     await expect(drawer).toContainText('Why it matters');
     await expect(drawer).toContainText('Use it');
     await expect(drawer).toContainText('Limitations');
-    await expect(drawer).toContainText('Featured pillar');
+    await expect(drawer).toContainText('Flagship pillar');
   });
 
   test('drawer closes on Escape, restores the hash and refocuses the card', async ({ page }) => {
@@ -379,22 +379,19 @@ test.describe('capability drawer and catalog filters', () => {
     await expect(page.locator('#fx-drawer')).toBeHidden();
   });
 
-  test('the All tab and the New toggle filter the hairline index', async ({ page }) => {
+  test('the All tab shows the full index and the New tab narrows to the release', async ({ page }) => {
     await open(page, 'features', 'dark');
     await page.locator('#fx-catalog .fx-row').first().waitFor();
 
     await page.locator('#fx-tabs [data-fx-tab="all"]').click();
-    await expect(page.locator('#fx-catalog .fx-row:not(.filter-hidden)')).toHaveCount(84);
-    await expect(page.locator('#fx-count')).toContainText('Showing all 84 capabilities');
+    await expect(page.locator('#fx-catalog .fx-row:not(.filter-hidden)')).toHaveCount(90);
+    await expect(page.locator('#fx-count')).toContainText('Showing all 90 capabilities');
 
-    const fresh = page.locator('#fx-newtoggle');
-    await fresh.click();
-    await expect(fresh).toHaveAttribute('aria-pressed', 'true');
-    const visible = page.locator('#fx-catalog .fx-row:not(.filter-hidden)');
-    const n = await visible.count();
+    await page.locator('#fx-tabs [data-fx-tab="new"]').click();
+    await expect(page.locator('#fx-catalog .fx-row:not(.filter-hidden)').first()).toHaveAttribute('data-fx-new', 'true');
+    const n = await page.locator('#fx-catalog .fx-row:not(.filter-hidden)').count();
     expect(n).toBeGreaterThan(0);
-    expect(n).toBeLessThan(84);
-    await expect(page.locator('#fx-count')).toContainText('new in this release');
+    expect(n).toBeLessThan(90);
   });
 
   test('searching while the highlights cap is active searches every capability', async ({ page }) => {
@@ -407,7 +404,7 @@ test.describe('capability drawer and catalog filters', () => {
     await expect(visible.first()).toBeVisible();
     const count = await visible.count();
     expect(count).toBeGreaterThan(0);
-    expect(count).toBeLessThan(84);
+    expect(count).toBeLessThan(90);
     await expect(page.locator('#fx-count')).toContainText('matching "maestro"');
     await expect(page.locator('#fx-catalog [data-fx-id="tui-device-bridge"]')).toBeVisible();
   });
@@ -424,7 +421,7 @@ test.describe('hero positioning and failure-mode strip', () => {
     await expect(strip).toContainText('Parallel worktrees');
     await expect(strip).toContainText('Local MCP firewall');
     await expect(strip).toContainText('Hash-chained proof');
-    await expect(strip).toContainText('84 capabilities');
+    await expect(strip).toContainText('90 capabilities');
     await expect(page.locator('[data-release-version="tui"]')).toHaveText('v0.24.0');
     await expect(page.locator('[data-release-version="desktop"]')).toHaveText('v12.17.0');
     await expect(page.locator('[data-release-version="desktop-cross"]')).toHaveText('v12.16.0');
@@ -446,50 +443,48 @@ test.describe('hairline command index (REV3 Band 3)', () => {
     await open(page, 'features/catalog', 'dark');
     await page.locator('#fx-catalog .fx-row').first().waitFor();
     await expect(page.locator('#fx-catalog .fx-row:not(.filter-hidden)')).toHaveCount(12);
-    await expect(page.locator('#fx-count')).toContainText('Showing 12 of 84');
+    await expect(page.locator('#fx-count')).toContainText('Showing 12 of 90');
     await expect(page.locator('#fx-expand')).toBeVisible();
-    await expect(page.locator('#fx-expand-btn')).toContainText('Expand full index (84 capabilities)');
+    await expect(page.locator('#fx-expand-btn')).toContainText('Expand full index (90 capabilities)');
 
     await page.locator('#fx-expand-btn').click();
-    await expect(page.locator('#fx-catalog .fx-row:not(.filter-hidden)')).toHaveCount(84);
+    await expect(page.locator('#fx-catalog .fx-row:not(.filter-hidden)')).toHaveCount(90);
     await expect(page.locator('#fx-expand')).toBeHidden();
-    await expect(page.locator('#fx-count')).toContainText('Showing all 84 capabilities');
+    await expect(page.locator('#fx-count')).toContainText('Showing all 90 capabilities');
   });
 
   test('the five index tabs filter with live counts', async ({ page }) => {
     await open(page, 'features/catalog', 'dark');
     await page.locator('#fx-catalog .fx-row').first().waitFor();
 
-    for (const tab of ['all', 'core-workflow', 'parallel-worktrees', 'mobile-remote', 'security-proof', 'runtime-flow']) {
+    for (const tab of ['all', 'new', 'core', 'parallel', 'mobile', 'security']) {
       await expect(page.locator(`#fx-tabs [data-fx-tab="${tab}"]`)).toBeVisible();
     }
 
-    await page.locator('#fx-tabs [data-fx-tab="mobile-remote"]').click();
-    await expect(page.locator('#fx-tabs [data-fx-tab="mobile-remote"]')).toHaveAttribute('aria-pressed', 'true');
+    await page.locator('#fx-tabs [data-fx-tab="mobile"]').click();
+    await expect(page.locator('#fx-tabs [data-fx-tab="mobile"]')).toHaveAttribute('aria-pressed', 'true');
     await expect(page.locator('#fx-catalog .fx-row:not(.filter-hidden)')).toHaveCount(8);
     await expect(page.locator('#fx-catalog [data-fx-id="tui-device-bridge"]')).not.toHaveClass(/filter-hidden/);
     await expect(page.locator('#fx-count')).toContainText('in Mobile & Remote');
 
-    await page.locator('#fx-tabs [data-fx-tab="security-proof"]').click();
-    await expect(page.locator('#fx-catalog .fx-row:not(.filter-hidden)')).toHaveCount(12);
+    await page.locator('#fx-tabs [data-fx-tab="security"]').click();
+    await expect(page.locator('#fx-catalog [data-fx-id="feat-zero-trust-mcp-tool-access"]')).not.toHaveClass(/filter-hidden/);
+    const secCount = await page.locator('#fx-catalog .fx-row:not(.filter-hidden)').count();
+    expect(secCount).toBeGreaterThan(12);
     await expect(page.locator('#fx-catalog [data-fx-id="feat-zero-trust-mcp-tool-access"]')).not.toHaveClass(/filter-hidden/);
   });
 
-  test('the New in 0.24 toggle narrows to this release and combines with tabs', async ({ page }) => {
+  test('the New in 0.24 tab narrows to this release', async ({ page }) => {
     await open(page, 'features/catalog', 'dark');
     await page.locator('#fx-catalog .fx-row').first().waitFor();
-    const toggle = page.locator('#fx-newtoggle');
-    await toggle.click();
-    await expect(toggle).toHaveAttribute('aria-pressed', 'true');
-    await expect(page.locator('#fx-count')).toContainText('new in this release');
+    await page.locator('#fx-tabs [data-fx-tab="new"]').click();
+    await expect(page.locator('#fx-tabs [data-fx-tab="new"]')).toHaveAttribute('aria-pressed', 'true');
     const visible = page.locator('#fx-catalog .fx-row:not(.filter-hidden)');
     const n = await visible.count();
     expect(n).toBeGreaterThan(0);
-    expect(n).toBeLessThan(84);
-    await expect(visible.first()).toBeVisible();
-    await toggle.click();
-    await expect(toggle).toHaveAttribute('aria-pressed', 'false');
-    await expect(page.locator('#fx-catalog .fx-row:not(.filter-hidden)')).toHaveCount(12);
+    expect(n).toBeLessThan(90);
+    await expect(visible.first()).toHaveAttribute('data-fx-new', 'true');
+    await expect(page.locator('#fx-count')).toContainText('new in v0.24.0');
   });
 
   test('REV3 showcase searches land on exact rows with accurate counts', async ({ page }) => {
@@ -500,7 +495,7 @@ test.describe('hairline command index (REV3 Band 3)', () => {
       ['council', 'feat-council-mode'],
       ['mcp', 'feat-zero-trust-mcp-tool-access'],
       ['maestro', 'tui-device-bridge'],
-      ['shadow', 'feat-proof-carrying-races-and-offline-verification'],
+      ['shadow', 'feat-shadow-evidence'],
       ['/flow', 'tui-flow-os'],
     ]) {
       await page.locator('#feature-filter').fill(term);
@@ -508,13 +503,13 @@ test.describe('hairline command index (REV3 Band 3)', () => {
       await expect(page.locator('#fx-count')).toContainText('matching');
     }
     await page.locator('#feature-filter').fill('');
-    await expect(page.locator('#fx-count')).toContainText('Showing 12 of 84');
+    await expect(page.locator('#fx-count')).toContainText('Showing 12 of 90');
   });
 
   test('searching through a tab still spans every capability', async ({ page }) => {
     await open(page, 'features/catalog', 'dark');
     await page.locator('#fx-catalog .fx-row').first().waitFor();
-    await page.locator('#fx-tabs [data-fx-tab="mobile-remote"]').click();
+    await page.locator('#fx-tabs [data-fx-tab="mobile"]').click();
     await page.locator('#feature-filter').fill('linucb');
     await expect(page.locator('#fx-catalog [data-fx-id="feat-cost-routing"]')).not.toHaveClass(/filter-hidden/);
     await expect(page.locator('#fx-count')).toContainText('searching all');

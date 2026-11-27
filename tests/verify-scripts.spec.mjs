@@ -55,13 +55,13 @@ test.describe('manifest-sync guardrails (build-level, ADR-0016)', () => {
     expect(runVerifier('verify-manifest-sync.mjs').status).toBe(0);
   });
 
-  test('REV3 contracts hold: five tabs, five story chapters, twelve flagships', () => {
+  test('REV4 contracts hold: four tabs, five anatomy nodes, twelve flagships', () => {
     const sync = runVerifier('verify-manifest-sync.mjs');
     expect(sync.status, sync.stdout).toBe(0);
-    expect(sync.stdout).toContain('the five REV3 index tabs are declared exactly');
-    expect(sync.stdout).toContain('the story declares exactly five chapters numbered 01–05');
-    expect(sync.stdout).toContain('proofs manifest binds all five story chapters');
-    expect(sync.stdout).toContain('exactly twelve capabilities are flagged featured_top12');
+    expect(sync.stdout).toContain('the four REV4 index tabs are declared exactly');
+    expect(sync.stdout).toContain('the anatomy declares exactly five nodes numbered 01–05');
+    expect(sync.stdout).toContain('proofs.manifest.json binds the same five node ids');
+    expect(sync.stdout).toContain('exactly twelve capabilities are flagged flagship');
   });
 
   test('the features page mounts the story walkthrough host', async ({ page }) => {
@@ -75,7 +75,7 @@ test.describe('story walkthrough (REV3 Band 2, ADR-0016)', () => {
 
   test('all five chapters start with the honest Illustrative Schematic badge', async ({ page }) => {
     await page.goto('/axym-release/#features/how-it-works', { waitUntil: 'networkidle' });
-    const chapters = page.locator('.story-rail .story-chapter');
+    const chapters = page.locator('.story-rail .story-chapter-btn');
     await expect(chapters).toHaveCount(5);
     for (let i = 0; i < 5; i++) {
       await chapters.nth(i).click();
@@ -87,13 +87,14 @@ test.describe('story walkthrough (REV3 Band 2, ADR-0016)', () => {
   test('chapters switch via the rail and the stage content follows', async ({ page }) => {
     await page.goto('/axym-release/#features/how-it-works', { waitUntil: 'networkidle' });
     const rail = page.locator('.story-rail .story-chapter');
+    const railBtns = page.locator('.story-rail .story-chapter-btn');
     await expect(rail.nth(0)).toHaveAttribute('aria-current', 'true');
     await expect(page.locator('.story-stage-body')).toContainText('living repo brain');
-    await rail.nth(1).click();
+    await railBtns.nth(1).click();
     await expect(rail.nth(1)).toHaveAttribute('aria-current', 'true');
     await expect(rail.nth(0)).toHaveAttribute('aria-current', 'false');
     await expect(page.locator('.story-stage-body')).toContainText('Two linked worktrees');
-    await rail.nth(3).click();
+    await railBtns.nth(3).click();
     await expect(page.locator('.story-stage-body')).toContainText('simulator journey');
   });
 
@@ -112,7 +113,7 @@ test.describe('story walkthrough (REV3 Band 2, ADR-0016)', () => {
 
   test('the mobile chapter labels the simulator vs real-device boundary honestly', async ({ page }) => {
     await page.goto('/axym-release/#features/how-it-works', { waitUntil: 'networkidle' });
-    await page.locator('.story-rail .story-chapter').nth(3).click();
+    await page.locator('.story-rail .story-chapter-btn').nth(3).click();
     await expect(page.locator('.story-stage-body')).toContainText('T-050 hardware journey, which is partial');
     await page.locator('[data-story-view="receipt"]').click();
     await expect(page.locator('.story-stage-body')).toContainText('UNV · real-device (hardware) certification');
