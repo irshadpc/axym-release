@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "adr": "ADR-0016",
+  "version": 2,
+  "contract": "REV4 Contract A",
   "title": "One session, end to end",
   "notes": "Contract A (REV3). The five-chapter walkthrough teaches all twelve flagship pillars inside one continuous engineering session. Stage schematics describe documented v0.24.0 behaviour; whether a chapter may show a Verified Recording badge lives in proofs.manifest.json — never here. Every command pill links the capability that owns it.",
   "try_flow": [
@@ -9,13 +9,14 @@
     "axym fitness --json",
     "axym bench --reproduce"
   ],
-  "chapters": [
+  "nodes": [
     {
       "id": "chapter-01",
+      "node_id": 1,
       "num": "01",
       "title": "Keep your CLIs. Add a living brain.",
       "lede": "Axym wraps the agent CLIs already on your machine — Claude, Codex, OpenCode and more — with zero static API keys. Behind them, a living repo brain keeps context warm and /po turns a fuzzy request into a scoped decision before any code moves.",
-      "capabilities": [
+      "capability_ids": [
         "feat-one-session-any-agent-cli",
         "feat-living-repo-brain-and-memory",
         "feat-bundled-skills",
@@ -23,9 +24,18 @@
         "feat-automatic-failover-and-provider-cooldowns"
       ],
       "commands": [
-        { "cmd": "axym --provider claude", "cap": "feat-one-session-any-agent-cli" },
-        { "cmd": "/po", "cap": "feat-bundled-skills" },
-        { "cmd": "/memory", "cap": "feat-living-repo-brain-and-memory" }
+        {
+          "cmd": "axym --provider claude",
+          "cap": "feat-one-session-any-agent-cli"
+        },
+        {
+          "cmd": "/po",
+          "cap": "feat-bundled-skills"
+        },
+        {
+          "cmd": "/memory",
+          "cap": "feat-living-repo-brain-and-memory"
+        }
       ],
       "stage": {
         "summary": "Provider selection with zero static keys, the living repo brain loading its context pyramid, and /po scoping the task — all before the first edit.",
@@ -49,13 +59,34 @@
           "kind": "text",
           "meta": "context pyramid — what the brain holds before the first turn",
           "lines": [
-            { "t": "hunk", "s": "repo skeleton (AST summary — never the full tree)" },
-            { "t": "add", "s": "src/app.ts        exports 12 · routes 9 · ~480 lines" },
-            { "t": "add", "s": "src/rate.test.ts   exists · 6 tests · last touched 3d ago" },
-            { "t": "hunk", "s": "lessons (causal, from /race outcomes)" },
-            { "t": "note", "s": "\"token-bucket beat sliding-window on this repo (2 races)\"" },
-            { "t": "hunk", "s": "prompt-cache" },
-            { "t": "add", "s": "prefix reuse across turns · repeat turns skip re-reading the repo" }
+            {
+              "t": "hunk",
+              "s": "repo skeleton (AST summary — never the full tree)"
+            },
+            {
+              "t": "add",
+              "s": "src/app.ts        exports 12 · routes 9 · ~480 lines"
+            },
+            {
+              "t": "add",
+              "s": "src/rate.test.ts   exists · 6 tests · last touched 3d ago"
+            },
+            {
+              "t": "hunk",
+              "s": "lessons (causal, from /race outcomes)"
+            },
+            {
+              "t": "note",
+              "s": "\"token-bucket beat sliding-window on this repo (2 races)\""
+            },
+            {
+              "t": "hunk",
+              "s": "prompt-cache"
+            },
+            {
+              "t": "add",
+              "s": "prefix reuse across turns · repeat turns skip re-reading the repo"
+            }
           ]
         },
         "receipt": {
@@ -66,14 +97,16 @@
           "blockers": 0,
           "evidence": "scope and recalled evidence journaled before any edit is staged"
         }
-      }
+      },
+      "label": "01 · CLIs & Repo Brain"
     },
     {
       "id": "chapter-02",
+      "node_id": 2,
       "num": "02",
       "title": "Run agents in parallel without collisions.",
       "lede": "/runs gives every agent its own linked git worktree with live tmux, zellij or wezterm panes, so events and staged files never mix. A Council cross-check reviews the author's work, and when a provider hits its quota the run parks until reset instead of dying.",
-      "capabilities": [
+      "capability_ids": [
         "feat-parallel-isolated-runs",
         "feat-council-mode",
         "feat-mux-pane-adapters",
@@ -81,9 +114,18 @@
         "feat-run-comparison-and-stage-costs"
       ],
       "commands": [
-        { "cmd": "/runs start --mux tmux", "cap": "feat-parallel-isolated-runs" },
-        { "cmd": "/council", "cap": "feat-council-mode" },
-        { "cmd": "axym queue", "cap": "tui-flow-os" }
+        {
+          "cmd": "/runs start --mux tmux",
+          "cap": "feat-parallel-isolated-runs"
+        },
+        {
+          "cmd": "/council",
+          "cap": "feat-council-mode"
+        },
+        {
+          "cmd": "axym queue",
+          "cap": "tui-flow-os"
+        }
       ],
       "stage": {
         "summary": "Two linked worktrees with live mux panes, an isolated run recovered from a provider stall, and a Council cross-check with a recorded decision.",
@@ -107,15 +149,42 @@
           "kind": "text",
           "meta": "per-run isolation — staged files never mix across worktrees",
           "lines": [
-            { "t": "hunk", "s": "run 4f2a → wt-parallel-1 (staged)" },
-            { "t": "add", "s": "src/rate.ts            | 18 +++" },
-            { "t": "add", "s": "src/rate.test.ts       |  9 ++" },
-            { "t": "hunk", "s": "run 9c11 → wt-parallel-2 (staged)" },
-            { "t": "add", "s": "src/cache/keys.ts      | 42 +++" },
-            { "t": "del", "s": "src/cache/legacy.ts    | 30 ---" },
-            { "t": "hunk", "s": "integration" },
-            { "t": "note", "s": "/runs integrate 9c11        # preview only" },
-            { "t": "note", "s": "/runs integrate 9c11 --apply # explicit, checkpointed merge" }
+            {
+              "t": "hunk",
+              "s": "run 4f2a → wt-parallel-1 (staged)"
+            },
+            {
+              "t": "add",
+              "s": "src/rate.ts            | 18 +++"
+            },
+            {
+              "t": "add",
+              "s": "src/rate.test.ts       |  9 ++"
+            },
+            {
+              "t": "hunk",
+              "s": "run 9c11 → wt-parallel-2 (staged)"
+            },
+            {
+              "t": "add",
+              "s": "src/cache/keys.ts      | 42 +++"
+            },
+            {
+              "t": "del",
+              "s": "src/cache/legacy.ts    | 30 ---"
+            },
+            {
+              "t": "hunk",
+              "s": "integration"
+            },
+            {
+              "t": "note",
+              "s": "/runs integrate 9c11        # preview only"
+            },
+            {
+              "t": "note",
+              "s": "/runs integrate 9c11 --apply # explicit, checkpointed merge"
+            }
           ]
         },
         "receipt": {
@@ -131,14 +200,16 @@
           "blockers": 0,
           "evidence": "hash-chained event trail per run · merge is a separate human decision"
         }
-      }
+      },
+      "label": "02 · Worktrees & Mux"
     },
     {
       "id": "chapter-03",
+      "node_id": 3,
       "num": "03",
       "title": "Firewall tools, stop hangs, control spend.",
       "lede": "The local MCP firewall admits tools by capability, taints untrusted output and keeps a full audit trail. Calm-UX classifies a hang, drains the orphan and arms the circuit breaker, while LinUCB cost routing picks the provider your budget agrees with — and speculative shadow evidence gathers proof while the review gate waits.",
-      "capabilities": [
+      "capability_ids": [
         "feat-zero-trust-mcp-tool-access",
         "feat-anti-hang-guard",
         "feat-cost-routing",
@@ -146,9 +217,18 @@
         "feat-security-review"
       ],
       "commands": [
-        { "cmd": "/mcp", "cap": "feat-zero-trust-mcp-tool-access" },
-        { "cmd": "/cost", "cap": "feat-cost-routing" },
-        { "cmd": "/security", "cap": "feat-security-review" }
+        {
+          "cmd": "/mcp",
+          "cap": "feat-zero-trust-mcp-tool-access"
+        },
+        {
+          "cmd": "/cost",
+          "cap": "feat-cost-routing"
+        },
+        {
+          "cmd": "/security",
+          "cap": "feat-security-review"
+        }
       ],
       "stage": {
         "summary": "A poisoned MCP response is denied and tainted before it reaches the model, a stall is classified instead of retried forever, and the cost router records why it picked the cheaper provider.",
@@ -173,13 +253,34 @@
           "kind": "text",
           "meta": "firewall decision log — local, append-only, inspectable",
           "lines": [
-            { "t": "hunk", "s": "mcp audit trail (this session)" },
-            { "t": "add", "s": "admit  fs_read        capability: repo:read" },
-            { "t": "add", "s": "admit  test_runner    capability: test:run" },
-            { "t": "del", "s": "deny   docs_scraper   capability: net:fetch · untrusted output" },
-            { "t": "note", "s": "taint  docs_scraper#2 content never entered the model context" },
-            { "t": "hunk", "s": "hang ledger" },
-            { "t": "add", "s": "stall #1 provider read timeout → drained · breaker armed" }
+            {
+              "t": "hunk",
+              "s": "mcp audit trail (this session)"
+            },
+            {
+              "t": "add",
+              "s": "admit  fs_read        capability: repo:read"
+            },
+            {
+              "t": "add",
+              "s": "admit  test_runner    capability: test:run"
+            },
+            {
+              "t": "del",
+              "s": "deny   docs_scraper   capability: net:fetch · untrusted output"
+            },
+            {
+              "t": "note",
+              "s": "taint  docs_scraper#2 content never entered the model context"
+            },
+            {
+              "t": "hunk",
+              "s": "hang ledger"
+            },
+            {
+              "t": "add",
+              "s": "stall #1 provider read timeout → drained · breaker armed"
+            }
           ]
         },
         "receipt": {
@@ -191,22 +292,33 @@
           "blockers": 0,
           "evidence": "decisions hash-chained · nothing left the machine"
         }
-      }
+      },
+      "label": "03 · MCP Firewall & Guard"
     },
     {
       "id": "chapter-04",
+      "node_id": 4,
       "num": "04",
       "title": "Build, diff, and test mobile apps natively.",
       "lede": "Declare your target in .axym/mobile.json and Axym drives iOS simulators and Android emulators end to end: visual diffs with hierarchy evidence, Maestro UI automation, MASVS security passes and /bg cloud builds — with one-tap approvals from your phone over LAN TLS.",
-      "capabilities": [
+      "capability_ids": [
         "tui-device-bridge",
         "feat-security-review",
         "feat-session-and-run-handoff"
       ],
       "commands": [
-        { "cmd": "/sim boot ios", "cap": "tui-device-bridge" },
-        { "cmd": "/qa --maestro", "cap": "tui-device-bridge" },
-        { "cmd": "/security --masvs", "cap": "feat-security-review" }
+        {
+          "cmd": "/sim boot ios",
+          "cap": "tui-device-bridge"
+        },
+        {
+          "cmd": "/qa --maestro",
+          "cap": "tui-device-bridge"
+        },
+        {
+          "cmd": "/security --masvs",
+          "cap": "feat-security-review"
+        }
       ],
       "stage": {
         "summary": "A simulator journey with schema-v2 visual proof, a Maestro UI pass and a MASVS security gate — the certified simulator surface, with the real-device boundary labelled honestly.",
@@ -233,9 +345,18 @@
           "kind": "visual",
           "meta": "schema v2 visual proof — capture, hierarchy and design diff",
           "items": [
-            { "label": "Receipt screen · before", "detail": "cart badge missing after checkout" },
-            { "label": "Receipt screen · after", "detail": "cart badge resets · button state settled" },
-            { "label": "Visual diff", "detail": "1 region changed · hierarchy delta: CartBadge.count 1 → 0" }
+            {
+              "label": "Receipt screen · before",
+              "detail": "cart badge missing after checkout"
+            },
+            {
+              "label": "Receipt screen · after",
+              "detail": "cart badge resets · button state settled"
+            },
+            {
+              "label": "Visual diff",
+              "detail": "1 region changed · hierarchy delta: CartBadge.count 1 → 0"
+            }
           ],
           "boundary": "Captures shown here come from simulators. Real-device visual-diff fidelity, cert-pinned Wi-Fi and closed-app Web Push are part of the T-050 hardware journey, which is partial — the badge stays illustrative until a real capture is committed."
         },
@@ -247,17 +368,21 @@
           "qa": "maestro — 12 flows · 0 failures",
           "security": "MASVS pass · 0 blockers · store preflight ready",
           "blockers": 0,
-          "unverified": ["real-device (hardware) certification — T-050, not GA"],
+          "unverified": [
+            "real-device (hardware) certification — T-050, not GA"
+          ],
           "evidence": "captures and diffs stored locally · nothing uploaded"
         }
-      }
+      },
+      "label": "04 · Mobile Dev & Remote"
     },
     {
       "id": "chapter-05",
+      "node_id": 5,
       "num": "05",
       "title": "Ship only what passes independent proof.",
       "lede": "Adversarial QA, AIDE root-cause diagnosis and axym fitness gate the change before /ship offers it; the Result Ledger is hash-chained and a cassette replay proves the run reproduces. Shipping stays a separate human decision — apply is explicit and reversible.",
-      "capabilities": [
+      "capability_ids": [
         "feat-ship-governed-pipeline",
         "feat-aide-run-diagnosis-and-event-inspection",
         "feat-security-review",
@@ -265,9 +390,18 @@
         "tui-flow-os"
       ],
       "commands": [
-        { "cmd": "axym fitness --json", "cap": "feat-ship-governed-pipeline" },
-        { "cmd": "/ship apply", "cap": "feat-ship-governed-pipeline" },
-        { "cmd": "axym bench --reproduce", "cap": "feat-proof-carrying-races-and-offline-verification" }
+        {
+          "cmd": "axym fitness --json",
+          "cap": "feat-ship-governed-pipeline"
+        },
+        {
+          "cmd": "/ship apply",
+          "cap": "feat-ship-governed-pipeline"
+        },
+        {
+          "cmd": "axym bench --reproduce",
+          "cap": "feat-proof-carrying-races-and-offline-verification"
+        }
       ],
       "stage": {
         "summary": "The governed pipeline from /po problem framing to a hash-chained Result Ledger: independent review, fitness contracts, typed command-contract checks (ADR-0007) and a cassette replay that proves the run reproduces.",
@@ -295,33 +429,96 @@
           "kind": "text",
           "meta": "git diff — 3 files changed, 18 insertions(+), 2 deletions(-)",
           "lines": [
-            { "t": "hunk", "s": "src/app.ts" },
-            { "t": "add", "ln": 41, "s": "+ const limiter = createLimiter({ windowMs: 60_000, max: 120 });" },
-            { "t": "add", "ln": 42, "s": "+ app.use(\"/api\", limiter.middleware);" },
-            { "t": "add", "ln": 43, "s": "+ export const _limiterTestHooks = limiter;" },
-            { "t": "del", "ln": 18, "s": "- app.use(\"/api\", legacyThrottle);" },
-            { "t": "hunk", "s": "src/rate.test.ts" },
-            { "t": "add", "ln": 7, "s": "+ it(\"returns 429 past the window budget\", async () => {" },
-            { "t": "add", "ln": 8, "s": "+   await expect(flood(api, 121)).rejects.toMatchObject({ status: 429 });" },
-            { "t": "add", "ln": 9, "s": "+ });" }
+            {
+              "t": "hunk",
+              "s": "src/app.ts"
+            },
+            {
+              "t": "add",
+              "ln": 41,
+              "s": "+ const limiter = createLimiter({ windowMs: 60_000, max: 120 });"
+            },
+            {
+              "t": "add",
+              "ln": 42,
+              "s": "+ app.use(\"/api\", limiter.middleware);"
+            },
+            {
+              "t": "add",
+              "ln": 43,
+              "s": "+ export const _limiterTestHooks = limiter;"
+            },
+            {
+              "t": "del",
+              "ln": 18,
+              "s": "- app.use(\"/api\", legacyThrottle);"
+            },
+            {
+              "t": "hunk",
+              "s": "src/rate.test.ts"
+            },
+            {
+              "t": "add",
+              "ln": 7,
+              "s": "+ it(\"returns 429 past the window budget\", async () => {"
+            },
+            {
+              "t": "add",
+              "ln": 8,
+              "s": "+   await expect(flood(api, 121)).rejects.toMatchObject({ status: 429 });"
+            },
+            {
+              "t": "add",
+              "ln": 9,
+              "s": "+ });"
+            }
           ]
         },
         "receipt": {
           "outcome": "OK · VER",
           "files_changed": 2,
           "checks": [
-            { "name": "typecheck", "result": "pass", "exit": 0 },
-            { "name": "tests", "result": "pass", "exit": 0, "detail": "18 passed · 2 new" },
-            { "name": "fitness", "result": "pass", "exit": 0, "detail": "9/9 contracts · context satisfied" },
-            { "name": "command contracts", "result": "pass", "detail": "ADR-0007 shapes held" },
-            { "name": "build", "result": "pass", "exit": 0 },
-            { "name": "review", "result": "awaiting-approval", "independence": "labelled — different provider from the coder" }
+            {
+              "name": "typecheck",
+              "result": "pass",
+              "exit": 0
+            },
+            {
+              "name": "tests",
+              "result": "pass",
+              "exit": 0,
+              "detail": "18 passed · 2 new"
+            },
+            {
+              "name": "fitness",
+              "result": "pass",
+              "exit": 0,
+              "detail": "9/9 contracts · context satisfied"
+            },
+            {
+              "name": "command contracts",
+              "result": "pass",
+              "detail": "ADR-0007 shapes held"
+            },
+            {
+              "name": "build",
+              "result": "pass",
+              "exit": 0
+            },
+            {
+              "name": "review",
+              "result": "awaiting-approval",
+              "independence": "labelled — different provider from the coder"
+            }
           ],
           "blockers": 0,
-          "unverified": ["performance under sustained load marked UNV — not measured this turn"],
+          "unverified": [
+            "performance under sustained load marked UNV — not measured this turn"
+          ],
           "evidence": "hash-chained event trail · cassette replay matches · staged in .axym/edit-staging/run-<id> · reaches the repo only through /ship apply"
         }
-      }
+      },
+      "label": "05 · Proof & /ship"
     }
   ]
 }

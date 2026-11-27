@@ -51,20 +51,20 @@ function readFile(rel) {
 /* The twelve flagship pillars (Contract B), fixed order. */
 const FLAGSHIP_TOP12 = [
   'feat-one-session-any-agent-cli',
-  'feat-parallel-isolated-runs',
-  'tui-device-bridge',
-  'feat-zero-trust-mcp-tool-access',
-  'feat-ship-governed-pipeline',
-  'feat-council-mode',
   'feat-living-repo-brain-and-memory',
+  'feat-parallel-isolated-runs',
+  'feat-council-mode',
+  'feat-zero-trust-mcp-tool-access',
   'feat-anti-hang-guard',
-  'feat-aide-run-diagnosis-and-event-inspection',
-  'feat-security-review',
-  'feat-proof-carrying-races-and-offline-verification',
+  'feat-shadow-evidence',
+  'tui-device-bridge',
   'tui-flow-os',
+  'feat-ship-governed-pipeline',
+  'feat-sentinel-qa',
+  'feat-web-check',
 ];
 
-const REV3_TABS = ['core-workflow', 'parallel-worktrees', 'mobile-remote', 'security-proof', 'runtime-flow'];
+const REV4_TABS = ['core', 'parallel', 'mobile', 'security'];
 
 /* REV3 Contract A: flagship pillar -> the story chapter (01–05) that teaches it. */
 const FLAGSHIP_CHAPTERS = {
@@ -83,7 +83,7 @@ const FLAGSHIP_CHAPTERS = {
 };
 
 const VALID_MATURITY = ['stable', 'experimental', 'roadmap'];
-const VALID_SURFACES = ['TUI', 'Desktop', 'Mobile'];
+const VALID_SURFACES = ['TUI', 'Desktop', 'Mobile', 'CLI / Runtime'];
 
 process.stdout.write('\nAXYM MANIFEST SYNC — HAWK-EYE DRIFT PREVENTION\n=============================================\n');
 
@@ -105,27 +105,29 @@ const caps = Array.isArray(manifest.capabilities) ? manifest.capabilities : [];
 const total = caps.length;
 check('manifest declares at least 80 capabilities', total >= 80, `found ${total}`);
 check('capability ids are unique', new Set(caps.map((c) => c.id)).size === total);
-check('the five REV3 index tabs are declared exactly',
-  JSON.stringify(Object.keys(manifest.tabs || {})) === JSON.stringify(REV3_TABS),
+check('the four REV4 index tabs are declared exactly',
+  JSON.stringify(Object.keys(manifest.tabs || {})) === JSON.stringify(REV4_TABS),
   `found ${JSON.stringify(Object.keys(manifest.tabs || {}))}`);
 
-const requiredFields = ['id', 'name', 'group', 'summary', 'commands', 'search', 'maturity', 'one_liner', 'command', 'tab', 'story_chapter', 'featured_top12', 'what_it_is', 'why_it_matters', 'use_it', 'surfaces', 'limitations'];
+const requiredFields = ['id', 'name', 'group', 'summary', 'commands', 'search', 'maturity', 'one_liner', 'command', 'tab', 'story_chapter', 'flagship', 'is_new_24', 'node_id', 'what_it_is', 'why_it_matters', 'use_it', 'surfaces', 'limitations'];
 let schemaOk = true;
 const schemaIssues = [];
 for (const c of caps) {
   const missing = requiredFields.filter((f) => c[f] === undefined || c[f] === null || (typeof c[f] === 'string' && !c[f].trim()));
   const maturityOk = VALID_MATURITY.includes(c.maturity);
-  const tabOk = REV3_TABS.includes(c.tab);
-  const chapterOk = Number.isInteger(c.story_chapter) && c.story_chapter >= 1 && c.story_chapter <= 5;
+  const tabOk = REV4_TABS.includes(c.tab);
+  const chapterOk = (Number.isInteger(c.story_chapter) && c.story_chapter >= 1 && c.story_chapter <= 5) &&
+    (Number.isInteger(c.node_id) && c.node_id >= 1 && c.node_id <= 5 && c.node_id === c.story_chapter);
   const linerOk = typeof c.one_liner === 'string' && c.one_liner.length >= 1 && c.one_liner.length <= 110;
   const commandsOk = Array.isArray(c.commands) && c.commands.length > 0;
   const surfacesOk = Array.isArray(c.surfaces) && c.surfaces.length > 0 && c.surfaces.every((s) => VALID_SURFACES.includes(s));
-  if (missing.length || !maturityOk || !tabOk || !chapterOk || !linerOk || !commandsOk || !surfacesOk) {
+  const newOk = typeof c.is_new_24 === 'boolean' && c.is_new_24 === (c.introduced_in === '0.24.0');
+  if (missing.length || !maturityOk || !tabOk || !chapterOk || !linerOk || !commandsOk || !surfacesOk || !newOk) {
     schemaOk = false;
-    schemaIssues.push(`${c.id || '(no id)'}${missing.length ? ` missing:${missing.join(',')}` : ''}${!maturityOk ? ' bad:maturity' : ''}${!tabOk ? ' bad:tab' : ''}${!chapterOk ? ' bad:story_chapter' : ''}${!linerOk ? ' bad:one_liner(<=110)' : ''}${!commandsOk ? ' bad:commands' : ''}${!surfacesOk ? ' bad:surfaces' : ''}`);
+    schemaIssues.push(`${c.id || '(no id)'}${missing.length ? ` missing:${missing.join(',')}` : ''}${!maturityOk ? ' bad:maturity' : ''}${!tabOk ? ' bad:tab' : ''}${!chapterOk ? ' bad:node/story_chapter' : ''}${!linerOk ? ' bad:one_liner(<=110)' : ''}${!commandsOk ? ' bad:commands' : ''}${!surfacesOk ? ' bad:surfaces' : ''}${!newOk ? ' bad:is_new_24' : ''}`);
   }
 }
-check('every capability carries complete REV3 Contract A metadata', schemaOk, schemaIssues.slice(0, 4).join(' | '));
+check('every capability carries complete REV4 Contract B metadata', schemaOk, schemaIssues.slice(0, 4).join(' | '));
 check('every capability group is declared', caps.every((c) => (manifest.groups || {})[c.group]));
 
 /* REV3: the reference prose wall is replaced by the manifest + detail drawer. */
@@ -134,24 +136,20 @@ check('content.js no longer ships a static reference prose wall (drawer replaces
 check('capability details come from the manifest-driven drawer, not static copy',
   app.includes('function openDrawer') && app.includes("fetch('./data/capabilities.manifest.json')"));
 
-/* ------------------------------------------------------- Contract B (12) -- */
+/* ------------------------------------------------- Contract B (12) REV4 -- */
 process.stdout.write('\n[b] Contract B — the twelve flagship pillars\n');
-const featured = caps.filter((c) => c.featured_top12 === true);
-check('exactly twelve capabilities are flagged featured_top12', featured.length === 12, `found ${featured.length}`);
+const featured = caps.filter((c) => c.flagship === true);
+check('exactly twelve capabilities are flagged flagship', featured.length === 12, `found ${featured.length}`);
 const featuredIds = featured.map((c) => c.id);
 const missingFlagships = FLAGSHIP_TOP12.filter((id) => !featuredIds.includes(id));
-check('all twelve Contract B flagship ids exist with featured_top12: true', missingFlagships.length === 0, missingFlagships.join(', '));
+check('all twelve Contract B flagship ids exist with flagship: true', missingFlagships.length === 0, missingFlagships.join(', '));
 const extraFlagships = featuredIds.filter((id) => !FLAGSHIP_TOP12.includes(id));
 check('no unplanned capability claims flagship status', extraFlagships.length === 0, extraFlagships.join(', '));
 const flagshipMeta = featured
   .filter((c) => FLAGSHIP_TOP12.includes(c.id))
-  .filter((c) => !c.what_it_is || !c.why_it_matters || !c.use_it || !c.maturity || !c.limitations || !c.problem)
+  .filter((c) => !c.what_it_is || !c.why_it_matters || !c.use_it || !c.maturity || !c.limitations || !c.problem || !c.user_problem)
   .map((c) => c.id);
-check('flagships carry what/why/use/maturity/limitations/problem', flagshipMeta.length === 0, flagshipMeta.join(', '));
-const badFlagshipIds = featured.filter((c) => !c.flagship_id || new Set(featured.map((f) => f.flagship_id)).size !== 12);
-check('each flagship carries a unique flagship_id', badFlagshipIds.length === 0, badFlagshipIds.map((c) => c.id).join(', '));
-const badChapters = featured.filter((c) => FLAGSHIP_CHAPTERS[c.id] !== c.story_chapter);
-check('flagship story_chapter values match the pinned Contract A mapping', badChapters.length === 0, badChapters.map((c) => `${c.id}=${c.story_chapter}`).join(', '));
+check('flagships carry what/why/use/maturity/limitations/problem/user_problem', flagshipMeta.length === 0, flagshipMeta.join(', '));
 const chaptersCovered = new Set(featured.map((c) => c.story_chapter));
 check('the flagship spread covers all five story chapters (01–05)',
   [1, 2, 3, 4, 5].every((n) => chaptersCovered.has(n)),
@@ -162,22 +160,35 @@ check('content.js no longer ships a static catalog grid', !/id="fx-catalog">\s*<
 check('content.js no longer ships static group pills', !/data-fx-pill="(sessions|chat|editor|modes|workspaces|verification|skills|fleet|collab|runtime)"/.test(content));
 check('app.js renders the catalog from the canonical manifest', app.includes("fetch('./data/capabilities.manifest.json')"));
 
-/* -------------------------------------------- Contract A2 — story stages -- */
-process.stdout.write('\n[a2] Contract A — story-stages.json (five-chapter walkthrough)\n');
-const story = readJson('site/data/story-stages.json');
-check('story-stages.json exists and parses', !!story && !story.__parseError, story && story.__parseError);
+/* -------------------------------------------- Contract A — anatomy nodes -- */
+process.stdout.write('\n[a2] Contract A — anatomy-nodes.json (five-node Turn Anatomy)\n');
+const story = readJson('site/data/anatomy-nodes.json');
+check('anatomy-nodes.json exists and parses', !!story && !story.__parseError, story && story.__parseError);
+check('legacy story-stages.json is gone (single source of truth)', !existsSync(join(ROOT, 'site/data/story-stages.json')));
 if (story && !story.__parseError) {
-  const chapters = Array.isArray(story.chapters) ? story.chapters : [];
+  const chapters = Array.isArray(story.nodes) ? story.nodes : [];
   const capIds = new Set(caps.map((c) => c.id));
   const chapterIds = chapters.map((c) => c.id);
-  check('the story declares exactly five chapters numbered 01–05',
+  check('the anatomy declares exactly five nodes numbered 01–05',
     chapters.length === 5 && JSON.stringify(chapterIds) === JSON.stringify(['chapter-01', 'chapter-02', 'chapter-03', 'chapter-04', 'chapter-05']),
     `found ${JSON.stringify(chapterIds)}`);
+  const REV4_LABELS = [
+    '01 · CLIs & Repo Brain',
+    '02 · Worktrees & Mux',
+    '03 · MCP Firewall & Guard',
+    '04 · Mobile Dev & Remote',
+    '05 · Proof & /ship',
+  ];
+  const labelsOk = chapters.every((c, i) => (c.label || '').indexOf(REV4_LABELS[i]) === 0);
+  check('every node carries its REV4 rail label', labelsOk,
+    chapters.map((c) => `${c.id}: ${c.label}`).join(' | '));
   const storyIssues = [];
   for (const ch of chapters) {
     if (!ch.num || !ch.title || !ch.lede) storyIssues.push(`${ch.id}: missing num/title/lede`);
+    if (typeof ch.node_id !== 'number' || ch.node_id < 1 || ch.node_id > 5) storyIssues.push(`${ch.id}: node_id out of range`);
     if (!Array.isArray(ch.commands) || ch.commands.length < 2) storyIssues.push(`${ch.id}: fewer than two command pills`);
-    for (const ref of [...(ch.capabilities || []), ...((ch.commands || []).map((p) => p.cap))]) {
+    if (!Array.isArray(ch.capability_ids) || ch.capability_ids.length < 2) storyIssues.push(`${ch.id}: too few anchored capabilities`);
+    for (const ref of [...(ch.capability_ids || []), ...((ch.commands || []).map((p) => p.cap))]) {
       if (!capIds.has(ref)) storyIssues.push(`${ch.id}: unknown capability ref ${ref}`);
     }
     const st = ch.stage || {};
@@ -185,14 +196,51 @@ if (story && !story.__parseError) {
     if (!st.diff || !(st.diff.kind === 'text' ? Array.isArray(st.diff.lines) : Array.isArray(st.diff.items))) storyIssues.push(`${ch.id}: stage.diff malformed`);
     if (!st.receipt || typeof st.receipt !== 'object') storyIssues.push(`${ch.id}: stage.receipt missing`);
   }
-  check('every chapter is complete, honest and references real capabilities', storyIssues.length === 0, storyIssues.slice(0, 4).join(' | '));
+  check('every node is complete, honest and references real capabilities', storyIssues.length === 0, storyIssues.slice(0, 4).join(' | '));
   check('the 60-second try-flow bar lists copyable commands', Array.isArray(story.try_flow) && story.try_flow.length >= 3);
   const proofsEarly = readJson('site/data/proofs.manifest.json');
   if (proofsEarly && !proofsEarly.__parseError && Array.isArray(proofsEarly.chapters)) {
     const proofIds = proofsEarly.chapters.map((p) => p.id);
-    check('proofs.manifest.json binds the same five chapter ids', JSON.stringify(proofIds) === JSON.stringify(chapterIds), proofIds.join(', '));
+    check('proofs.manifest.json binds the same five node ids', JSON.stringify(proofIds) === JSON.stringify(chapterIds), proofIds.join(', '));
   }
 }
+
+/* ----------------------------- Contract B — REV4 capability metadata ----- */
+process.stdout.write('\n[a3] Contract B — flagship pillars, node bindings, tab vocabulary\n');
+const FLAGSHIP_IDS = [
+  'feat-one-session-any-agent-cli',
+  'feat-living-repo-brain-and-memory',
+  'feat-parallel-isolated-runs',
+  'feat-council-mode',
+  'feat-zero-trust-mcp-tool-access',
+  'feat-anti-hang-guard',
+  'feat-shadow-evidence',
+  'tui-device-bridge',
+  'tui-flow-os',
+  'feat-ship-governed-pipeline',
+  'feat-sentinel-qa',
+  'feat-web-check',
+];
+const flagships = caps.filter((c) => c.flagship === true);
+check('exactly twelve capabilities carry flagship: true', flagships.length === 12, `found ${flagships.length}`);
+check('the flagship set is exactly the twelve REV4 pillars',
+  JSON.stringify(flagships.map((f) => f.id).sort()) === JSON.stringify([...FLAGSHIP_IDS].sort()),
+  flagships.map((f) => f.id).join(', '));
+const flagGaps = flagships.filter((f) =>
+  !f.user_problem || !f.one_liner || !f.command || !f.surface || !f.introduced_in ||
+  !['stable', 'experimental', 'roadmap'].includes(f.maturity) ||
+  !(f.node_id >= 1 && f.node_id <= 5));
+check('every flagship pillar carries complete Contract B metadata', flagGaps.length === 0, flagGaps.map((f) => f.id).join(', '));
+const nodeSpread = new Set(flagships.map((f) => f.node_id));
+check('flagship pillars are anchored across all five anatomy layers', nodeSpread.size === 5, [...nodeSpread].join(', '));
+const badNode = caps.filter((c) => !(c.node_id >= 1 && c.node_id <= 5));
+check('every capability is anchored to an anatomy node (node_id 1..5)', badNode.length === 0, badNode.slice(0, 4).map((c) => c.id).join(', '));
+const badTab = caps.filter((c) => !['core', 'parallel', 'mobile', 'security'].includes(c.tab));
+check('every capability uses the REV4 tab vocabulary', badTab.length === 0, badTab.slice(0, 4).map((c) => c.id + ':' + c.tab).join(', '));
+const badNew = caps.filter((c) => Boolean(c.is_new_24) !== (c.introduced_in === '0.24.0'));
+check('is_new_24 agrees with introduced_in on every entry', badNew.length === 0, badNew.slice(0, 4).map((c) => c.id).join(', '));
+const newIn24 = caps.filter((c) => c.is_new_24).length;
+check('the New in 0.24 tab has entries to show', newIn24 >= 5, `found ${newIn24}`);
 
 /* ------------------------------------------- (a) stale hardcoded counts -- */
 process.stdout.write('\n[c] Stale capability-count drift (the 61/67/77 era)\n');
@@ -208,6 +256,8 @@ const stalePatterns = [
   [/77-feature/, 'copy still says "77-feature"'],
   [/<dt[^>]*>77<\/dt>/, 'a stat cell still counts 77 capabilities'],
   [/77 features/i, 'copy still says "77 features"'],
+  [/84 curated/, 'copy hardcodes "84 curated" instead of the manifest count'],
+  [/data-capability-count>84</, 'capability count span hardcodes 84'],
 ];
 let staleOk = true;
 const staleHits = [];

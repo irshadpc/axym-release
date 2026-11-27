@@ -15,7 +15,7 @@ on disk behind it.
 ## The chapters
 
 Chapter ids live in `site/data/proofs.manifest.json` and map 1:1 to the
-walkthrough in `site/data/story-stages.json`:
+walkthrough in `site/data/anatomy-nodes.json`:
 
 | id | Chapter |
 |---|---|
@@ -68,7 +68,7 @@ What each step produces, all under `site/assets/proofs/`:
   `captured_version` you record must be the build that actually ran.
 - **The schematic stays honest until then.** While `captured` is `false`, the
   stage keeps its `Illustrative Schematic` badge — editing narrative content
-  in `story-stages.json` never flips a badge.
+  in `anatomy-nodes.json` never flips a badge.
 
 ## Refreshing proofs for v0.25.0+
 
@@ -77,7 +77,7 @@ Proofs are pinned to a version. When a new Axym release ships:
 1. Run `scripts/capture-proof.sh --check` to list chapters captured on older
    versions.
 2. Re-capture any chapter whose behaviour changed (the schematic content in
-   `story-stages.json` also needs a read — it quotes documented behaviour per
+   `anatomy-nodes.json` also needs a read — it quotes documented behaviour per
    release).
 3. Update `captured_version` only through a fresh capture — the manifest is
    never hand-edited to bump a version.
